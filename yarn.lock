@@ -997,11 +997,6 @@
   dependencies:
     "@types/node" ">= 8"
 
-"@open-draft/until@^1.0.0":
-  version "1.0.3"
-  resolved "https://registry.npmjs.org/@open-draft/until/-/until-1.0.3.tgz"
-  integrity sha512-Aq58f5HiWdyDlFffbbSjAlv596h/cOnt2DO1w3DOC7OJ5EHs0hd/nycJfiu9RJbT6Yk6F1knnRRXNSpxoIVZ9Q==
-
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
   resolved "https://registry.npmjs.org/@protobufjs/aspromise/-/aspromise-1.1.2.tgz"
@@ -4736,11 +4731,6 @@ cookie-signature@1.0.6:
   version "1.0.6"
   resolved "https://registry.npmjs.org/cookie-signature/-/cookie-signature-1.0.6.tgz"
   integrity sha1-4wOogrNCzD7oylE6eZmXNNqzriw= sha512-QADzlaHc8icV8I7vbaJXJwod9HWYp8uCqf1xa4OfNu1T7JVxQIrUgOWtHdNDtPiywmFbiS12VjotIXLrKM3orQ==
-
-cookie@^0.4.0:
-  version "0.4.2"
-  resolved "https://registry.npmjs.org/cookie/-/cookie-0.4.2.tgz"
-  integrity sha512-aSWTXFzaKWkvHO1Ny/s+ePFpvKsPnjc551iI41v3ny/ow6tBG5Vd+FuqGNhh1LxOmVzOlGUriIlOaokOvhaStA==
 
 cookie@0.3.1:
   version "0.3.1"
@@ -11098,19 +11088,16 @@ ms@2.0.0:
   resolved "https://registry.npmjs.org/ms/-/ms-2.0.0.tgz"
   integrity sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g= sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==
 
-msw@^0.13.0:
-  version "0.13.0"
-  resolved "https://registry.npmjs.org/msw/-/msw-0.13.0.tgz"
-  integrity sha512-sKA8VHvE4RawdXz6hWoY6AYglImh93dAPErM9eJ1z4cNEZuBckab0RY/JuO4vbj2sAFA/tM7rNCR3ybHGEZVtg==
+msw@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.npmjs.org/msw/-/msw-0.7.0.tgz"
+  integrity sha512-W3Sfjv7ZfgqChRKQptJ527lE/gwwdIFFIf2HQSvAXm8ZUzWs8FouLxKVLlUeNNI+Qifva6dWlpLMIw7STuZlbw==
   dependencies:
-    "@open-draft/until" "^1.0.0"
     chalk "^3.0.0"
-    cookie "^0.4.0"
     graphql "^14.6.0"
-    node-match-path "^0.3.1"
+    node-match-path "^0.2.2"
     ramda "^0.27.0"
-    statuses "^1.5.0"
-    yargs "^15.3.1"
+    yargs "^15.1.0"
 
 multicast-dns-service-types@^1.1.0:
   version "1.1.0"
@@ -11260,10 +11247,10 @@ node-libs-browser@^2.0.0:
     util "^0.11.0"
     vm-browserify "0.0.4"
 
-node-match-path@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.npmjs.org/node-match-path/-/node-match-path-0.3.1.tgz"
-  integrity sha512-1XC05rKixOzElozv6MngsCiS9aaNcBTA4eg2Uw8z36qXetUNfk3Le3VBEH4s5Dg/wWhAz6yHsbQct3na67rEJg==
+node-match-path@^0.2.2:
+  version "0.2.3"
+  resolved "https://registry.npmjs.org/node-match-path/-/node-match-path-0.2.3.tgz"
+  integrity sha512-V9oxXIngpP9Su5kfTDp7CbeWs7Pt1PPTWenZSTUR1+5pyk6WzYjI9YQBAfKR0CVEJylNX5YGhWKz1MAXcqilLg==
 
 node-notifier@^5.0.2, node-notifier@^5.2.1:
   version "5.4.0"
@@ -14783,7 +14770,7 @@ static-extend@^0.1.1:
     define-property "^0.2.5"
     object-copy "^0.1.0"
 
-statuses@^1.5.0, "statuses@>= 1.4.0 < 2", "statuses@>= 1.5.0 < 2", statuses@~1.5.0:
+"statuses@>= 1.4.0 < 2", "statuses@>= 1.5.0 < 2", statuses@~1.5.0:
   version "1.5.0"
   resolved "https://registry.npmjs.org/statuses/-/statuses-1.5.0.tgz"
   integrity sha1-Fhx9rBd2Wf2YEfQ3cfqZOBR4Yow= sha512-OpZ3zP+jT1PI7I8nemJX4AKmAX070ZkYPVWV/AaKTJl+tXCTGyVdC1a4SL8RUQYEwk/f34ZX8UTykN68FwrqAA==
@@ -16775,7 +16762,7 @@ yargs@^12.0.2:
     y18n "^3.2.1 || ^4.0.0"
     yargs-parser "^11.1.1"
 
-yargs@^15.3.1:
+yargs@^15.1.0:
   version "15.4.1"
   resolved "https://registry.npmjs.org/yargs/-/yargs-15.4.1.tgz"
   integrity sha512-aePbxDmcYW++PaqBsJ+HYUFwCdv4LVvdnhBy78E57PIor8/OVvhMrADFFEDh8DHDFRv/O9i3lPhsENjO7QX0+A==
