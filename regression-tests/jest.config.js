@@ -3,9 +3,9 @@ module.exports = {
   rootDir: '..',
   setupFilesAfterEnv: [
     '<rootDir>/regression-tests/setupTests.js',
-    '<rootDir>/regression-tests/server.js',
+    // Don't add server.js as it imports ESM and breaks for now
   ],
   moduleDirectories: ['node_modules', 'shared', 'src'],
   testEnvironment: 'jsdom',
-  transformIgnorePatterns: ['/node_modules/', '/api/'], // ignore api/
+  transformIgnorePatterns: ['/node_modules/', '/api/'],
 };
