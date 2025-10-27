@@ -2,6 +2,14 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
+
+// Mock raw-loader import in reset.css.js to avoid Jest error
+jest.mock(
+  '!!raw-loader!src/components/rich-text-editor/prism-theme.css',
+  () => '',
+  { virtual: true }
+);
+
 import Routes from 'src/routes';
 
 describe('Routes regression', () => {
@@ -12,8 +20,7 @@ describe('Routes regression', () => {
         <Routes />
       </MemoryRouter>
     );
-    // The explore page should have data-cy="explore-page" according to cypress and impl
-    // Prefer getByTestId for reliability, but if not available, fallback to getByTestId
+    // The explore page should have data-cy="explore-page" according to implementation
     const explorePage = await findByTestId('explore-page');
     expect(explorePage).toBeInTheDocument();
   });
