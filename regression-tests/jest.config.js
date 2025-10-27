@@ -4,14 +4,9 @@ module.exports = {
   testEnvironment: 'jsdom',
   moduleFileExtensions: ['js', 'jsx'],
   transform: {
-    '^.+\\.[jt]sx?$': 'babel-jest',
-  },
-  // Use the babel config in the root so ensure upward search for .babelrc
-  globals: {
-    'babel-jest': {
-      babelrc: true,
-    },
+    '^.+\\.[jt]sx?$': ['babel-jest'],
   },
   modulePaths: ['<rootDir>/../src', '<rootDir>/../node_modules'],
   moduleDirectories: ['node_modules', '../node_modules'],
+  babelConfig: '../.babelrc',
 };
