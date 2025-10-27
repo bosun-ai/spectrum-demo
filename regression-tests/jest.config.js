@@ -3,9 +3,8 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/setupTests.js'],
   testEnvironment: 'jsdom',
   moduleFileExtensions: ['js', 'jsx'],
-  // Use babel-jest with adjacent babelrc
   transform: {
-    '^.+\\.[jt]sx?$': 'babel-jest',
+    '^.+\\.[jt]sx?$': [require.resolve('babel-jest'), { rootMode: 'upward' }],
   },
   modulePaths: ['<rootDir>/../src', '<rootDir>/../node_modules'],
   moduleDirectories: ['node_modules', '../node_modules'],
