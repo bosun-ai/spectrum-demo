@@ -7,4 +7,5 @@ module.exports = {
   ],
   moduleDirectories: ['node_modules', 'shared', 'src'],
   testEnvironment: 'jsdom',
+  transformIgnorePatterns: ['/node_modules/', '/api/'], // ignore api/
 };
