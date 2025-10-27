@@ -6,7 +6,7 @@ module.exports = function(api) {
         '@babel/preset-env',
         {
           targets: { node: 'current' },
-          useBuiltIns: true,
+          useBuiltIns: false,
           exclude: [
             'babel-plugin-transform-regenerator',
             'transform-async-to-generator',

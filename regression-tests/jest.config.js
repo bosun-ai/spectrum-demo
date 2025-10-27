@@ -1,11 +1,15 @@
 module.exports = {
   rootDir: '.',
-  setupFilesAfterEnv: ['<rootDir>/setupTests.js'],
   testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/setupTests.js'],
   moduleFileExtensions: ['js', 'jsx'],
   transform: {
     '^.+\\.[jt]sx?$': 'babel-jest',
   },
-  modulePaths: ['<rootDir>/../src', '<rootDir>/../node_modules'],
-  moduleDirectories: ['node_modules', '../node_modules'],
+  roots: ['<rootDir>'],
+  moduleNameMapper: {
+    '^src/(.*)': '<rootDir>/../src/$1',
+    '^components/(.*)': '<rootDir>/../src/components/$1',
+    '^styled-components': require.resolve('styled-components'),
+  },
 };
