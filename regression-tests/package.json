@@ -2,6 +2,8 @@
   "name": "regression-tests",
   "private": true,
   "dependencies": {
+    "@babel/plugin-syntax-async-generators": "^7.8.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@testing-library/jest-dom": "5.11.10",
     "@testing-library/react": "11.2.7",
     "babel-jest": "26.6.3",
