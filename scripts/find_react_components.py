@@ -16,11 +16,11 @@ EXTENSIONS = {".js", ".jsx", ".ts", ".tsx"}
 
 # regexes
 # Function component (named export or declaration): function MyComponent(...)
-FUNC_COMPONENT = re.compile(r"^function\\s+([A-Z][A-Za-z0-9_]*)\\s*\\(", re.MULTILINE)
+FUNC_COMPONENT = re.compile(r"^function\s+([A-Z][A-Za-z0-9_]*)\s*\(", re.MULTILINE)
 # Arrow function component: const MyComponent = (...) => or export const MyComponent = ...
-ARROW_COMPONENT = re.compile(r"^(?:const|let|var|export\\s+const)\\s+([A-Z][A-Za-z0-9_]*)\\s*=\\s*(?:\\([^)]+\\)|[A-Za-z0-9_]+)?\\s*=>", re.MULTILINE)
+ARROW_COMPONENT = re.compile(r"^(?:const|let|var|export\s+const)\s+([A-Z][A-Za-z0-9_]*)\s*=\s*(?:\([^)]+\)|[A-Za-z0-9_]+)?\s*=>", re.MULTILINE)
 # Class component: class MyComponent extends React.Component
-CLASS_COMPONENT = re.compile(r"^class\\s+([A-Z][A-Za-z0-9_]*)\\s+extends\\s+[A-Za-z0-9_.]+", re.MULTILINE)
+CLASS_COMPONENT = re.compile(r"^class\s+([A-Z][A-Za-z0-9_]*)\s+extends\s+[A-Za-z0-9_.]+", re.MULTILINE)
 
 def find_react_components(search_dirs):
     components = []
