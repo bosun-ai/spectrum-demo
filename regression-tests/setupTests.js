@@ -1,5 +1,5 @@
 // Jest + RTL + MSW setup for regression tests
-import '@testing-library/jest-dom/extend-expect';
+import 'jest-dom/extend-expect';
 import { server } from './testServer';
 
 // Establish API mocking before all tests.
@@ -11,3 +11,10 @@ afterEach(() => server.resetHandlers());
 
 // Clean up once the tests are done.
 afterAll(() => server.close());
+
+// Polyfill fetch for node environment
+if (typeof window !== 'undefined' && typeof window.fetch === 'undefined') {
+  // Use isomorphic-fetch dependency already present in project
+  // eslint-disable-next-line global-require
+  require('isomorphic-fetch');
+}
