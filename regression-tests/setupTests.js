@@ -1,5 +1,5 @@
 // Jest + RTL + MSW setup for regression tests
-import 'jest-dom/extend-expect';
+import '@testing-library/jest-dom/extend-expect';
 import { server } from './testServer';
 
 // Establish API mocking before all tests.
