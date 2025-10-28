@@ -32,8 +32,7 @@ describe('Button regression', () => {
     server.use(
       rest.get('/api/ping', (req, res, ctx) => res(ctx.json({ ok: true })))
     );
-    const req = new Request('http://localhost/api/ping');
-    const res = await fetch(req);
+    const res = await fetch('http://127.0.0.1/api/ping');
     const json = await res.json();
     expect(json).toEqual({ ok: true });
   });
