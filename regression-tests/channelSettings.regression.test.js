@@ -8,6 +8,7 @@ import ApolloClient from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ThemeProvider } from 'styled-components';
 import theme from '../shared/theme';
+import { BrowserRouter } from 'react-router-dom';
 
 function makeProps({
   channel = null,
@@ -47,7 +48,9 @@ function renderWithAllProviders(ui) {
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <ApolloProvider client={client}>{ui}</ApolloProvider>
+        <ApolloProvider client={client}>
+          <BrowserRouter>{ui}</BrowserRouter>
+        </ApolloProvider>
       </Provider>
     </ThemeProvider>
   );
