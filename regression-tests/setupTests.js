@@ -12,9 +12,12 @@ afterEach(() => server.resetHandlers());
 // Clean up once the tests are done.
 afterAll(() => server.close());
 
-// Polyfill fetch for node environment
-if (typeof window !== 'undefined' && typeof window.fetch === 'undefined') {
-  // Use isomorphic-fetch dependency already present in project
-  // eslint-disable-next-line global-require
-  require('isomorphic-fetch');
-}
+// Ensure a compatible fetch in Jest/node; prefer node-fetch@2 CommonJS
+// isomorphic-fetch can conflict with MSW interceptors; use node-fetch directly
+// eslint-disable-next-line global-require
+const nodeFetch = require('node-fetch');
+// Attach to global for tests
+global.fetch = nodeFetch;
+global.Headers = nodeFetch.Headers;
+global.Request = nodeFetch.Request;
+global.Response = nodeFetch.Response;
