@@ -1,17 +1,14 @@
-// Regression test for the ChannelSettings component
 import React from 'react';
 import { render } from '@testing-library/react';
-import ChannelSettings from 'src/views/channelSettings/index.js';
+import ChannelSettings from '../src/views/channelSettings';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import { ApolloProvider } from 'react-apollo';
+import ApolloClient from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ThemeProvider } from 'styled-components';
+import theme from '../src/views/channelSettings/style';
 
-// Fake components for router/redux context. Jest runs in jsdom, just stub minimal props, no need to mount providers.
-const baseMatch = {
-  params: { communitySlug: 'community', channelSlug: 'channel' },
-  path: '/:communitySlug/:channelSlug/settings',
-  url: '/community/channel/settings',
-};
-const baseLocation = { pathname: '/community/channel/settings' };
-
-// Helper: returns full props for ChannelSettings for a given channel and flags
 function makeProps({
   channel = null,
   isLoading = false,
@@ -30,61 +27,101 @@ function makeProps({
   };
 }
 
-describe('ChannelSettings regression', () => {
+const baseMatch = {
+  params: {
+    communitySlug: 'community',
+  },
+};
+
+const baseLocation = {
+  pathname: '/community/channel/settings',
+};
+
+function renderWithAllProviders(ui) {
+  const store = createStore((s = {}) => s, {});
+  // ApolloClient requires a cache, but can have a no-op link
+  const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: { request: () => {} },
+  });
+  return render(
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <ApolloProvider client={client}>{ui}</ApolloProvider>
+      </Provider>
+    </ThemeProvider>
+  );
+}
+
+describe('ChannelSettings', () => {
   it('renders settings page for user with permissions', () => {
-    const channel = {
-      id: 'ch123',
-      name: 'General',
-      isArchived: false,
-      channelPermissions: { isModerator: true, isOwner: false },
-      community: {
-        slug: 'community',
-        name: 'Community',
-        communityPermissions: { isOwner: false, isModerator: false },
+    const props = makeProps({
+      channel: {
+        name: 'General',
+        isArchived: false,
+        channelPermissions: {
+          isModerator: true,
+          isOwner: false,
+        },
+        community: {
+          name: 'Community',
+          slug: 'community',
+          communityPermissions: {
+            isOwner: false,
+            isModerator: false,
+          },
+        },
+        isPrivate: false,
       },
-    };
-    const { getByText } = render(
-      <ChannelSettings {...makeProps({ channel })} />
+    });
+    const { getByText } = renderWithAllProviders(
+      <ChannelSettings {...props} />
     );
-    // Renders header, settings title (shows channel name), etc
-    expect(getByText('General Settings')).toBeInTheDocument();
-    expect(getByText('Return to Community settings')).toBeInTheDocument();
+    expect(getByText('General Settings')).toBeTruthy();
+    expect(getByText('Return to Community settings')).toBeTruthy();
   });
 
   it('shows error if user lacks permissions', () => {
-    const channel = {
-      id: 'ch123',
-      name: 'Test Channel',
-      isArchived: false,
-      channelPermissions: { isModerator: false, isOwner: false },
-      community: {
-        slug: 'community',
-        name: 'Community',
-        communityPermissions: { isOwner: false, isModerator: false },
+    const props = makeProps({
+      channel: {
+        name: 'General',
+        isArchived: false,
+        channelPermissions: {
+          isModerator: false,
+          isOwner: false,
+        },
+        community: {
+          name: 'Community',
+          slug: 'community',
+          communityPermissions: {
+            isOwner: false,
+            isModerator: false,
+          },
+        },
+        isPrivate: false,
       },
-    };
-    const { getByText } = render(
-      <ChannelSettings {...makeProps({ channel })} />
+    });
+    const { getByText } = renderWithAllProviders(
+      <ChannelSettings {...props} />
     );
-    // Renders the permission error heading
     expect(
       getByText('You don’t have permission to manage this channel.')
-    ).toBeInTheDocument();
+    ).toBeTruthy();
   });
 
   it('shows loading view when loading', () => {
-    const { container } = render(
-      <ChannelSettings {...makeProps({ isLoading: true })} />
+    const props = makeProps({ isLoading: true });
+    const { container } = renderWithAllProviders(
+      <ChannelSettings {...props} />
     );
-    // Should render loading container
     expect(container.innerHTML).toMatch(/loading/i);
   });
 
   it('shows error view when not loading or showing channel', () => {
-    const { container } = render(
-      <ChannelSettings {...makeProps({ channel: null, isLoading: false })} />
+    const props = makeProps({ isLoading: false, channel: null });
+    const { container } = renderWithAllProviders(
+      <ChannelSettings {...props} />
     );
-    // Should render generic error
     expect(container.innerHTML).toMatch(/error/i);
   });
 });
