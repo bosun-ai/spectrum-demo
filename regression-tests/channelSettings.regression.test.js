@@ -7,7 +7,7 @@ import { ApolloProvider } from 'react-apollo';
 import ApolloClient from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ThemeProvider } from 'styled-components';
-import theme from '../src/views/channelSettings/style';
+import theme from '../shared/theme';
 
 function makeProps({
   channel = null,
