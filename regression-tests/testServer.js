@@ -3,7 +3,8 @@ import { rest } from 'msw';
 
 // Basic handlers; extend per-test when needed
 export const handlers = [
-  rest.get('/api/ping', (req, res, ctx) => {
+  // Match absolute URL in node-fetch
+  rest.get('http://localhost/api/ping', (req, res, ctx) => {
     return res(ctx.status(200), ctx.json({ ok: true }));
   }),
 ];
