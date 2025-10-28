@@ -10,13 +10,21 @@ import { createStore } from 'redux';
 import { ThemeProvider } from 'styled-components';
 
 // Mock raw-loader import in reset.css.js is global via moduleNameMapper
-
 import Routes from 'src/routes';
+
+// Minimal stub state for all required connected components
+const initialState = {
+  modals: { modalProps: {}, activeModal: '' },
+  toasts: { toasts: [] },
+  gallery: { threadId: null },
+  globals: { websocketConnection: null },
+  // Add additional keys below as needed by Connect(mapStateToProps)
+};
 
 describe('Routes regression', () => {
   it('renders the explore page at /explore', async () => {
     // Minimal Redux store
-    const store = createStore((s = {}) => s, {});
+    const store = createStore((s = initialState) => s, initialState);
     // Minimal styled-components theme
     const theme = { brand: { alt: '#cccccc' } };
     // Minimal Apollo client (v2)
