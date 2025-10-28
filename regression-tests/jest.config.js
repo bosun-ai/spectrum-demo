@@ -16,6 +16,8 @@ module.exports = {
     '^shared/(.*)$': '<rootDir>/../shared/$1',
     // styled-components should resolve to its real package
     '^styled-components$': require.resolve('styled-components'),
+    // Add mapper for !!raw-loader imports
+    '^!!raw-loader!.*$': '<rootDir>/__mocks__/rawLoaderMock.js',
     // Any other aliases can be added here as needed.
   },
 };
