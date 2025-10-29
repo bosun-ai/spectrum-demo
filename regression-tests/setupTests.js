@@ -1,0 +1,15 @@
+// Setup for React Testing Library and MSW
+// react-testing-library v6 and jest-dom v3
+import 'react-testing-library/cleanup-after-each';
+import 'jest-dom/extend-expect';
+import { server } from './testServer';
+
+// Establish API mocking before all tests.
+beforeAll(() => server.listen());
+
+// Reset any request handlers that we may add during the tests,
+// so they don't affect other tests.
+afterEach(() => server.resetHandlers());
+
+// Clean up after the tests are finished.
+afterAll(() => server.close());
