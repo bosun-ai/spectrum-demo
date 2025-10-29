@@ -1,4 +1,5 @@
 // Setup for React Testing Library and MSW
+// react-testing-library v6 and jest-dom v3
 import 'react-testing-library/cleanup-after-each';
 import 'jest-dom/extend-expect';
 import { server } from './testServer';
