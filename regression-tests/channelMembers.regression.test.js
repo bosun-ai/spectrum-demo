@@ -8,20 +8,21 @@ const ChannelMembers = require('src/views/channelSettings/components/channelMemb
 const { Provider: ReduxProvider } = require('react-redux');
 const { createStore } = require('redux');
 const { ApolloProvider } = require('react-apollo');
-const ApolloClient = require('apollo-client').ApolloClient;
-const { InMemoryCache } = require('apollo-cache-inmemory');
-const { HttpLink } = require('apollo-link-http');
-const fetch = require('cross-fetch');
+// Create a minimal mock Apollo client object to satisfy context
+const mockApolloClient = {
+  // react-apollo accesses client via context but for our component,
+  // the query HOC won't run since we provide data via props.
+  // Provide minimal shape to avoid invariant errors.
+  query: jest.fn(),
+  watchQuery: jest.fn(),
+};
 
 // Minimal Redux store for connected component
 const dummyReducer = (state = {}) => state;
 const store = createStore(dummyReducer);
 
-// Minimal Apollo client to satisfy context; it won't be used for network since we pass props
-const client = new ApolloClient({
-  link: new HttpLink({ uri: '/graphql', fetch }),
-  cache: new InMemoryCache(),
-});
+// Minimal Apollo client to satisfy context
+const client = mockApolloClient;
 
 const renderWithProviders = ui =>
   render(

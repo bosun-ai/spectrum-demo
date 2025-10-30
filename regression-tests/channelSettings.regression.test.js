@@ -2,7 +2,15 @@
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
 
-// Component under test (default export is composed)
+// Component under test: import module and grab the inner class before compose if exposed,
+// otherwise mock HOCs to be identity to avoid needing Providers.
+jest.mock('react-redux', () => ({ connect: () => x => x }));
+jest.mock('react-router', () => ({ withRouter: x => x }));
+jest.mock('shared/graphql/queries/channel/getChannel', () => ({
+  getChannelByMatch: x => x,
+}));
+jest.mock('src/components/viewNetworkHandler', () => x => x);
+
 const ChannelSettings = require('src/views/channelSettings').default;
 
 // Helper: build props matching the component's expectations
