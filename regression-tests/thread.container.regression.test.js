@@ -3,38 +3,58 @@ const React = require('react');
 const { render, screen } = require('@testing-library/react');
 
 // Mock subcomponents that ThreadContainer renders to avoid deep trees
-jest.mock('src/views/viewHelpers', () => ({
-  LoadingView: () => React.createElement('div', { 'data-cy': 'loading-view' }),
-  ErrorView: props => React.createElement('div', { ...props }, 'Error'),
-}));
-jest.mock('src/components/layout', () => ({
-  ViewGrid: props => React.createElement('div', { ...props }),
-  SecondaryPrimaryColumnGrid: props => React.createElement('div', props),
-  PrimaryColumn: props => React.createElement('div', props),
-  SecondaryColumn: props => React.createElement('div', props),
-  SingleColumnGrid: props => React.createElement('div', props),
-}));
+jest.mock('src/views/viewHelpers', () => {
+  const React = require('react');
+  return {
+    LoadingView: () =>
+      React.createElement('div', { 'data-cy': 'loading-view' }),
+    ErrorView: props => React.createElement('div', { ...props }, 'Error'),
+  };
+});
+jest.mock('src/components/layout', () => {
+  const React = require('react');
+  return {
+    ViewGrid: props => React.createElement('div', { ...props }),
+    SecondaryPrimaryColumnGrid: props => React.createElement('div', props),
+    PrimaryColumn: props => React.createElement('div', props),
+    SecondaryColumn: props => React.createElement('div', props),
+    SingleColumnGrid: props => React.createElement('div', props),
+  };
+});
 jest.mock('src/actions/titlebar', () => ({
   setTitlebarProps: jest.fn(() => ({ type: 'SET_TITLE' })),
 }));
-jest.mock('src/components/error', () => ({
-  ErrorBoundary: props => React.createElement('div', props),
-}));
-jest.mock('src/components/communitySidebar', () => props =>
-  React.createElement('aside', { 'data-cy': 'community-sidebar', ...props })
-);
-jest.mock('src/views/thread/components/stickyHeader', () => props =>
-  React.createElement('div', { 'data-cy': 'sticky-header', ...props })
-);
-jest.mock('src/views/thread/components/threadDetail', () => props =>
-  React.createElement('div', { 'data-cy': 'thread-detail', ...props })
-);
-jest.mock('src/views/thread/components/messagesSubscriber', () => props =>
-  React.createElement('div', { 'data-cy': 'messages-subscriber', ...props })
-);
-jest.mock('src/views/thread/components/threadHead', () => props =>
-  React.createElement('div', { 'data-cy': 'thread-head', ...props })
-);
+jest.mock('src/components/error', () => {
+  const React = require('react');
+  return {
+    ErrorBoundary: props => React.createElement('div', props),
+  };
+});
+jest.mock('src/components/communitySidebar', () => {
+  const React = require('react');
+  return props =>
+    React.createElement('aside', { 'data-cy': 'community-sidebar', ...props });
+});
+jest.mock('src/views/thread/components/stickyHeader', () => {
+  const React = require('react');
+  return props =>
+    React.createElement('div', { 'data-cy': 'sticky-header', ...props });
+});
+jest.mock('src/views/thread/components/threadDetail', () => {
+  const React = require('react');
+  return props =>
+    React.createElement('div', { 'data-cy': 'thread-detail', ...props });
+});
+jest.mock('src/views/thread/components/messagesSubscriber', () => {
+  const React = require('react');
+  return props =>
+    React.createElement('div', { 'data-cy': 'messages-subscriber', ...props });
+});
+jest.mock('src/views/thread/components/threadHead', () => {
+  const React = require('react');
+  return props =>
+    React.createElement('div', { 'data-cy': 'thread-head', ...props });
+});
 
 describe('ThreadContainer regression', () => {
   // Import the unwrapped component via default export chain
@@ -52,16 +72,7 @@ describe('ThreadContainer regression', () => {
         children: null,
       })
     );
-    expect(
-      screen.getByTestId
-        ? screen.getByTestId('loading-view')
-        : screen.getByText(/loading-view/i)
-    ).toBeTruthy();
-    expect(
-      screen.getByAttribute
-        ? screen.getByAttribute('data-cy', 'loading-view')
-        : document.querySelector('[data-cy="loading-view"]')
-    ).toBeTruthy();
+    expect(document.querySelector('[data-cy="loading-view"]')).toBeTruthy();
   });
 
   it('renders error view when thread is null', () => {
