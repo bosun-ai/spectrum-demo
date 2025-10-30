@@ -7,6 +7,10 @@ jest.mock('src/reset.css.js', () => () => null);
 jest.mock('src/components/message/threadAttachment/style', () => ({
   GlobalThreadAttachmentStyles: () => null,
 }));
+// Mock withCurrentUser HOC to avoid Apollo requirement
+jest.mock('src/components/withCurrentUser', () => ({
+  withCurrentUser: Comp => Comp,
+}));
 const Routes = require('src/routes.js').default;
 
 // Helper to render Routes with minimal props expected by HOCs
