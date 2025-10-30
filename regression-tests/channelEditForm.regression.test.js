@@ -55,7 +55,8 @@ describe('ChannelWithData regression', () => {
     // Save button enabled initially
     const saveBtn = screen.getByText('Save');
     expect(saveBtn).toBeTruthy();
-    expect(saveBtn.closest('button')?.hasAttribute('disabled')).toBe(false);
+    const saveBtnEl = saveBtn.closest('button');
+    expect(saveBtnEl && saveBtnEl.hasAttribute('disabled')).toBe(false);
   });
 
   it('disables save when invalid characters entered, re-enables on valid input and calls editChannel', async () => {
@@ -78,8 +79,9 @@ describe('ChannelWithData regression', () => {
     });
 
     const saveBtnLoadingOrSave = screen.getByText('Save');
+    const saveElAfterInvalid = saveBtnLoadingOrSave.closest('button');
     expect(
-      saveBtnLoadingOrSave.closest('button')?.hasAttribute('disabled')
+      saveElAfterInvalid && saveElAfterInvalid.hasAttribute('disabled')
     ).toBe(true);
     expect(screen.getByText(/invalid characters/i)).toBeTruthy();
 
@@ -90,7 +92,8 @@ describe('ChannelWithData regression', () => {
 
     // Save becomes enabled
     const saveBtn = screen.getByText('Save');
-    expect(saveBtn.closest('button')?.hasAttribute('disabled')).toBe(false);
+    const saveBtnEl2 = saveBtn.closest('button');
+    expect(saveBtnEl2 && saveBtnEl2.hasAttribute('disabled')).toBe(false);
 
     // Click save triggers mutation
     fireEvent.click(saveBtn);
