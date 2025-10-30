@@ -17,6 +17,6 @@ describe('Button regression', () => {
     render(React.createElement(Button, { isLoading: true }, 'Loading'));
     const buttonEl = screen.getByText('Loading').closest('button');
     expect(buttonEl).toBeTruthy();
-    expect(buttonEl).toBeDisabled();
+    expect(buttonEl.hasAttribute('disabled')).toBe(true);
   });
 });
