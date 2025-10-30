@@ -2,14 +2,21 @@
 const React = require('react');
 const { render, screen, fireEvent } = require('@testing-library/react');
 
-// Import the composed default export
-// Import the raw component to avoid HOCs requiring Apollo/Router
-const RawComponent =
-  require('src/views/channelSettings/components/channelMembers').default
-    .WrappedComponent ||
-  require('src/views/channelSettings/components/channelMembers')
-    .ChannelMembers ||
-  require('src/views/channelSettings/components/channelMembers').default;
+// Mock HOCs to return the base component directly
+jest.mock(
+  'shared/graphql/queries/channel/getChannelMemberConnection',
+  () => Comp => Comp
+);
+jest.mock('src/components/withCurrentUser', () => ({
+  withCurrentUser: Comp => Comp,
+}));
+jest.mock('src/components/viewNetworkHandler', () => Comp => Comp);
+jest.mock('react-redux', () => ({
+  connect: () => Comp => Comp,
+  Provider: ({ children }) => children,
+}));
+const RawComponent = require('src/views/channelSettings/components/channelMembers')
+  .default;
 const { Provider: ReduxProvider } = require('react-redux');
 const { createStore } = require('redux');
 const { ApolloProvider } = require('react-apollo');
