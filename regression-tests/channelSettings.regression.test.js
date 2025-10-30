@@ -1,6 +1,8 @@
 // Regression test for src/views/channelSettings/index.js ActiveView
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
+const { MemoryRouter } = require('react-router');
+jest.mock('react-helmet-async', () => ({ Helmet: () => null }));
 
 // Component under test: import module and grab the inner class before compose if exposed,
 // otherwise mock HOCs to be identity to avoid needing Providers.
@@ -56,7 +58,13 @@ const buildProps = ({
 describe('ChannelSettings ActiveView regression', () => {
   it('renders Overview when activeTab is settings', () => {
     const props = buildProps({ pathname: '/community/general/settings' });
-    render(React.createElement(ChannelSettings, props));
+    render(
+      React.createElement(
+        MemoryRouter,
+        null,
+        React.createElement(ChannelSettings, props)
+      )
+    );
 
     // Header should include channel name and archived state if any
     expect(screen.getByText(/General Settings/)).toBeTruthy();
@@ -81,7 +89,13 @@ describe('ChannelSettings ActiveView regression', () => {
       },
     });
 
-    render(React.createElement(ChannelSettings, props));
+    render(
+      React.createElement(
+        MemoryRouter,
+        null,
+        React.createElement(ChannelSettings, props)
+      )
+    );
 
     expect(
       screen.getByText('You don’t have permission to manage this channel.')
