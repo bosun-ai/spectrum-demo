@@ -3,8 +3,13 @@ const React = require('react');
 const { render, screen, fireEvent } = require('@testing-library/react');
 
 // Import the composed default export
-const ChannelMembers = require('src/views/channelSettings/components/channelMembers')
-  .default;
+// Import the raw component to avoid HOCs requiring Apollo/Router
+const RawComponent =
+  require('src/views/channelSettings/components/channelMembers').default
+    .WrappedComponent ||
+  require('src/views/channelSettings/components/channelMembers')
+    .ChannelMembers ||
+  require('src/views/channelSettings/components/channelMembers').default;
 const { Provider: ReduxProvider } = require('react-redux');
 const { createStore } = require('redux');
 const { ApolloProvider } = require('react-apollo');
@@ -61,7 +66,7 @@ describe('ChannelMembers regression', () => {
   });
 
   it('renders members list and Section title', () => {
-    renderWithProviders(React.createElement(ChannelMembers, baseProps()));
+    renderWithProviders(React.createElement(RawComponent, baseProps()));
     expect(screen.getByText('Members')).toBeInTheDocument();
     expect(
       screen.getByTestId('user-list-item-name') || screen.getByText('Test User')
@@ -82,7 +87,7 @@ describe('ChannelMembers regression', () => {
       },
       currentUser: { id: 'me' },
     });
-    renderWithProviders(React.createElement(ChannelMembers, props));
+    renderWithProviders(React.createElement(RawComponent, props));
     // The underlying UserListItem receives isCurrentUser=true, but we can't peek props.
     // Assert that the item renders with the provided name.
     expect(screen.getByText('Test User')).toBeInTheDocument();
@@ -102,7 +107,7 @@ describe('ChannelMembers regression', () => {
       },
     });
 
-    renderWithProviders(React.createElement(ChannelMembers, props));
+    renderWithProviders(React.createElement(RawComponent, props));
     const btn = screen.getByText('Load more');
     expect(btn).toBeInTheDocument();
     fireEvent.click(btn);
@@ -111,7 +116,7 @@ describe('ChannelMembers regression', () => {
 
   it('renders loading state when isLoading and no data', () => {
     const props = baseProps({ data: {}, isLoading: true });
-    renderWithProviders(React.createElement(ChannelMembers, props));
+    renderWithProviders(React.createElement(RawComponent, props));
     // Loading component likely renders a role or text; assert Section wrapper exists
     // and Loading is present via text fallback
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
@@ -119,7 +124,7 @@ describe('ChannelMembers regression', () => {
 
   it('renders error view when not loading and no data', () => {
     const props = baseProps({ data: {}, isLoading: false });
-    renderWithProviders(React.createElement(ChannelMembers, props));
+    renderWithProviders(React.createElement(RawComponent, props));
     // ViewError content unknown; ensure SectionCard renders
     // Try to detect a generic error element by role or text; fallback to expect container
     // Since we lack internals, verify that nothing throws and component renders
