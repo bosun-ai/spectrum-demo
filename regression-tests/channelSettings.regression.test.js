@@ -1,6 +1,7 @@
 // Regression test for src/views/channelSettings/index.js
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
+const { MemoryRouter } = require('react-router');
 
 // The component default export is enhanced by HOCs. For regression we import the raw component
 // via requiring the file and grabbing the default export.
@@ -37,7 +38,13 @@ function renderWithProps(overrides = {}) {
     ...overrides,
   };
 
-  return render(React.createElement(ChannelSettings, props));
+  return render(
+    React.createElement(
+      MemoryRouter,
+      {},
+      React.createElement(ChannelSettings, props)
+    )
+  );
 }
 
 describe('ChannelSettings regression', () => {
