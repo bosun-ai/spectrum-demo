@@ -2,9 +2,35 @@
 const React = require('react');
 const { render, screen, fireEvent } = require('@testing-library/react');
 
-// Import the unconnected composed default export
+// Import the composed default export
 const ChannelMembers = require('src/views/channelSettings/components/channelMembers')
   .default;
+const { Provider: ReduxProvider } = require('react-redux');
+const { createStore } = require('redux');
+const { ApolloProvider } = require('react-apollo');
+const ApolloClient = require('apollo-client').ApolloClient;
+const { InMemoryCache } = require('apollo-cache-inmemory');
+const { HttpLink } = require('apollo-link-http');
+const fetch = require('cross-fetch');
+
+// Minimal Redux store for connected component
+const dummyReducer = (state = {}) => state;
+const store = createStore(dummyReducer);
+
+// Minimal Apollo client to satisfy context; it won't be used for network since we pass props
+const client = new ApolloClient({
+  link: new HttpLink({ uri: '/graphql', fetch }),
+  cache: new InMemoryCache(),
+});
+
+const renderWithProviders = ui =>
+  render(
+    React.createElement(
+      ApolloProvider,
+      { client },
+      React.createElement(ReduxProvider, { store }, ui)
+    )
+  );
 
 describe('ChannelMembers regression', () => {
   const baseMember = (overrides = {}) => ({
@@ -34,7 +60,7 @@ describe('ChannelMembers regression', () => {
   });
 
   it('renders members list and Section title', () => {
-    render(React.createElement(ChannelMembers, baseProps()));
+    renderWithProviders(React.createElement(ChannelMembers, baseProps()));
     expect(screen.getByText('Members')).toBeInTheDocument();
     expect(
       screen.getByTestId('user-list-item-name') || screen.getByText('Test User')
@@ -55,7 +81,7 @@ describe('ChannelMembers regression', () => {
       },
       currentUser: { id: 'me' },
     });
-    render(React.createElement(ChannelMembers, props));
+    renderWithProviders(React.createElement(ChannelMembers, props));
     // The underlying UserListItem receives isCurrentUser=true, but we can't peek props.
     // Assert that the item renders with the provided name.
     expect(screen.getByText('Test User')).toBeInTheDocument();
@@ -75,7 +101,7 @@ describe('ChannelMembers regression', () => {
       },
     });
 
-    render(React.createElement(ChannelMembers, props));
+    renderWithProviders(React.createElement(ChannelMembers, props));
     const btn = screen.getByText('Load more');
     expect(btn).toBeInTheDocument();
     fireEvent.click(btn);
@@ -84,7 +110,7 @@ describe('ChannelMembers regression', () => {
 
   it('renders loading state when isLoading and no data', () => {
     const props = baseProps({ data: {}, isLoading: true });
-    render(React.createElement(ChannelMembers, props));
+    renderWithProviders(React.createElement(ChannelMembers, props));
     // Loading component likely renders a role or text; assert Section wrapper exists
     // and Loading is present via text fallback
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
@@ -92,7 +118,7 @@ describe('ChannelMembers regression', () => {
 
   it('renders error view when not loading and no data', () => {
     const props = baseProps({ data: {}, isLoading: false });
-    render(React.createElement(ChannelMembers, props));
+    renderWithProviders(React.createElement(ChannelMembers, props));
     // ViewError content unknown; ensure SectionCard renders
     // Try to detect a generic error element by role or text; fallback to expect container
     // Since we lack internals, verify that nothing throws and component renders
