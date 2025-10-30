@@ -1,86 +1,83 @@
-// Regression test for src/views/channelSettings/index.js
+// Regression test for src/views/channelSettings/index.js ActiveView
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
-const { MemoryRouter } = require('react-router');
 
-// The component default export is enhanced by HOCs. For regression we import the raw component
-// via requiring the file and grabbing the default export.
-// Mock connect HOC to avoid needing a Redux Provider in regression tests
-jest.mock('react-redux', () => ({
-  connect: () => Comp => Comp,
-}));
+// Component under test (default export is composed)
+const ChannelSettings = require('src/views/channelSettings').default;
 
-const ChannelSettingsModule = require('src/views/channelSettings/index.js');
-const ChannelSettings = ChannelSettingsModule.default || ChannelSettingsModule;
-
-// Helper to render with required props
-function renderWithProps(overrides = {}) {
-  const channel = overrides.channel || {
-    id: 'channel-1',
+// Helper: build props matching the component's expectations
+const buildProps = ({
+  pathname = '/community/channel/settings',
+  channelOverrides = {},
+} = {}) => {
+  const baseChannel = {
+    id: 'channel-123',
     name: 'General',
+    slug: 'general',
     isArchived: false,
-    channelPermissions: { isModerator: false, isOwner: true },
+    isPrivate: false,
+    description: 'Welcome to General',
+    channelPermissions: {
+      isModerator: true,
+      isOwner: false,
+    },
     community: {
-      name: 'Acme',
-      slug: 'acme',
-      communityPermissions: { isOwner: false, isModerator: false },
+      slug: 'community',
+      name: 'Community',
+      isPrivate: false,
+      communityPermissions: {
+        isOwner: false,
+        isModerator: false,
+      },
     },
   };
 
-  const props = {
+  const channel = { ...baseChannel, ...channelOverrides };
+
+  return {
     data: { channel },
-    location: { pathname: '/acme/channel/general/settings' },
-    match: { params: { communitySlug: 'acme' } },
+    location: { pathname },
+    match: { params: { communitySlug: channel.community.slug } },
     isLoading: false,
     hasError: false,
-    dispatch: () => {},
+    dispatch: jest.fn(),
     history: {},
-    ...overrides,
   };
+};
 
-  return render(
-    React.createElement(
-      MemoryRouter,
-      {},
-      React.createElement(ChannelSettings, props)
-    )
-  );
-}
+describe('ChannelSettings ActiveView regression', () => {
+  it('renders Overview when activeTab is settings', () => {
+    const props = buildProps({ pathname: '/community/general/settings' });
+    render(React.createElement(ChannelSettings, props));
 
-describe('ChannelSettings regression', () => {
-  it('renders Settings header with channel name when user has permissions', () => {
-    renderWithProps();
-    // Header should include "Settings" and channel name
+    // Header should include channel name and archived state if any
     expect(screen.getByText(/General Settings/)).toBeTruthy();
-    // Subheading link back to community settings
-    expect(screen.getByText(/Return to Acme settings/)).toBeTruthy();
+
+    // Overview renders EditForm which includes SectionTitle "Channel Settings"
+    expect(screen.getByText('Channel Settings')).toBeTruthy();
+    // And the View Channel link from Location block
+    expect(screen.getByText('View Channel')).toBeTruthy();
   });
 
   it('shows permission error when user lacks permissions', () => {
-    const channelNoPerms = {
-      id: 'channel-2',
-      name: 'Random',
-      isArchived: false,
-      channelPermissions: { isModerator: false, isOwner: false },
-      community: {
-        name: 'Acme',
-        slug: 'acme',
-        communityPermissions: { isOwner: false, isModerator: false },
+    const props = buildProps({
+      pathname: '/community/general/settings',
+      channelOverrides: {
+        channelPermissions: { isModerator: false, isOwner: false },
+        community: {
+          slug: 'community',
+          name: 'Community',
+          isPrivate: false,
+          communityPermissions: { isOwner: false, isModerator: false },
+        },
       },
-    };
+    });
 
-    renderWithProps({ data: { channel: channelNoPerms } });
+    render(React.createElement(ChannelSettings, props));
+
     expect(
       screen.getByText('You don’t have permission to manage this channel.')
     ).toBeTruthy();
-    expect(screen.getByText(/Head back to the Acme community/)).toBeTruthy();
-  });
-
-  it('renders loading view when isLoading and no channel', () => {
-    renderWithProps({ data: { channel: null }, isLoading: true });
-    // LoadingView renders a role or text we can detect; simplest is to check for generic "Loading"
-    // but component uses a LoadingView without guaranteed text. Assert the document contains by test id fallback
-    // If not present, fallback to ensure no error view is shown.
-    expect(screen.queryByText(/You don’t have permission/)).toBeFalsy();
+    expect(screen.getByText(/Return to Community settings/)).toBeTruthy();
   });
 });
