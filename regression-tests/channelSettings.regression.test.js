@@ -4,6 +4,11 @@ const { render, screen } = require('@testing-library/react');
 
 // The component default export is enhanced by HOCs. For regression we import the raw component
 // via requiring the file and grabbing the default export.
+// Mock connect HOC to avoid needing a Redux Provider in regression tests
+jest.mock('react-redux', () => ({
+  connect: () => Comp => Comp,
+}));
+
 const ChannelSettingsModule = require('src/views/channelSettings/index.js');
 const ChannelSettings = ChannelSettingsModule.default || ChannelSettingsModule;
 
