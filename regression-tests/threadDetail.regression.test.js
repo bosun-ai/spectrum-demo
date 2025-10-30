@@ -5,8 +5,9 @@ const { MemoryRouter } = require('react-router');
 
 // Mock subcomponents and helpers to keep the test focused
 jest.mock('src/components/entities', () => {
+  const ReactLocal = require('react');
   function UserListItem(props) {
-    return React.createElement('div', {
+    return ReactLocal.createElement('div', {
       'data-cy': 'user-list-item',
       ...props,
     });
@@ -14,8 +15,9 @@ jest.mock('src/components/entities', () => {
   return { UserListItem };
 });
 jest.mock('src/components/threadRenderer', () => {
+  const ReactLocal = require('react');
   function ThreadRenderer(props) {
-    return React.createElement('div', {
+    return ReactLocal.createElement('div', {
       'data-cy': 'thread-renderer',
       ...props,
     });
@@ -23,8 +25,9 @@ jest.mock('src/components/threadRenderer', () => {
   return ThreadRenderer;
 });
 jest.mock('src/components/error', () => {
+  const ReactLocal = require('react');
   function ErrorBoundary(props) {
-    return React.createElement('div', {
+    return ReactLocal.createElement('div', {
       'data-cy': 'error-boundary',
       ...props,
     });
@@ -32,8 +35,12 @@ jest.mock('src/components/error', () => {
   return { ErrorBoundary };
 });
 jest.mock('src/views/thread/components/actionBar', () => {
+  const ReactLocal = require('react');
   function ActionBar(props) {
-    return React.createElement('div', { 'data-cy': 'action-bar', ...props });
+    return ReactLocal.createElement('div', {
+      'data-cy': 'action-bar',
+      ...props,
+    });
   }
   return ActionBar;
 });
