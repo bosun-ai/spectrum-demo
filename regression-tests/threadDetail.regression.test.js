@@ -1,22 +1,42 @@
 // Regression test for src/views/thread/components/threadDetail.js
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
+const { MemoryRouter } = require('react-router');
 
 // Mock subcomponents and helpers to keep the test focused
-jest.mock('src/components/entities', () => ({
-  UserListItem: props =>
-    React.createElement('div', { 'data-cy': 'user-list-item', ...props }),
-}));
-jest.mock('src/components/threadRenderer', () => props =>
-  React.createElement('div', { 'data-cy': 'thread-renderer', ...props })
-);
-jest.mock('src/components/error', () => ({
-  ErrorBoundary: props =>
-    React.createElement('div', { 'data-cy': 'error-boundary', ...props }),
-}));
-jest.mock('src/views/thread/components/actionBar', () => props =>
-  React.createElement('div', { 'data-cy': 'action-bar', ...props })
-);
+jest.mock('src/components/entities', () => {
+  function UserListItem(props) {
+    return React.createElement('div', {
+      'data-cy': 'user-list-item',
+      ...props,
+    });
+  }
+  return { UserListItem };
+});
+jest.mock('src/components/threadRenderer', () => {
+  function ThreadRenderer(props) {
+    return React.createElement('div', {
+      'data-cy': 'thread-renderer',
+      ...props,
+    });
+  }
+  return ThreadRenderer;
+});
+jest.mock('src/components/error', () => {
+  function ErrorBoundary(props) {
+    return React.createElement('div', {
+      'data-cy': 'error-boundary',
+      ...props,
+    });
+  }
+  return { ErrorBoundary };
+});
+jest.mock('src/views/thread/components/actionBar', () => {
+  function ActionBar(props) {
+    return React.createElement('div', { 'data-cy': 'action-bar', ...props });
+  }
+  return ActionBar;
+});
 jest.mock('src/helpers/get-thread-link', () => () => '/thread/link');
 jest.mock('shared/time-formatting', () => ({
   convertTimestampToDate: ts => `date:${ts}`,
@@ -27,9 +47,10 @@ jest.mock('shared/time-difference', () => ({
 
 describe('ThreadDetailPure regression', () => {
   const module = require('../src/views/thread/components/threadDetail.js');
-  const ThreadDetailPure = module.__get__
-    ? module.__get__('ThreadDetailPure')
-    : module.default.WrappedComponent.WrappedComponent; // Fallback through HOCs if rewire not available
+  const DefaultExport = module.default;
+  const ThreadDetailPure = DefaultExport.WrappedComponent
+    ? DefaultExport.WrappedComponent.WrappedComponent
+    : DefaultExport;
 
   const baseThread = {
     id: 't1',
@@ -61,11 +82,15 @@ describe('ThreadDetailPure regression', () => {
   it('renders byline, heading, subtitle, renderer, and action bar', () => {
     const currentUser = { id: 'u3' };
     render(
-      React.createElement(ThreadDetailPure, {
-        thread: baseThread,
-        currentUser,
-        dispatch: jest.fn(),
-      })
+      React.createElement(
+        MemoryRouter,
+        null,
+        React.createElement(ThreadDetailPure, {
+          thread: baseThread,
+          currentUser,
+          dispatch: jest.fn(),
+        })
+      )
     );
 
     // Byline
@@ -86,11 +111,15 @@ describe('ThreadDetailPure regression', () => {
 
   it('shows redirect notice when community has website and redirect', () => {
     render(
-      React.createElement(ThreadDetailPure, {
-        thread: baseThread,
-        currentUser: null,
-        dispatch: jest.fn(),
-      })
+      React.createElement(
+        MemoryRouter,
+        null,
+        React.createElement(ThreadDetailPure, {
+          thread: baseThread,
+          currentUser: null,
+          dispatch: jest.fn(),
+        })
+      )
     );
     // The notice contains community name and link
     expect(
@@ -103,11 +132,15 @@ describe('ThreadDetailPure regression', () => {
 
   it('updates state when receiving a different thread id', () => {
     const { rerender } = render(
-      React.createElement(ThreadDetailPure, {
-        thread: { ...baseThread, id: 't1' },
-        currentUser: null,
-        dispatch: jest.fn(),
-      })
+      React.createElement(
+        MemoryRouter,
+        null,
+        React.createElement(ThreadDetailPure, {
+          thread: { ...baseThread, id: 't1' },
+          currentUser: null,
+          dispatch: jest.fn(),
+        })
+      )
     );
     // initial title
     expect(screen.getByText('Hello World')).toBeTruthy();
@@ -117,11 +150,15 @@ describe('ThreadDetailPure regression', () => {
       content: { title: 'New Title', body: JSON.stringify({}) },
     };
     rerender(
-      React.createElement(ThreadDetailPure, {
-        thread: newThread,
-        currentUser: null,
-        dispatch: jest.fn(),
-      })
+      React.createElement(
+        MemoryRouter,
+        null,
+        React.createElement(ThreadDetailPure, {
+          thread: newThread,
+          currentUser: null,
+          dispatch: jest.fn(),
+        })
+      )
     );
     // should reflect updated title
     expect(screen.getByText('New Title')).toBeTruthy();
