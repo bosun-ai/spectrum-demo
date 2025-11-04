@@ -1,5 +1,6 @@
 // Jest + RTL setup for regression tests
 const { server } = require('./testServer');
+require('@testing-library/jest-dom/extend-expect');
 const { configure } = require('@testing-library/react');
 
 // Reduce fake timers and other noise
