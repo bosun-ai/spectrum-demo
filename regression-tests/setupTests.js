@@ -1,6 +1,6 @@
 // Ensures React Testing Library custom matchers are available
 // and MSW server is set up for tests.
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import { server } from './testServer';
 
 // Establish API mocking before all tests.
