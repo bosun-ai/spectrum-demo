@@ -97,7 +97,7 @@ describe('MessagesSubscriber regression', () => {
       hasNext: true,
       watercooler: false,
     });
-    const data = { loading: false, thread };
+    const data = { loading: false, networkStatus: 7, thread };
     render(
       <ApolloProvider client={client}>
         <ThemeProvider theme={theme}>

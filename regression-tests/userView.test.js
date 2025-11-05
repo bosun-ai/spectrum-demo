@@ -6,6 +6,7 @@ import { Router } from 'react-router';
 import ApolloClient from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloLink } from 'apollo-link';
 
 // Import the unconnected, composed default export
 import UserView from '../src/views/user/index';
@@ -37,7 +38,10 @@ const setup = ({
   };
 
   // Minimal Apollo client to satisfy react-apollo context in tests
-  const client = new ApolloClient({ cache: new InMemoryCache() });
+  const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: ApolloLink.empty(),
+  });
 
   const ui = (
     <ApolloProvider client={client}>
@@ -95,7 +99,10 @@ describe('UserView regression', () => {
       location: history.location,
     };
 
-    const client = new ApolloClient({ cache: new InMemoryCache() });
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: ApolloLink.empty(),
+    });
     render(
       <ApolloProvider client={client}>
         <Router history={history}>
