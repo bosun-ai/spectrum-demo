@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { ThemeProvider } from 'styled-components';
-import theme from '../src/shared/theme';
+import theme from '../shared/theme';
 import { CommunityList } from '../src/views/user/components/communityList';
 
 // Helper: build props shape expected by CommunityList
