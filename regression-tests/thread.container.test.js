@@ -96,11 +96,13 @@ describe('ThreadContainer regression', () => {
       children: null,
     };
     render(<ThreadContainer {...props} />);
-    expect(screen.getByTestId('sticky-header')).not.toBeInTheDocument();
+    // Should render the error view container
+    expect(
+      screen.getByText(/We ran into trouble loading this page/i)
+    ).toBeInTheDocument();
     // ErrorView renders with data-cy="null-thread-view"
-    const error = screen.getByTestId
-      ? screen.queryByTestId('null-thread-view')
-      : null;
+    const error = screen.queryByTestId('null-thread-view');
+    expect(error).toBeInTheDocument();
     // If ErrorView doesn't expose testid, assert absence of head/detail
     expect(screen.queryByTestId('thread-head')).not.toBeInTheDocument();
     expect(screen.queryByTestId('thread-detail')).not.toBeInTheDocument();

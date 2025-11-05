@@ -3,6 +3,11 @@
 /* eslint-disable import/no-commonjs */
 require('@testing-library/jest-dom');
 const { server } = require('./testServer');
+// Polyfill fetch for apollo-upload-client in tests
+/* eslint-disable no-undef */
+if (typeof global.fetch === 'undefined') {
+  global.fetch = require('node-fetch');
+}
 
 // Establish API mocking before all tests.
 beforeAll(() => server.listen());

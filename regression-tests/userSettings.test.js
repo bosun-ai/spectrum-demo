@@ -7,6 +7,8 @@ import { ApolloProvider } from 'react-apollo';
 import ApolloClient from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ThemeProvider } from 'styled-components';
+import theme from '../shared/theme';
 import UserSettings from '../src/views/userSettings/index';
 
 // Minimal reducer to satisfy connect() usage; no-op dispatch
@@ -25,7 +27,9 @@ const renderWithProviders = (
   return render(
     <Provider store={store}>
       <ApolloProvider client={client}>
-        <MemoryRouter initialEntries={[route]}>{ui}</MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <MemoryRouter initialEntries={[route]}>{ui}</MemoryRouter>
+        </ThemeProvider>
       </ApolloProvider>
     </Provider>
   );

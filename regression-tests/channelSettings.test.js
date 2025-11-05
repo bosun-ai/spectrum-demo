@@ -2,6 +2,17 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { Provider } from 'react-redux';
+import { ThemeProvider } from 'styled-components';
+import theme from '../shared/theme';
+
+// Mock Head to avoid Helmet runtime requirements in tests
+jest.mock('../src/components/head', () => {
+  const React = require('react');
+  return function MockHead(props) {
+    // Render a minimal marker for assertions if needed
+    return <div data-testid="mock-head" />;
+  };
+});
 // Simple mock store to satisfy Provider without external deps
 const configureStore = () => {
   const getState = () => ({});
@@ -29,7 +40,9 @@ const renderWithProviders = (
   const store = configureStore(storeState);
   return render(
     <Provider store={store}>
-      <MemoryRouter initialEntries={[route]}>{ui}</MemoryRouter>
+      <ThemeProvider theme={theme}>
+        <MemoryRouter initialEntries={[route]}>{ui}</MemoryRouter>
+      </ThemeProvider>
     </Provider>
   );
 };
