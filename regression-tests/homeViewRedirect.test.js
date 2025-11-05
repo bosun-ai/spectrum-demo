@@ -3,17 +3,27 @@ import { render } from '@testing-library/react';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import HomeViewRedirect from '../src/views/homeViewRedirect';
+import { ApolloProvider } from 'react-apollo';
+import ApolloClient from 'apollo-client';
+import { ApolloLink } from 'apollo-link';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 
 describe('HomeViewRedirect regression', () => {
   it('renders LoadingView while loading', () => {
     const history = createMemoryHistory({ initialEntries: ['/'] });
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: ApolloLink.empty(),
+    });
     const { container } = render(
-      <Router history={history}>
-        <HomeViewRedirect
-          data={{ user: undefined, loading: true }}
-          history={history}
-        />
-      </Router>
+      <ApolloProvider client={client}>
+        <Router history={history}>
+          <HomeViewRedirect
+            data={{ user: undefined, loading: true }}
+            history={history}
+          />
+        </Router>
+      </ApolloProvider>
     );
     // LoadingView should render some loading container
     // We assert on presence of the container element
@@ -25,13 +35,19 @@ describe('HomeViewRedirect regression', () => {
     // Spy on replace to capture redirects
     const replaceSpy = jest.spyOn(history, 'replace');
 
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: ApolloLink.empty(),
+    });
     render(
-      <Router history={history}>
-        <HomeViewRedirect
-          data={{ user: null, loading: false }}
-          history={history}
-        />
-      </Router>
+      <ApolloProvider client={client}>
+        <Router history={history}>
+          <HomeViewRedirect
+            data={{ user: null, loading: false }}
+            history={history}
+          />
+        </Router>
+      </ApolloProvider>
     );
 
     expect(replaceSpy).toHaveBeenCalled();
@@ -45,10 +61,16 @@ describe('HomeViewRedirect regression', () => {
     const replaceSpy = jest.spyOn(history, 'replace');
     const user = { communityConnection: { edges: [] } };
 
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: ApolloLink.empty(),
+    });
     render(
-      <Router history={history}>
-        <HomeViewRedirect data={{ user, loading: false }} history={history} />
-      </Router>
+      <ApolloProvider client={client}>
+        <Router history={history}>
+          <HomeViewRedirect data={{ user, loading: false }} history={history} />
+        </Router>
+      </ApolloProvider>
     );
 
     expect(replaceSpy).toHaveBeenCalledWith('/explore');
@@ -63,10 +85,16 @@ describe('HomeViewRedirect regression', () => {
       },
     };
 
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: ApolloLink.empty(),
+    });
     render(
-      <Router history={history}>
-        <HomeViewRedirect data={{ user, loading: false }} history={history} />
-      </Router>
+      <ApolloProvider client={client}>
+        <Router history={history}>
+          <HomeViewRedirect data={{ user, loading: false }} history={history} />
+        </Router>
+      </ApolloProvider>
     );
 
     expect(replaceSpy).toHaveBeenCalledWith('/alpha');
