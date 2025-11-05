@@ -9,6 +9,17 @@ if (typeof global.fetch === 'undefined') {
   global.fetch = require('node-fetch');
 }
 
+// Provide a simple sessionStorage mock for jsdom
+if (typeof global.sessionStorage === 'undefined') {
+  const store = new Map();
+  global.sessionStorage = {
+    getItem: key => (store.has(key) ? store.get(key) : null),
+    setItem: (key, val) => store.set(key, String(val)),
+    removeItem: key => store.delete(key),
+    clear: () => store.clear(),
+  };
+}
+
 // Establish API mocking before all tests.
 beforeAll(() => server.listen());
 
