@@ -6,6 +6,10 @@ import { client } from '../shared/graphql';
 import { ThemeProvider } from 'styled-components';
 import theme from '../shared/theme';
 import Messages from '../src/views/thread/components/messagesSubscriber';
+// Ensure grouping returns non-empty output so pagination renders
+jest.mock('../shared/clients/group-messages', () => ({
+  sortAndGroupMessages: msgs => [msgs],
+}));
 
 // Helper to provide minimal required DOM for scroll behavior
 function ensureMainContainer() {
@@ -45,7 +49,15 @@ function buildThread({
 
 // Minimal edge/node builder
 function edge(id, cursor = id) {
-  return { node: { id }, cursor };
+  // Provide minimal shape required by group-messages: author.user.id and timestamp
+  return {
+    node: {
+      id,
+      author: { user: { id: `user-${id}` } },
+      timestamp: new Date().toISOString(),
+    },
+    cursor,
+  };
 }
 
 describe('MessagesSubscriber regression', () => {
