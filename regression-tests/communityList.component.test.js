@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 import CommunityList from '../src/views/user/components/communityList';
 
 // Helper: build props shape expected by CommunityList
@@ -18,15 +19,22 @@ const buildProps = ({ loading = false, edges = [] } = {}) => ({
 
 describe('CommunityList regression', () => {
   it('renders loading state when data.loading', () => {
-    render(<CommunityList {...buildProps({ loading: true })} />);
-    // Loading component renders a progressbar role or text
-    // We can assert by style padding text since component sets inline style
-    const loadingEl = screen.getByRole('progressbar', { hidden: true });
-    expect(loadingEl).toBeInTheDocument();
+    render(
+      <MemoryRouter>
+        <CommunityList {...buildProps({ loading: true })} />
+      </MemoryRouter>
+    );
+    // Loading component should be present
+    const loadingText = screen.getByText(/loading/i);
+    expect(loadingText).toBeInTheDocument();
   });
 
   it('renders explore button when no communities', () => {
-    render(<CommunityList {...buildProps({ edges: [] })} />);
+    render(
+      <MemoryRouter>
+        <CommunityList {...buildProps({ edges: [] })} />
+      </MemoryRouter>
+    );
     const explore = screen.getByRole('link', { name: /explore communities/i });
     expect(explore).toHaveAttribute('href', '/explore');
   });
@@ -38,9 +46,11 @@ describe('CommunityList regression', () => {
       { id: 'c2', name: 'Beta', profilePhoto: 'beta.png' },
     ];
     render(
-      <CommunityList
-        {...buildProps({ edges: communities.map(c => edge(c)) })}
-      />
+      <MemoryRouter>
+        <CommunityList
+          {...buildProps({ edges: communities.map(c => edge(c)) })}
+        />
+      </MemoryRouter>
     );
 
     // CommunityListItem renders names; assert they appear
