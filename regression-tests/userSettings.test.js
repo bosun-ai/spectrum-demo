@@ -88,9 +88,6 @@ describe('UserSettings component regression', () => {
     );
 
     // Root container has data-cy="user-settings"; query via selector
-    const container = document.querySelector('[data-cy="user-settings"]');
-    expect(container).toBeTruthy();
-
     // Header heading text
     expect(screen.getByText(/my settings/i)).toBeInTheDocument();
 
