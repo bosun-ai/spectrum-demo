@@ -11,7 +11,6 @@ const store = createStore((state = {}) => state);
 
 describe('MutationWrapper component regression', () => {
   it('renders children via render prop and triggers mutation on click', async () => {
-    const user = userEvent.setup();
     const variables = { foo: 'bar' };
     const mockMutation = jest.fn(() => Promise.resolve());
     const dispatchSpy = jest.spyOn(store, 'dispatch');
@@ -34,7 +33,7 @@ describe('MutationWrapper component regression', () => {
     expect(btn).not.toHaveAttribute('disabled');
 
     // Click triggers init -> mutate; sets loading state then resets
-    await user.click(btn);
+    await userEvent.click(btn);
     expect(mockMutation).toHaveBeenCalledWith(variables);
 
     // Toast dispatched on success
@@ -42,7 +41,6 @@ describe('MutationWrapper component regression', () => {
   });
 
   it('dispatches error toast and resets loading on mutation failure', async () => {
-    const user = userEvent.setup();
     const error = new Error('Nope');
     const failingMutation = jest.fn(() => Promise.reject(error));
     const dispatchSpy = jest.spyOn(store, 'dispatch');
@@ -58,13 +56,12 @@ describe('MutationWrapper component regression', () => {
     );
 
     const btn = screen.getByRole('button', { name: /go/i });
-    await user.click(btn);
+    await userEvent.click(btn);
     expect(failingMutation).toHaveBeenCalled();
     expect(dispatchSpy).toHaveBeenCalled();
   });
 
   it('does nothing when mutation is not provided', async () => {
-    const user = userEvent.setup();
     const dispatchSpy = jest.spyOn(store, 'dispatch');
     const renderSpy = jest.fn(state => <button>Nothing</button>);
 
@@ -75,7 +72,7 @@ describe('MutationWrapper component regression', () => {
     );
 
     const btn = screen.getByRole('button', { name: /nothing/i });
-    await user.click(btn);
+    await userEvent.click(btn);
     expect(dispatchSpy).not.toHaveBeenCalled();
   });
 });
