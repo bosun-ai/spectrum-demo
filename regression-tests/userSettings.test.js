@@ -10,6 +10,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ThemeProvider } from 'styled-components';
 import theme from '../shared/theme';
 import { UserSettings } from '../src/views/userSettings/index';
+import { HelmetProvider } from 'react-helmet-async';
 
 // Minimal reducer to satisfy connect() usage; no-op dispatch
 const reducer = (state = {}) => state;
@@ -28,7 +29,9 @@ const renderWithProviders = (
     <Provider store={store}>
       <ApolloProvider client={client}>
         <ThemeProvider theme={theme}>
-          <MemoryRouter initialEntries={[route]}>{ui}</MemoryRouter>
+          <HelmetProvider>
+            <MemoryRouter initialEntries={[route]}>{ui}</MemoryRouter>
+          </HelmetProvider>
         </ThemeProvider>
       </ApolloProvider>
     </Provider>

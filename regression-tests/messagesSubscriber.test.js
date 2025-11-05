@@ -62,7 +62,11 @@ function edge(id, cursor = id) {
 
 describe('MessagesSubscriber regression', () => {
   it('renders NullMessages when no edges', () => {
-    const data = { loading: false, thread: buildThread({ edges: [] }) };
+    const data = {
+      loading: false,
+      networkStatus: 7,
+      thread: buildThread({ edges: [] }),
+    };
     render(
       <ApolloProvider client={client}>
         <ThemeProvider theme={theme}>
@@ -132,7 +136,7 @@ describe('MessagesSubscriber regression', () => {
           <MemoryRouter>
             <Messages
               isWatercooler={false}
-              data={{ loading: true, thread: null }}
+              data={{ loading: true, networkStatus: 1, thread: null }}
               loadPreviousPage={jest.fn()}
               loadNextPage={jest.fn()}
               location={{ pathname: '/thread/abc', search: '' }}
