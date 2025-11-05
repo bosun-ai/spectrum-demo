@@ -9,6 +9,8 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloLink } from 'apollo-link';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
+import { ThemeProvider } from 'styled-components';
+import theme from '../shared/theme';
 
 // Import the unconnected, composed default export
 import UserView from '../src/views/user/index';
@@ -49,9 +51,11 @@ const setup = ({
   const ui = (
     <Provider store={store}>
       <ApolloProvider client={client}>
-        <Router history={history}>
-          <UserView {...props} />
-        </Router>
+        <ThemeProvider theme={theme}>
+          <Router history={history}>
+            <UserView {...props} />
+          </Router>
+        </ThemeProvider>
       </ApolloProvider>
     </Provider>
   );
@@ -112,9 +116,11 @@ describe('UserView regression', () => {
     render(
       <Provider store={store}>
         <ApolloProvider client={client}>
-          <Router history={history}>
-            <UserView {...props} />
-          </Router>
+          <ThemeProvider theme={theme}>
+            <Router history={history}>
+              <UserView {...props} />
+            </Router>
+          </ThemeProvider>
         </ApolloProvider>
       </Provider>
     );
