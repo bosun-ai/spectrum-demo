@@ -5,7 +5,16 @@ import { ApolloProvider } from 'react-apollo';
 import { client } from '../shared/graphql';
 import { ThemeProvider } from 'styled-components';
 import theme from '../shared/theme';
+// Import wrapped component default
 import Messages from '../src/views/thread/components/messagesSubscriber';
+// Force viewNetworkHandler to pass through given isLoading/isFetchingMore/hasError
+jest.mock('../src/components/viewNetworkHandler', () => {
+  const React = require('react');
+  return {
+    __esModule: true,
+    default: Comp => props => <Comp {...props} />,
+  };
+});
 // Ensure grouping returns non-empty output so pagination renders
 jest.mock('../shared/clients/group-messages', () => ({
   sortAndGroupMessages: msgs => [msgs],
