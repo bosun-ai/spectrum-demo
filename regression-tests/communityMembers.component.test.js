@@ -49,12 +49,16 @@ describe('CommunityMembers component regression', () => {
     expect(screen.getByText(/Community Members · 3/i)).toBeInTheDocument();
 
     // Members filter should be active initially
-    const membersFilter = screen.getByText(/members/i);
+    const membersFilter = screen
+      .getAllByText(/members/i)
+      .find(el => el.tagName.toLowerCase() === 'li');
     expect(membersFilter).toBeInTheDocument();
     expect(membersFilter).toHaveAttribute('active', 'true');
 
     // Team filter exists and is not active initially
-    const teamFilter = screen.getByText(/team/i);
+    const teamFilter = screen
+      .getAllByText(/team/i)
+      .find(el => el.tagName.toLowerCase() === 'li');
     expect(teamFilter).toBeInTheDocument();
     expect(teamFilter).toHaveAttribute('active', 'false');
   });
@@ -63,8 +67,12 @@ describe('CommunityMembers component regression', () => {
     const user = userEvent;
     renderWithProviders(<CommunityMembers {...baseProps} />);
 
-    const membersFilter = screen.getByText(/members/i);
-    const teamFilter = screen.getByText(/team/i);
+    const membersFilter = screen
+      .getAllByText(/members/i)
+      .find(el => el.tagName.toLowerCase() === 'li');
+    const teamFilter = screen
+      .getAllByText(/team/i)
+      .find(el => el.tagName.toLowerCase() === 'li');
 
     // Initial state: members active
     expect(membersFilter).toHaveAttribute('active', 'true');
