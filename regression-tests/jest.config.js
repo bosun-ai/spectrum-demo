@@ -1,7 +1,13 @@
+const path = require('path');
+
 module.exports = {
   testEnvironment: 'jsdom',
   roots: ['<rootDir>/regression-tests'],
-  setupFiles: ['<rootDir>/regression-tests/setupTests.js'],
+  // Jest 22 requires setupTestFrameworkScriptFile instead of setupFilesAfterEnv
+  setupTestFrameworkScriptFile: path.resolve(
+    '<rootDir>',
+    './regression-tests/setupTests.js'
+  ),
   moduleNameMapper: {
     '^src/(.*)$': '<rootDir>/src/$1',
   },
