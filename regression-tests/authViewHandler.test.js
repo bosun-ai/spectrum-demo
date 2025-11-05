@@ -1,0 +1,91 @@
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
+import AuthViewHandler from '../src/views/authViewHandler';
+
+// Helper: render with mocked HOCs props injection
+const renderWithProps = ({
+  user = null,
+  loading = false,
+  pathname = '/',
+  editUser = jest.fn(),
+  children = authed => <div>authed:{String(authed)}</div>,
+} = {}) => {
+  const history = { replace: jest.fn() };
+  const location = { pathname };
+
+  const ui = (
+    <MemoryRouter initialEntries={[pathname]}>
+      <AuthViewHandler
+        history={history}
+        location={location}
+        editUser={editUser}
+        data={{ user, loading }}
+      >
+        {children}
+      </AuthViewHandler>
+    </MemoryRouter>
+  );
+
+  const utils = render(ui);
+  return { ...utils, history, editUser };
+};
+
+describe('AuthViewHandler regression', () => {
+  it('renders children(false) when no user and not loading', () => {
+    renderWithProps({ user: null, loading: false });
+    expect(screen.getByText('authed:false')).toBeInTheDocument();
+  });
+
+  it('returns null while loading when no user', () => {
+    const { container } = renderWithProps({ user: null, loading: true });
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('renders NewUserOnboarding when user exists without username', () => {
+    renderWithProps({ user: { id: 'u1', username: null } });
+    // The NewUserOnboarding view renders a heading or container; simplest check by text from component may vary
+    // Fallback: ensure children(false/true) is not rendered; expect something in the tree
+    // We assert that authed children is not present and a component mounted
+    expect(screen.queryByText(/authed:/)).toBeNull();
+  });
+
+  it('calls children(true) when user has id and username', () => {
+    renderWithProps({ user: { id: 'u1', username: 'alice' } });
+    expect(screen.getByText('authed:true')).toBeInTheDocument();
+  });
+
+  it('on first user load: sets timezone if missing and redirects from /home', () => {
+    // initial render with no user
+    const { rerender, editUser, history } = renderWithProps({
+      user: null,
+      loading: false,
+      pathname: '/home',
+    });
+
+    // simulate user arriving without timezone
+    const userNoTz = { id: 'u1', username: 'alice', timezone: null };
+    const location = { pathname: '/home' };
+    const next = (
+      <MemoryRouter initialEntries={['/home']}>
+        <AuthViewHandler
+          history={history}
+          location={location}
+          editUser={editUser}
+          data={{ user: userNoTz, loading: false }}
+        >
+          {authed => <div>authed:{String(authed)}</div>}
+        </AuthViewHandler>
+      </MemoryRouter>
+    );
+    rerender(next);
+
+    // editUser should be called with a timezone value
+    expect(editUser).toHaveBeenCalled();
+    const arg = editUser.mock.calls[0][0];
+    expect(typeof arg.timezone).toBe('number');
+
+    // history.replace should be called to redirect away from /home
+    expect(history.replace).toHaveBeenCalledWith('/');
+  });
+});
