@@ -9,6 +9,8 @@ import { createHttpLink } from 'apollo-link-http';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { MemoryRouter } from 'react-router';
+import { ThemeProvider } from 'styled-components';
+import theme from '../shared/theme';
 
 // Minimal Apollo client to satisfy context; network isn't exercised
 const client = new ApolloClient({
@@ -33,7 +35,9 @@ const renderWithProviders = ui =>
   render(
     <Provider store={store}>
       <ApolloProvider client={client}>
-        <MemoryRouter>{ui}</MemoryRouter>
+        <MemoryRouter>
+          <ThemeProvider theme={theme}>{ui}</ThemeProvider>
+        </MemoryRouter>
       </ApolloProvider>
     </Provider>
   );
