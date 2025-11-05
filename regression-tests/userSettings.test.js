@@ -94,7 +94,8 @@ describe('UserSettings component regression', () => {
     // Header heading text (case-insensitive)
     expect(screen.getByText(/my settings/i)).toBeInTheDocument();
 
-    // Subheading link label "Return to profile" should be present
-    expect(screen.getByText(/return to profile/i)).toBeInTheDocument();
+    // Subheading link label appears in header and as a link
+    const subheadings = screen.getAllByText(/return to profile/i);
+    expect(subheadings.length).toBeGreaterThan(0);
   });
 });

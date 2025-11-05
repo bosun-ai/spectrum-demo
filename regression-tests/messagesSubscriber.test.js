@@ -15,6 +15,14 @@ jest.mock('../src/components/viewNetworkHandler', () => {
     default: Comp => props => <Comp {...props} />,
   };
 });
+// Mock Apollo HOC to pass through, avoiding GraphQL variables logic
+jest.mock(
+  '../shared/graphql/queries/thread/getThreadMessageConnection',
+  () => ({
+    __esModule: true,
+    default: Comp => Comp,
+  })
+);
 // Ensure grouping returns non-empty output so pagination renders
 jest.mock('../shared/clients/group-messages', () => ({
   sortAndGroupMessages: msgs => [msgs],

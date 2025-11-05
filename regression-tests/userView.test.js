@@ -7,6 +7,8 @@ import ApolloClient from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloLink } from 'apollo-link';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 
 // Import the unconnected, composed default export
 import UserView from '../src/views/user/index';
@@ -37,6 +39,7 @@ const setup = ({
     location: history.location,
   };
 
+  const store = createStore((state = {}) => state);
   // Minimal Apollo client to satisfy react-apollo context in tests
   const client = new ApolloClient({
     cache: new InMemoryCache(),
@@ -44,11 +47,13 @@ const setup = ({
   });
 
   const ui = (
-    <ApolloProvider client={client}>
-      <Router history={history}>
-        <UserView {...props} />
-      </Router>
-    </ApolloProvider>
+    <Provider store={store}>
+      <ApolloProvider client={client}>
+        <Router history={history}>
+          <UserView {...props} />
+        </Router>
+      </ApolloProvider>
+    </Provider>
   );
 
   return { ui, props, history };
@@ -103,12 +108,15 @@ describe('UserView regression', () => {
       cache: new InMemoryCache(),
       link: ApolloLink.empty(),
     });
+    const store = createStore((state = {}) => state);
     render(
-      <ApolloProvider client={client}>
-        <Router history={history}>
-          <UserView {...props} />
-        </Router>
-      </ApolloProvider>
+      <Provider store={store}>
+        <ApolloProvider client={client}>
+          <Router history={history}>
+            <UserView {...props} />
+          </Router>
+        </ApolloProvider>
+      </Provider>
     );
 
     // ErrorView renders a heading explaining missing user
