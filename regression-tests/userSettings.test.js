@@ -9,7 +9,7 @@ import { ApolloLink } from 'apollo-link';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ThemeProvider } from 'styled-components';
 import theme from '../shared/theme';
-import UserSettings from '../src/views/userSettings/index';
+import { UserSettings } from '../src/views/userSettings/index';
 
 // Minimal reducer to satisfy connect() usage; no-op dispatch
 const reducer = (state = {}) => state;

@@ -3,6 +3,9 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router';
+import ApolloClient from 'apollo-client';
+import { ApolloProvider } from 'react-apollo';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 
 // Import the unconnected, composed default export
 import UserView from '../src/views/user/index';
@@ -33,10 +36,15 @@ const setup = ({
     location: history.location,
   };
 
+  // Minimal Apollo client to satisfy react-apollo context in tests
+  const client = new ApolloClient({ cache: new InMemoryCache() });
+
   const ui = (
-    <Router history={history}>
-      <UserView {...props} />
-    </Router>
+    <ApolloProvider client={client}>
+      <Router history={history}>
+        <UserView {...props} />
+      </Router>
+    </ApolloProvider>
   );
 
   return { ui, props, history };
@@ -61,16 +69,16 @@ describe('UserView regression', () => {
   });
 
   it('switches tabs via clicks and updates query string', async () => {
-    const user = userEvent.setup();
+    // v12 user-event exposes fire events directly
     const { ui, history } = setup({ search: '?tab=posts' });
     render(ui);
 
     const activityTab = screen.getByTestId('user-activity-tab');
-    await user.click(activityTab);
+    userEvent.click(activityTab);
     expect(history.location.search).toMatch(/tab=activity/);
 
     const infoTab = screen.getByTestId('user-info-tab');
-    await user.click(infoTab);
+    userEvent.click(infoTab);
     expect(history.location.search).toMatch(/tab=info/);
   });
 
@@ -87,10 +95,13 @@ describe('UserView regression', () => {
       location: history.location,
     };
 
+    const client = new ApolloClient({ cache: new InMemoryCache() });
     render(
-      <Router history={history}>
-        <UserView {...props} />
-      </Router>
+      <ApolloProvider client={client}>
+        <Router history={history}>
+          <UserView {...props} />
+        </Router>
+      </ApolloProvider>
     );
 
     // ErrorView renders a heading explaining missing user
