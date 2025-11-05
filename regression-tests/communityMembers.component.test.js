@@ -60,7 +60,7 @@ describe('CommunityMembers component regression', () => {
   });
 
   it('switches filters between Members and Team on click', async () => {
-    const user = userEvent.setup();
+    const user = userEvent;
     renderWithProviders(<CommunityMembers {...baseProps} />);
 
     const membersFilter = screen.getByText(/members/i);
@@ -71,12 +71,12 @@ describe('CommunityMembers component regression', () => {
     expect(teamFilter).toHaveAttribute('active', 'false');
 
     // Click team -> team active
-    await user.click(teamFilter);
+    user.click(teamFilter);
     expect(teamFilter).toHaveAttribute('active', 'true');
     expect(membersFilter).toHaveAttribute('active', 'false');
 
     // Click members -> members active again
-    await user.click(membersFilter);
+    user.click(membersFilter);
     expect(membersFilter).toHaveAttribute('active', 'true');
     expect(teamFilter).toHaveAttribute('active', 'false');
   });
