@@ -1,6 +1,10 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import CommunityMembersSettings from '../src/views/communityMembers';
+import { ApolloProvider } from 'react-apollo';
+import ApolloClient from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { createHttpLink } from 'apollo-link-http';
 
 // Minimal wrapper props to render the settings view
 const baseProps = {
@@ -10,9 +14,19 @@ const baseProps = {
   history: {},
 };
 
+// Minimal Apollo client to satisfy context; network isn't exercised
+const client = new ApolloClient({
+  link: createHttpLink({ uri: '/graphql', fetch: () => Promise.resolve() }),
+  cache: new InMemoryCache(),
+});
+
 describe('CommunityMembersSettings regression', () => {
   it('renders ErrorView when no community provided', () => {
-    render(<CommunityMembersSettings {...baseProps} community={null} />);
+    render(
+      <ApolloProvider client={client}>
+        <CommunityMembersSettings {...baseProps} community={null} />
+      </ApolloProvider>
+    );
     // ErrorView renders a fallback role heading text; assert presence by generic text
     // We expect no "Community Members" heading when community is missing
     expect(screen.queryByText(/community members/i)).not.toBeInTheDocument();
@@ -23,7 +37,11 @@ describe('CommunityMembersSettings regression', () => {
       id: 'c1',
       metaData: { members: 5 },
     };
-    render(<CommunityMembersSettings {...baseProps} community={community} />);
+    render(
+      <ApolloProvider client={client}>
+        <CommunityMembersSettings {...baseProps} community={community} />
+      </ApolloProvider>
+    );
     // Heading comes from inner CommunityMembers component
     expect(screen.getByText(/community members · 5/i)).toBeInTheDocument();
     // Filter tabs should be visible
