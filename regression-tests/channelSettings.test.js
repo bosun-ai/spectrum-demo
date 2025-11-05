@@ -2,7 +2,13 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { Provider } from 'react-redux';
-import configureStore from 'redux-mock-store';
+// Simple mock store to satisfy Provider without external deps
+const configureStore = () => {
+  const getState = () => ({});
+  const dispatch = () => {};
+  const subscribe = () => () => {};
+  return { getState, dispatch, subscribe };
+};
 import ChannelSettings from '../src/views/channelSettings';
 
 const mockStore = configureStore([]);
@@ -12,7 +18,7 @@ const renderWithProviders = (
   ui,
   { route = '/community/channel/settings', storeState = {} } = {}
 ) => {
-  const store = mockStore(storeState);
+  const store = configureStore(storeState);
   return render(
     <Provider store={store}>
       <MemoryRouter initialEntries={[route]}>{ui}</MemoryRouter>
