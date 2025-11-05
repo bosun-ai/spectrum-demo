@@ -5,9 +5,10 @@ import MutationWrapper from '../src/views/communityMembers/components/mutationWr
 
 // Helper to render with minimal redux Provider; component uses connect() for dispatch
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 
-const store = createStore((state = {}) => state);
+const store = createStore((state = {}) => state, applyMiddleware(thunk));
 
 describe('MutationWrapper component regression', () => {
   it('renders children via render prop and triggers mutation on click', async () => {
