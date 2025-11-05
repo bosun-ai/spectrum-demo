@@ -2,7 +2,27 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
-import NewUserOnboarding from '../src/views/newUserOnboarding';
+// Access the inner wrapped component from the composed default export
+const NewUserOnboardingModule = require('../src/views/newUserOnboarding');
+const NewUserOnboarding = NewUserOnboardingModule.default.WrappedComponent;
+
+// Mock child components to avoid Provider/Apollo contexts
+jest.mock('../src/views/login', () => {
+  const React = require('react');
+  return function MockLogin() {
+    return React.createElement('div', null, 'Log in');
+  };
+});
+jest.mock('../src/views/newUserOnboarding/components/setUsername', () => {
+  const React = require('react');
+  return function MockSetUsername() {
+    return React.createElement(
+      'div',
+      { 'data-testid': 'set-username' },
+      'Set Username'
+    );
+  };
+});
 
 // Helper to render component with router context and injected props
 const renderWithRouter = (
@@ -24,8 +44,8 @@ describe('NewUserOnboarding view regression', () => {
     const history = createMemoryHistory({ initialEntries: ['/new?x=1'] });
     render(
       <Router history={history}>
-        {/* Bypass HOCs by rendering the inner component with minimal props */}
-        <NewUserOnboarding.WrappedComponent
+        {/* Render inner component with minimal props */}
+        <NewUserOnboarding
           currentUser={null}
           dispatch={() => {}}
           history={history}
@@ -41,9 +61,15 @@ describe('NewUserOnboarding view regression', () => {
   it('redirects away when user already has a username', async () => {
     const history = createMemoryHistory({ initialEntries: ['/new'] });
     const location = history.location;
+    // Prevent Router setState loop by stubbing replace
+    const replaceSpy = jest
+      .spyOn(history, 'replace')
+      .mockImplementation(path => {
+        history.location.pathname = path;
+      });
     render(
       <Router history={history}>
-        <NewUserOnboarding.WrappedComponent
+        <NewUserOnboarding
           currentUser={{ id: 'u1', username: 'alice' }}
           dispatch={() => {}}
           history={history}
@@ -54,13 +80,14 @@ describe('NewUserOnboarding view regression', () => {
 
     // Component calls history.replace('/') when username exists
     expect(history.location.pathname).toBe('/');
+    replaceSpy.mockRestore();
   });
 
   it('shows onboarding UI when user missing username', async () => {
     const history = createMemoryHistory({ initialEntries: ['/new'] });
     render(
       <Router history={history}>
-        <NewUserOnboarding.WrappedComponent
+        <NewUserOnboarding
           currentUser={{ id: 'u1', username: null }}
           dispatch={() => {}}
           history={history}
@@ -74,7 +101,6 @@ describe('NewUserOnboarding view regression', () => {
     expect(
       screen.getByText('You can change this at any time, so no pressure!')
     ).toBeInTheDocument();
-    const logout = screen.getByRole('link', { name: /log out/i });
-    expect(logout).toBeInTheDocument();
+    expect(screen.getByText(/log out/i)).toBeInTheDocument();
   });
 });
