@@ -8,7 +8,10 @@ import UserSettings from '../src/views/userSettings/index';
 // Minimal reducer to satisfy connect() usage; no-op dispatch
 const reducer = (state = {}) => state;
 
-const renderWithProviders = (ui, { route = '/settings', preloadedState = {} } = {}) => {
+const renderWithProviders = (
+  ui,
+  { route = '/settings', preloadedState = {} } = {}
+) => {
   const store = createStore(reducer, preloadedState);
   return render(
     <Provider store={store}>
@@ -66,7 +69,11 @@ describe('UserSettings component regression', () => {
     );
 
     // Root container has data-cy="user-settings"
-    expect(screen.getByTestId ? screen.getByTestId('user-settings') : screen.getByText(/my settings/i)).toBeTruthy();
+    expect(
+      screen.getByTestId
+        ? screen.getByTestId('user-settings')
+        : screen.getByText(/my settings/i)
+    ).toBeTruthy();
 
     // Header heading text
     expect(screen.getByText(/my settings/i)).toBeInTheDocument();
