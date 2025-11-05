@@ -8,7 +8,6 @@ const debug = require('debug')('build:config-overrides');
 const webpack = require('webpack');
 const { injectBabelPlugin } = require('react-app-rewired');
 const rewireStyledComponents = require('react-app-rewire-styled-components');
-const rewireReactHotLoader = require('react-app-rewire-hot-loader');
 const swPrecachePlugin = require('sw-precache-webpack-plugin');
 const fs = require('fs');
 const path = require('path');
@@ -79,7 +78,6 @@ module.exports = function override(config, env) {
   }
   if (process.env.NODE_ENV === 'development') {
     config.output.path = path.join(__dirname, './build');
-    config = rewireReactHotLoader(config, env);
     config.plugins.push(
       WriteFilePlugin({
         log: true,

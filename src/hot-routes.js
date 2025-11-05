@@ -1,7 +1,8 @@
 // @flow
 // This takes the ./routes.js file and makes it hot reload.
 // This should only be used on the client, not on the server!
-import { hot } from 'react-hot-loader';
 import Routes from './routes';
 
-export default hot(module)(Routes);
+// React 17 no longer uses react-hot-loader; CRA's fast refresh
+// handles HMR in dev. Export plain Routes.
+export default Routes;

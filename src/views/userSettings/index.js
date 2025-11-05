@@ -26,7 +26,7 @@ type Props = {
   ...$Exact<ContextRouter>,
 };
 
-class UserSettings extends React.Component<Props> {
+export class UserSettings extends React.Component<Props> {
   componentDidMount() {
     const { dispatch } = this.props;
     return dispatch(

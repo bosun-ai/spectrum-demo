@@ -18,7 +18,7 @@ type Props = {
   user: Object,
 };
 
-class CommunityList extends React.Component<Props> {
+export class CommunityList extends React.Component<Props> {
   render() {
     const { data } = this.props;
 
