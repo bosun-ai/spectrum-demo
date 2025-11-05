@@ -74,13 +74,15 @@ describe('UserSettings component regression', () => {
       username: 'alice',
       profilePhoto: 'https://example.com/p.png',
     };
+    // Provide a shape of props matching withCurrentUser HOC expectations
+    // Simulate both currentUser and the query-resolved user being the same
     renderWithProviders(
       <UserSettings
         isLoading={false}
         hasError={false}
         data={{ user }}
         match={{ url: '/settings' }}
-        currentUser={{ id: 'u1' }}
+        currentUser={{ id: 'u1', username: 'alice' }}
         dispatch={() => {}}
       />
     );
