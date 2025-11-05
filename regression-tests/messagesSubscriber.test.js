@@ -105,8 +105,9 @@ describe('MessagesSubscriber regression', () => {
       </ApolloProvider>
     );
 
-    // NextPageButton default label when not fetching is 'Load more'
-    expect(screen.getAllByText(/Load more/i)).toHaveLength(2);
+    // Labels are provided as children in component
+    expect(screen.getByText(/Show previous messages/i)).toBeInTheDocument();
+    expect(screen.getByText(/Show more messages/i)).toBeInTheDocument();
 
     // ChatMessages is the messageGroup component; it does not have a role,
     // but we can assert the previous/next controls exist which implies messages rendered.

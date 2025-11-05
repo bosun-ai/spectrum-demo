@@ -32,7 +32,7 @@ const renderWithProviders = (
   ui,
   { route = '/community/channel/settings' } = {}
 ) => {
-  const store = { ...baseStore(), dispatch: jest.fn() };
+  const store = { ...baseStore(), dispatch: () => {} };
   return render(
     <Provider store={store}>
       <ThemeProvider theme={theme}>

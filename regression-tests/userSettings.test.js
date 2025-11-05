@@ -88,7 +88,7 @@ describe('UserSettings component regression', () => {
     );
 
     // Root container has data-cy="user-settings"; query via selector
-    // Header heading text
+    // Header heading text (case-insensitive)
     expect(screen.getByText(/my settings/i)).toBeInTheDocument();
 
     // Subheading link label "Return to profile" should be present
