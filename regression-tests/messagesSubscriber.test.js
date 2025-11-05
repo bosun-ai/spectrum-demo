@@ -54,6 +54,7 @@ function buildThread({
 } = {}) {
   return {
     watercooler,
+    community: { communityPermissions: { isOwner: false, isModerator: false } },
     messageConnection: {
       edges,
       pageInfo: {

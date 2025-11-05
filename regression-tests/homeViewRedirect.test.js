@@ -7,6 +7,8 @@ import { ApolloProvider } from 'react-apollo';
 import ApolloClient from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ThemeProvider } from 'styled-components';
+import theme from '../shared/theme';
 
 describe('HomeViewRedirect regression', () => {
   it('renders LoadingView while loading', () => {
@@ -17,12 +19,14 @@ describe('HomeViewRedirect regression', () => {
     });
     const { container } = render(
       <ApolloProvider client={client}>
-        <Router history={history}>
-          <HomeViewRedirect
-            data={{ user: undefined, loading: true }}
-            history={history}
-          />
-        </Router>
+        <ThemeProvider theme={theme}>
+          <Router history={history}>
+            <HomeViewRedirect
+              data={{ user: undefined, loading: true }}
+              history={history}
+            />
+          </Router>
+        </ThemeProvider>
       </ApolloProvider>
     );
     // LoadingView should render some loading container
@@ -41,12 +45,14 @@ describe('HomeViewRedirect regression', () => {
     });
     render(
       <ApolloProvider client={client}>
-        <Router history={history}>
-          <HomeViewRedirect
-            data={{ user: null, loading: false }}
-            history={history}
-          />
-        </Router>
+        <ThemeProvider theme={theme}>
+          <Router history={history}>
+            <HomeViewRedirect
+              data={{ user: null, loading: false }}
+              history={history}
+            />
+          </Router>
+        </ThemeProvider>
       </ApolloProvider>
     );
 
@@ -67,9 +73,14 @@ describe('HomeViewRedirect regression', () => {
     });
     render(
       <ApolloProvider client={client}>
-        <Router history={history}>
-          <HomeViewRedirect data={{ user, loading: false }} history={history} />
-        </Router>
+        <ThemeProvider theme={theme}>
+          <Router history={history}>
+            <HomeViewRedirect
+              data={{ user, loading: false }}
+              history={history}
+            />
+          </Router>
+        </ThemeProvider>
       </ApolloProvider>
     );
 
@@ -91,9 +102,14 @@ describe('HomeViewRedirect regression', () => {
     });
     render(
       <ApolloProvider client={client}>
-        <Router history={history}>
-          <HomeViewRedirect data={{ user, loading: false }} history={history} />
-        </Router>
+        <ThemeProvider theme={theme}>
+          <Router history={history}>
+            <HomeViewRedirect
+              data={{ user, loading: false }}
+              history={history}
+            />
+          </Router>
+        </ThemeProvider>
       </ApolloProvider>
     );
 
