@@ -10,6 +10,8 @@ module.exports = {
   setupTestFrameworkScriptFile: path.resolve(__dirname, 'setupTests.js'),
   moduleNameMapper: {
     '^src/(.*)$': '<rootDir>/src/$1',
+    '^shared/(.*)$': '<rootDir>/shared/$1',
+    '^api/(.*)$': '<rootDir>/api/$1',
   },
   transform: {
     '^.+\\.(js|jsx)$': 'babel-jest',
