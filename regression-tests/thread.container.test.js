@@ -1,6 +1,16 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import ThreadContainer from '../src/views/thread/container';
+// Prevent styled-components from trying to style an undefined Link
+jest.mock('react-router-dom', () => {
+  const Actual = jest.requireActual('react-router-dom');
+  const Link = ({ children, ...props }) => <a {...props}>{children}</a>;
+  return {
+    ...Actual,
+    Link,
+    withRouter: Comp => props => <Comp {...props} />,
+  };
+});
 
 // Minimal mocks to satisfy ThreadContainer composition HOCs
 jest.mock('../src/components/withCurrentUser', () => ({
@@ -11,9 +21,6 @@ jest.mock('react-apollo', () => ({
 }));
 jest.mock('react-redux', () => ({
   connect: () => Comp => props => <Comp {...props} dispatch={() => {}} />,
-}));
-jest.mock('react-router-dom', () => ({
-  withRouter: Comp => props => <Comp {...props} />,
 }));
 jest.mock('../src/components/viewNetworkHandler', () => {
   const View = Comp => props => <Comp {...props} isLoading={false} />;

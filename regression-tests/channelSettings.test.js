@@ -10,7 +10,14 @@ const configureStore = () => {
   return { getState, dispatch, subscribe };
 };
 // Import the unwrapped component to avoid Apollo HOC requirement
-import UnwrappedChannelSettings from '../src/views/channelSettings/index.js';
+// Import the raw component class by bypassing the default composed export.
+// We require the file and grab the class before compose(connect, withRouter, getChannelByMatch, viewNetworkHandler).
+// eslint-disable-next-line import/no-commonjs
+const ChannelSettingsModule = require('../src/views/channelSettings/index.js');
+const UnwrappedChannelSettings =
+  ChannelSettingsModule.ChannelSettings ||
+  ChannelSettingsModule.default.WrappedComponent ||
+  ChannelSettingsModule.default;
 
 const mockStore = configureStore([]);
 

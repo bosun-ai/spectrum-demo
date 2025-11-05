@@ -5,6 +5,7 @@ import { createStore } from 'redux';
 import { MemoryRouter } from 'react-router';
 import { ApolloProvider } from 'react-apollo';
 import ApolloClient from 'apollo-client';
+import { ApolloLink } from 'apollo-link';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import UserSettings from '../src/views/userSettings/index';
 
@@ -17,7 +18,10 @@ const renderWithProviders = (
 ) => {
   const store = createStore(reducer, preloadedState);
   // Minimal Apollo Client to satisfy react-apollo context; network not used
-  const client = new ApolloClient({ cache: new InMemoryCache() });
+  const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: ApolloLink.empty(),
+  });
   return render(
     <Provider store={store}>
       <ApolloProvider client={client}>
