@@ -23,6 +23,13 @@ jest.mock('../src/components/viewNetworkHandler', () => {
   };
 });
 
+// Mock the graphql HOC export used by ThreadContainer importer
+jest.mock('../shared/graphql/queries/thread/getThread', () => ({
+  getThreadByMatch: Comp => props => (
+    <Comp {...props} data={props.data || { thread: null }} />
+  ),
+}));
+
 // Child components render simple placeholders to avoid complex internals
 jest.mock('../src/views/thread/components/stickyHeader', () => props => (
   <div data-testid="sticky-header">sticky</div>

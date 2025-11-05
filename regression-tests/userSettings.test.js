@@ -3,6 +3,9 @@ import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { MemoryRouter } from 'react-router';
+import { ApolloProvider } from 'react-apollo';
+import ApolloClient from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 import UserSettings from '../src/views/userSettings/index';
 
 // Minimal reducer to satisfy connect() usage; no-op dispatch
@@ -13,9 +16,13 @@ const renderWithProviders = (
   { route = '/settings', preloadedState = {} } = {}
 ) => {
   const store = createStore(reducer, preloadedState);
+  // Minimal Apollo Client to satisfy react-apollo context; network not used
+  const client = new ApolloClient({ cache: new InMemoryCache() });
   return render(
     <Provider store={store}>
-      <MemoryRouter initialEntries={[route]}>{ui}</MemoryRouter>
+      <ApolloProvider client={client}>
+        <MemoryRouter initialEntries={[route]}>{ui}</MemoryRouter>
+      </ApolloProvider>
     </Provider>
   );
 };

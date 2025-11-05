@@ -9,7 +9,8 @@ const configureStore = () => {
   const subscribe = () => () => {};
   return { getState, dispatch, subscribe };
 };
-import ChannelSettings from '../src/views/channelSettings';
+// Import the unwrapped component to avoid Apollo HOC requirement
+import UnwrappedChannelSettings from '../src/views/channelSettings/index.js';
 
 const mockStore = configureStore([]);
 
@@ -42,7 +43,7 @@ const baseChannel = {
 describe('ChannelSettings regression', () => {
   it('renders LoadingView when isLoading', () => {
     renderWithProviders(
-      <ChannelSettings
+      <UnwrappedChannelSettings
         data={{ channel: null }}
         match={{ params: { communitySlug: 'community' } }}
         location={{ pathname: '/community/channel/settings' }}
@@ -57,7 +58,7 @@ describe('ChannelSettings regression', () => {
 
   it('renders ErrorView when not loading and no channel', () => {
     renderWithProviders(
-      <ChannelSettings
+      <UnwrappedChannelSettings
         data={{ channel: null }}
         match={{ params: { communitySlug: 'community' } }}
         location={{ pathname: '/community/channel/settings' }}
@@ -81,7 +82,7 @@ describe('ChannelSettings regression', () => {
     };
 
     renderWithProviders(
-      <ChannelSettings
+      <UnwrappedChannelSettings
         data={{ channel }}
         match={{ params: { communitySlug: 'community' } }}
         location={{ pathname: '/community/channel/settings' }}
@@ -105,7 +106,7 @@ describe('ChannelSettings regression', () => {
     };
 
     renderWithProviders(
-      <ChannelSettings
+      <UnwrappedChannelSettings
         data={{ channel }}
         match={{ params: { communitySlug: 'community' } }}
         location={{ pathname: '/community/channel/settings' }}
