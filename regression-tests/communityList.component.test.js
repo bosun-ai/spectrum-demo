@@ -28,9 +28,9 @@ describe('CommunityList regression', () => {
         </MemoryRouter>
       </ThemeProvider>
     );
-    // Loading component should be present
-    const loadingText = screen.getByText(/loading/i);
-    expect(loadingText).toBeInTheDocument();
+    // Loading component renders a spinner inside container
+    const spinner = document.querySelector('[class*="Spinner"]');
+    expect(spinner).toBeTruthy();
   });
 
   it('renders explore button when no communities', () => {
