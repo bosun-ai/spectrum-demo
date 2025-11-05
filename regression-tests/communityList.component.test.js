@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import CommunityList from '../src/views/user/components/communityList';
+import { CommunityList } from '../src/views/user/components/communityList';
 
 // Helper: build props shape expected by CommunityList
 const buildProps = ({ loading = false, edges = [] } = {}) => ({
@@ -19,22 +19,14 @@ const buildProps = ({ loading = false, edges = [] } = {}) => ({
 
 describe('CommunityList regression', () => {
   it('renders loading state when data.loading', () => {
-    render(
-      <MemoryRouter>
-        <CommunityList {...buildProps({ loading: true })} />
-      </MemoryRouter>
-    );
+    render(<CommunityList {...buildProps({ loading: true })} />);
     // Loading component should be present
     const loadingText = screen.getByText(/loading/i);
     expect(loadingText).toBeInTheDocument();
   });
 
   it('renders explore button when no communities', () => {
-    render(
-      <MemoryRouter>
-        <CommunityList {...buildProps({ edges: [] })} />
-      </MemoryRouter>
-    );
+    render(<CommunityList {...buildProps({ edges: [] })} />);
     const explore = screen.getByRole('link', { name: /explore communities/i });
     expect(explore).toHaveAttribute('href', '/explore');
   });
@@ -46,11 +38,9 @@ describe('CommunityList regression', () => {
       { id: 'c2', name: 'Beta', profilePhoto: 'beta.png' },
     ];
     render(
-      <MemoryRouter>
-        <CommunityList
-          {...buildProps({ edges: communities.map(c => edge(c)) })}
-        />
-      </MemoryRouter>
+      <CommunityList
+        {...buildProps({ edges: communities.map(c => edge(c)) })}
+      />
     );
 
     // CommunityListItem renders names; assert they appear
