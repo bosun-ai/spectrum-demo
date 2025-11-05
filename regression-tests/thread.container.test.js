@@ -60,12 +60,13 @@ jest.mock('../src/components/error', () => ({
 // Layout components render children directly
 jest.mock('../src/components/layout', () => ({
   ViewGrid: ({ children, ...rest }) => (
-    <div data-cy="thread-view">{children}</div>
+    <div data-cy={rest['data-cy'] || 'thread-view'}>{children}</div>
   ),
   SecondaryPrimaryColumnGrid: ({ children }) => <div>{children}</div>,
   PrimaryColumn: ({ children }) => <div>{children}</div>,
   SecondaryColumn: ({ children }) => <div>{children}</div>,
   SingleColumnGrid: ({ children }) => <div>{children}</div>,
+  CenteredGrid: ({ children }) => <div>{children}</div>,
 }));
 
 // Titlebar action not relevant for render assertions

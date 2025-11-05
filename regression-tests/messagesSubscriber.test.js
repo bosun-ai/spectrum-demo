@@ -1,6 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
+import { ApolloProvider } from 'react-apollo';
+import { client } from '../shared/graphql';
 import Messages from '../src/views/thread/components/messagesSubscriber';
 
 // Helper to provide minimal required DOM for scroll behavior
@@ -48,18 +50,20 @@ describe('MessagesSubscriber regression', () => {
   it('renders NullMessages when no edges', () => {
     const data = { loading: false, thread: buildThread({ edges: [] }) };
     render(
-      <MemoryRouter>
-        <Messages
-          isWatercooler={false}
-          data={data}
-          loadPreviousPage={jest.fn()}
-          loadNextPage={jest.fn()}
-          location={{ pathname: '/thread/abc', search: '' }}
-          isLoading={false}
-          isFetchingMore={false}
-          hasError={false}
-        />
-      </MemoryRouter>
+      <ApolloProvider client={client}>
+        <MemoryRouter>
+          <Messages
+            isWatercooler={false}
+            data={data}
+            loadPreviousPage={jest.fn()}
+            loadNextPage={jest.fn()}
+            location={{ pathname: '/thread/abc', search: '' }}
+            isLoading={false}
+            isFetchingMore={false}
+            hasError={false}
+          />
+        </MemoryRouter>
+      </ApolloProvider>
     );
     // NullMessages renders a simple placeholder; assert fragment exists by text
     // The component imports NullMessages from './nullMessages' which displays a prompt.
@@ -79,18 +83,20 @@ describe('MessagesSubscriber regression', () => {
     });
     const data = { loading: false, thread };
     render(
-      <MemoryRouter>
-        <Messages
-          isWatercooler={false}
-          data={data}
-          loadPreviousPage={jest.fn()}
-          loadNextPage={jest.fn()}
-          location={{ pathname: '/thread/abc', search: '' }}
-          isLoading={false}
-          isFetchingMore={false}
-          hasError={false}
-        />
-      </MemoryRouter>
+      <ApolloProvider client={client}>
+        <MemoryRouter>
+          <Messages
+            isWatercooler={false}
+            data={data}
+            loadPreviousPage={jest.fn()}
+            loadNextPage={jest.fn()}
+            location={{ pathname: '/thread/abc', search: '' }}
+            isLoading={false}
+            isFetchingMore={false}
+            hasError={false}
+          />
+        </MemoryRouter>
+      </ApolloProvider>
     );
 
     // NextPageButton labels
@@ -103,18 +109,20 @@ describe('MessagesSubscriber regression', () => {
 
   it('shows loading state when isLoading and no thread', () => {
     render(
-      <MemoryRouter>
-        <Messages
-          isWatercooler={false}
-          data={{ loading: true, thread: null }}
-          loadPreviousPage={jest.fn()}
-          loadNextPage={jest.fn()}
-          location={{ pathname: '/thread/abc', search: '' }}
-          isLoading={true}
-          isFetchingMore={false}
-          hasError={false}
-        />
-      </MemoryRouter>
+      <ApolloProvider client={client}>
+        <MemoryRouter>
+          <Messages
+            isWatercooler={false}
+            data={{ loading: true, thread: null }}
+            loadPreviousPage={jest.fn()}
+            loadNextPage={jest.fn()}
+            location={{ pathname: '/thread/abc', search: '' }}
+            isLoading={true}
+            isFetchingMore={false}
+            hasError={false}
+          />
+        </MemoryRouter>
+      </ApolloProvider>
     );
     // Loading component renders an element with role "progressbar" if styled; fallback: check by title attribute not available
     // Be less strict: ensure one of the pagination labels is not present and DOM exists
