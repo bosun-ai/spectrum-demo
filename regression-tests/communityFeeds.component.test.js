@@ -54,12 +54,9 @@ jest.mock('../src/components/withCurrentUser', () => ({
 
 // Helper to render with router and initial search params
 const renderWithRouter = (ui, { route = '/' } = {}) => {
-  // JSDOM requires an absolute URL for pushState; use a dummy origin
-  const absolute = route.startsWith('http')
-    ? route
-    : `http://localhost${route.startsWith('/') ? '' : '/'}${route}`;
-  window.history.pushState({}, 'Test page', absolute);
-  return render(<MemoryRouter initialEntries={[absolute]}>{ui}</MemoryRouter>);
+  // Use MemoryRouter with initialEntries; avoid touching window.history directly
+  const entry = route.startsWith('/') ? route : `/${route}`;
+  return render(<MemoryRouter initialEntries={[entry]}>{ui}</MemoryRouter>);
 };
 
 describe('CommunityFeeds regression', () => {

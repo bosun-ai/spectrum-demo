@@ -56,11 +56,31 @@ describe('AuthViewHandler regression', () => {
   });
 
   it('renders NewUserOnboarding when user exists without username', () => {
-    renderWithProps({ user: { id: 'u1', username: null } });
-    // The NewUserOnboarding view renders a heading or container; simplest check by text from component may vary
-    // Fallback: ensure children(false/true) is not rendered; expect something in the tree
-    // We assert that authed children is not present and a component mounted
-    expect(screen.queryByText(/authed:/)).toBeNull();
+    // Mock NewUserOnboarding to avoid HOCs (Apollo/Redux) requirements
+    jest.doMock('../src/views/newUserOnboarding', () => () => (
+      <div data-testid="new-user-onboarding">onboarding</div>
+    ));
+    const Module = require('../src/views/authViewHandler/index.js');
+    const Raw =
+      Module.default && Module.default.WrappedComponent
+        ? Module.default.WrappedComponent
+        : Module.AuthViewHandler || Module.default;
+
+    const history = { replace: jest.fn() };
+    const location = { pathname: '/' };
+    render(
+      <MemoryRouter>
+        <Raw
+          history={history}
+          location={location}
+          editUser={jest.fn()}
+          data={{ user: { id: 'u1', username: null }, loading: false }}
+        >
+          {authed => <div>authed:{String(authed)}</div>}
+        </Raw>
+      </MemoryRouter>
+    );
+    expect(screen.getByTestId('new-user-onboarding')).toBeInTheDocument();
   });
 
   it('calls children(true) when user has id and username', () => {

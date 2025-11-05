@@ -24,15 +24,25 @@ jest.mock('shared/graphql/queries/community/getCommunity', () => {
   };
 });
 jest.mock('react-redux', () => {
-  return { connect: function() { return function(Comp) { return Comp; }; } };
+  return {
+    connect: function() {
+      return function(Comp) {
+        return Comp;
+      };
+    },
+  };
 });
 
 // Mock child components used by CommunityView to simple markers
 jest.mock('src/views/viewHelpers', () => {
   const ReactLocal = require('react');
   return {
-    ErrorView: function() { return ReactLocal.createElement('div', { 'data-testid': 'error-view' }); },
-    LoadingView: function() { return ReactLocal.createElement('div', { 'data-testid': 'loading-view' }); },
+    ErrorView: function() {
+      return ReactLocal.createElement('div', { 'data-testid': 'error-view' });
+    },
+    LoadingView: function() {
+      return ReactLocal.createElement('div', { 'data-testid': 'loading-view' });
+    },
   };
 });
 jest.mock('src/views/login', () => {
@@ -40,7 +50,11 @@ jest.mock('src/views/login', () => {
   return {
     __esModule: true,
     default: function Login({ redirectPath }) {
-      return ReactLocal.createElement('div', { 'data-testid': 'login-view' }, redirectPath);
+      return ReactLocal.createElement(
+        'div',
+        { 'data-testid': 'login-view' },
+        redirectPath
+      );
     },
   };
 });
@@ -48,7 +62,11 @@ jest.mock('src/views/community/containers/signedIn', () => {
   const ReactLocal = require('react');
   return {
     SignedIn: function SignedIn({ community }) {
-      return ReactLocal.createElement('div', { 'data-testid': 'signed-in' }, community && community.slug);
+      return ReactLocal.createElement(
+        'div',
+        { 'data-testid': 'signed-in' },
+        community && community.slug
+      );
     },
   };
 });
@@ -56,8 +74,21 @@ jest.mock('src/views/community/containers/privateCommunity', () => {
   const ReactLocal = require('react');
   return {
     PrivateCommunity: function PrivateCommunity({ community }) {
-      return ReactLocal.createElement('div', { 'data-testid': 'private-community' }, community && community.slug);
+      return ReactLocal.createElement(
+        'div',
+        { 'data-testid': 'private-community' },
+        community && community.slug
+      );
     },
+  };
+});
+
+// Mock recompose compose to simply apply HOCs left-to-right, returning base component
+jest.mock('recompose/compose', () => {
+  return function compose() {
+    return function(Comp) {
+      return Comp;
+    };
   };
 });
 
