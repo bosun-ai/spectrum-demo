@@ -7,6 +7,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { createHttpLink } from 'apollo-link-http';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
+import { MemoryRouter } from 'react-router';
 
 // Minimal wrapper props to render the settings view
 const baseProps = {
@@ -30,7 +31,9 @@ describe('CommunityMembersSettings regression', () => {
     render(
       <Provider store={store}>
         <ApolloProvider client={client}>
-          <CommunityMembersSettings {...baseProps} community={null} />
+          <MemoryRouter>
+            <CommunityMembersSettings {...baseProps} community={null} />
+          </MemoryRouter>
         </ApolloProvider>
       </Provider>
     );
@@ -47,7 +50,9 @@ describe('CommunityMembersSettings regression', () => {
     render(
       <Provider store={store}>
         <ApolloProvider client={client}>
-          <CommunityMembersSettings {...baseProps} community={community} />
+          <MemoryRouter>
+            <CommunityMembersSettings {...baseProps} community={community} />
+          </MemoryRouter>
         </ApolloProvider>
       </Provider>
     );
