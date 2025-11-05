@@ -54,8 +54,12 @@ jest.mock('../src/components/withCurrentUser', () => ({
 
 // Helper to render with router and initial search params
 const renderWithRouter = (ui, { route = '/' } = {}) => {
-  window.history.pushState({}, 'Test page', route);
-  return render(<MemoryRouter initialEntries={[route]}>{ui}</MemoryRouter>);
+  // JSDOM requires an absolute URL for pushState; use a dummy origin
+  const absolute = route.startsWith('http')
+    ? route
+    : `http://localhost${route.startsWith('/') ? '' : '/'}${route}`;
+  window.history.pushState({}, 'Test page', absolute);
+  return render(<MemoryRouter initialEntries={[absolute]}>{ui}</MemoryRouter>);
 };
 
 describe('CommunityFeeds regression', () => {
@@ -107,7 +111,8 @@ describe('CommunityFeeds regression', () => {
   });
 
   it('clicking segments switches the tab and updates rendered feed', async () => {
-    const user = userEvent.setup();
+    // user-event v12 used in this repo exposes fireEvent-like API without setup
+    const user = userEvent;
     renderWithRouter(<CommunityFeeds community={baseCommunity} />, {
       route: '/community?tab=members',
     });

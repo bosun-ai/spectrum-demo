@@ -6,42 +6,60 @@ const { MemoryRouter } = require('react-router');
 
 // Import the unconnected component by requiring default and accessing the composed result
 // We will mock HOCs to pass props directly and avoid network calls.
-jest.mock('src/components/viewNetworkHandler', () => props =>
-  props.children || null
-);
-jest.mock('src/components/withCurrentUser', () => Comp => Comp);
-jest.mock('shared/graphql/queries/community/getCommunity', () => ({
-  getCommunityByMatch: Comp => Comp,
-}));
-jest.mock('react-redux', () => ({ connect: () => Comp => Comp }));
+jest.mock('src/components/viewNetworkHandler', () => {
+  return function ViewNetworkHandler(props) {
+    return props.children || null;
+  };
+});
+jest.mock('src/components/withCurrentUser', () => {
+  return function withCurrentUser(Comp) {
+    return Comp;
+  };
+});
+jest.mock('shared/graphql/queries/community/getCommunity', () => {
+  return {
+    getCommunityByMatch: function(Comp) {
+      return Comp;
+    },
+  };
+});
+jest.mock('react-redux', () => {
+  return { connect: function() { return function(Comp) { return Comp; }; } };
+});
 
 // Mock child components used by CommunityView to simple markers
-jest.mock('src/views/viewHelpers', () => ({
-  ErrorView: () => React.createElement('div', { 'data-testid': 'error-view' }),
-  LoadingView: () =>
-    React.createElement('div', { 'data-testid': 'loading-view' }),
-}));
-jest.mock('src/views/login', () => ({
-  __esModule: true,
-  default: ({ redirectPath }) =>
-    React.createElement('div', { 'data-testid': 'login-view' }, redirectPath),
-}));
-jest.mock('src/views/community/containers/signedIn', () => ({
-  SignedIn: ({ community }) =>
-    React.createElement(
-      'div',
-      { 'data-testid': 'signed-in' },
-      community && community.slug
-    ),
-}));
-jest.mock('src/views/community/containers/privateCommunity', () => ({
-  PrivateCommunity: ({ community }) =>
-    React.createElement(
-      'div',
-      { 'data-testid': 'private-community' },
-      community && community.slug
-    ),
-}));
+jest.mock('src/views/viewHelpers', () => {
+  const ReactLocal = require('react');
+  return {
+    ErrorView: function() { return ReactLocal.createElement('div', { 'data-testid': 'error-view' }); },
+    LoadingView: function() { return ReactLocal.createElement('div', { 'data-testid': 'loading-view' }); },
+  };
+});
+jest.mock('src/views/login', () => {
+  const ReactLocal = require('react');
+  return {
+    __esModule: true,
+    default: function Login({ redirectPath }) {
+      return ReactLocal.createElement('div', { 'data-testid': 'login-view' }, redirectPath);
+    },
+  };
+});
+jest.mock('src/views/community/containers/signedIn', () => {
+  const ReactLocal = require('react');
+  return {
+    SignedIn: function SignedIn({ community }) {
+      return ReactLocal.createElement('div', { 'data-testid': 'signed-in' }, community && community.slug);
+    },
+  };
+});
+jest.mock('src/views/community/containers/privateCommunity', () => {
+  const ReactLocal = require('react');
+  return {
+    PrivateCommunity: function PrivateCommunity({ community }) {
+      return ReactLocal.createElement('div', { 'data-testid': 'private-community' }, community && community.slug);
+    },
+  };
+});
 
 const CommunityView = require('src/views/community').default;
 

@@ -1,7 +1,20 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import AuthViewHandler from '../src/views/authViewHandler';
+// Import the raw component by reaching into the file and using named export pattern.
+// The module exports default wrapped component; to test without Apollo, require the file and access the class.
+const AuthModule = require('../src/views/authViewHandler/index.js');
+const AuthViewHandler =
+  AuthModule.__esModule && AuthModule.default
+    ? AuthModule.default.WrappedComponent ||
+      AuthModule.AuthViewHandler ||
+      AuthModule.default
+    : AuthModule.AuthViewHandler || AuthModule;
+// Fallback: if wrapped default exposes `WrappedComponent`, prefer it, else assume exported class name
+const Unwrapped =
+  AuthModule.default && AuthModule.default.WrappedComponent
+    ? AuthModule.default.WrappedComponent
+    : AuthViewHandler;
 
 // Helper: render with mocked HOCs props injection
 const renderWithProps = ({
@@ -16,14 +29,14 @@ const renderWithProps = ({
 
   const ui = (
     <MemoryRouter initialEntries={[pathname]}>
-      <AuthViewHandler
+      <Unwrapped
         history={history}
         location={location}
         editUser={editUser}
         data={{ user, loading }}
       >
         {children}
-      </AuthViewHandler>
+      </Unwrapped>
     </MemoryRouter>
   );
 
@@ -68,14 +81,14 @@ describe('AuthViewHandler regression', () => {
     const location = { pathname: '/home' };
     const next = (
       <MemoryRouter initialEntries={['/home']}>
-        <AuthViewHandler
+        <Unwrapped
           history={history}
           location={location}
           editUser={editUser}
           data={{ user: userNoTz, loading: false }}
         >
           {authed => <div>authed:{String(authed)}</div>}
-        </AuthViewHandler>
+        </Unwrapped>
       </MemoryRouter>
     );
     rerender(next);
