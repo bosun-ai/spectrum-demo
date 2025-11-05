@@ -5,6 +5,8 @@ import { ApolloProvider } from 'react-apollo';
 import ApolloClient from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { createHttpLink } from 'apollo-link-http';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 
 // Minimal wrapper props to render the settings view
 const baseProps = {
@@ -20,12 +22,17 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+// Minimal Redux store to satisfy react-redux connect HOC
+const store = createStore((state = {}) => state);
+
 describe('CommunityMembersSettings regression', () => {
   it('renders ErrorView when no community provided', () => {
     render(
-      <ApolloProvider client={client}>
-        <CommunityMembersSettings {...baseProps} community={null} />
-      </ApolloProvider>
+      <Provider store={store}>
+        <ApolloProvider client={client}>
+          <CommunityMembersSettings {...baseProps} community={null} />
+        </ApolloProvider>
+      </Provider>
     );
     // ErrorView renders a fallback role heading text; assert presence by generic text
     // We expect no "Community Members" heading when community is missing
@@ -38,9 +45,11 @@ describe('CommunityMembersSettings regression', () => {
       metaData: { members: 5 },
     };
     render(
-      <ApolloProvider client={client}>
-        <CommunityMembersSettings {...baseProps} community={community} />
-      </ApolloProvider>
+      <Provider store={store}>
+        <ApolloProvider client={client}>
+          <CommunityMembersSettings {...baseProps} community={community} />
+        </ApolloProvider>
+      </Provider>
     );
     // Heading comes from inner CommunityMembers component
     expect(screen.getByText(/community members · 5/i)).toBeInTheDocument();
