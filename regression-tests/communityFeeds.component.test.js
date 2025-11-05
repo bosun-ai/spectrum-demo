@@ -3,6 +3,17 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { CommunityFeeds } from '../src/views/community/components/communityFeeds';
 import { MemoryRouter } from 'react-router-dom';
+// Provide a simple sessionStorage mock for jsdom
+beforeAll(() => {
+  const store = new Map();
+  // $FlowFixMe
+  global.sessionStorage = {
+    getItem: key => (store.has(key) ? store.get(key) : null),
+    setItem: (key, val) => store.set(key, String(val)),
+    removeItem: key => store.delete(key),
+    clear: () => store.clear(),
+  };
+});
 
 // Minimal mocks for child components used inside CommunityFeeds
 jest.mock('../src/views/thread/components/messagesSubscriber', () => ({
