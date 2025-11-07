@@ -1,5 +1,5 @@
 module.exports = {
-  testMatch: ['**/regression-tests/**/*.test.js'],
+  testRegex: 'regression-tests/.*\\.test\\.js$',
   testEnvironment: 'jsdom',
   setupTestFrameworkScriptFile: '<rootDir>/regression-tests/setupTests.js',
   moduleFileExtensions: ['js', 'jsx', 'json'],
