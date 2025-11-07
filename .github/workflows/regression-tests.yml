@@ -1,0 +1,37 @@
+name: Regression Tests
+
+on:
+  push:
+    branches: [ alpha ]
+  pull_request:
+    branches: [ alpha ]
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup NVM and Node
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "/usr/local/share/nvm/nvm.sh" ] && . "/usr/local/share/nvm/nvm.sh" || true
+          [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+          nvm install
+          nvm use
+          node -v
+
+      - name: Install dependencies (Yarn)
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+          nvm use
+          yarn install --frozen-lockfile
+
+      - name: Run regression tests
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+          nvm use
+          npm run jest -- --config regression-tests/jest.config.js --runInBand
