@@ -2,6 +2,8 @@
 import 'raf/polyfill';
 import 'isomorphic-fetch';
 import '@testing-library/jest-dom/extend-expect';
+// Use modern fake timers to allow flushing setTimeouts in tests
+jest.useFakeTimers();
 
 // MSW server setup
 import { setupServer } from 'msw/node';
