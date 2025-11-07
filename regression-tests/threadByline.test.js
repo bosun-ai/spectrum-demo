@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { MockedProvider } from '@apollo/react-testing';
 import { ThemeProvider } from 'styled-components';
 import theme from '../shared/theme';
 import ThreadByline from '../src/views/thread/components/threadByline';
@@ -8,7 +9,9 @@ import ThreadByline from '../src/views/thread/components/threadByline';
 const renderWithTheme = ui =>
   render(
     <MemoryRouter>
-      <ThemeProvider theme={theme}>{ui}</ThemeProvider>
+      <MockedProvider mocks={[]} addTypename={false}>
+        <ThemeProvider theme={theme}>{ui}</ThemeProvider>
+      </MockedProvider>
     </MemoryRouter>
   );
 
@@ -30,9 +33,11 @@ describe('ThreadByline', () => {
     expect(screen.getByText('Jane Doe')).toBeInTheDocument();
     // Username rendered with @ prefix
     expect(screen.getByText('@janedoe')).toBeInTheDocument();
-    // Link to the user profile
-    const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('href', '/users/janedoe');
+    // Two links may exist (avatar link + name link). Ensure one matches expected href.
+    const links = screen.getAllByRole('link');
+    expect(links.some(l => l.getAttribute('href') === '/users/janedoe')).toBe(
+      true
+    );
   });
 
   it('renders without link when username is missing', () => {
@@ -59,7 +64,9 @@ describe('ThreadByline', () => {
     // Supporter label should appear
     expect(screen.getByText(/Supporter/i)).toBeInTheDocument();
     // Link remains present
-    const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('href', '/users/janedoe');
+    const links = screen.getAllByRole('link');
+    expect(links.some(l => l.getAttribute('href') === '/users/janedoe')).toBe(
+      true
+    );
   });
 });
