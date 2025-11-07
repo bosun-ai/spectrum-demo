@@ -63,8 +63,9 @@ describe('CommunityMembersSettings', () => {
       <CommunityMembersSettings {...props} />
     );
 
-    // Due to withCurrentUser query without mocks, ErrorBoundary fallback may render
-    // Verify the settings error fallback appears
-    expect(getByText(/Refresh the page/i)).toBeInTheDocument();
+    // Verify the header and tabs render
+    expect(getByText(/Community Members/i)).toBeInTheDocument();
+    expect(getByText(/Members/i)).toBeInTheDocument();
+    expect(getByText(/Team/i)).toBeInTheDocument();
   });
 });

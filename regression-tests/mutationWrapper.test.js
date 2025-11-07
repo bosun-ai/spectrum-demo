@@ -14,9 +14,9 @@ const renderWithStore = (ui, { initialState } = {}) => {
 };
 
 const renderContent = state => (
-  <>
+  <React.Fragment>
     <span>{state.isLoading ? 'Loading…' : 'Idle'}</span>
-  </>
+  </React.Fragment>
 );
 
 describe('MutationWrapper', () => {
