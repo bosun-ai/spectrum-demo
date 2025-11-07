@@ -4,10 +4,15 @@ import { ThemeProvider } from 'styled-components';
 import theme from '../shared/theme';
 // Import the unconnected component via default export path
 import CommunityList from '../src/views/user/components/communityList';
+import { MemoryRouter } from 'react-router';
 
-// Helper to render with theme
-const renderWithTheme = ui =>
-  render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
+// Helper to render with theme + router (for withRouter HOC)
+const renderWithProviders = ui =>
+  render(
+    <MemoryRouter>
+      <ThemeProvider theme={theme}>{ui}</ThemeProvider>
+    </MemoryRouter>
+  );
 
 const baseProps = {
   // data prop is injected by getUserCommunityConnection HOC; we simulate it
@@ -18,7 +23,7 @@ const baseProps = {
 
 describe('CommunityList', () => {
   it('renders Loading when data.loading is true', () => {
-    renderWithTheme(
+    renderWithProviders(
       <CommunityList
         {...baseProps}
         data={{ ...baseProps.data, loading: true }}
@@ -30,7 +35,7 @@ describe('CommunityList', () => {
   });
 
   it('renders explore button when no communities', () => {
-    renderWithTheme(<CommunityList {...baseProps} />);
+    renderWithProviders(<CommunityList {...baseProps} />);
     expect(screen.getByText(/Explore communities/i)).toBeInTheDocument();
   });
 
@@ -44,7 +49,7 @@ describe('CommunityList', () => {
       data: { loading: false, user: { communityConnection: { edges } } },
     };
 
-    renderWithTheme(<CommunityList {...props} />);
+    renderWithProviders(<CommunityList {...props} />);
 
     // CommunityListItem renders the community name; assert both are present
     expect(screen.getByText('Community One')).toBeInTheDocument();
