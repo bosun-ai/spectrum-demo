@@ -5,6 +5,10 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import theme from '../shared/theme';
 import ActionBar from '../src/views/thread/components/actionBar';
+import { ApolloProvider } from 'react-apollo';
+import ApolloClient from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloLink } from 'apollo-link';
 
 // Minimal thread shape based on usage: only passed through to ActionsDropdown
 const mockThread = {
@@ -16,11 +20,18 @@ describe('ActionBar component', () => {
   it('renders the ActionsDropdown inside the ActionBarContainer', () => {
     // Minimal Redux store to satisfy connected component
     const store = createStore((state = {}) => state);
+    // Minimal Apollo client to satisfy withCurrentUser HOC
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: ApolloLink.empty(),
+    });
     const { container } = render(
       <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          <ActionBar thread={mockThread} />
-        </ThemeProvider>
+        <ApolloProvider client={client}>
+          <ThemeProvider theme={theme}>
+            <ActionBar thread={mockThread} />
+          </ThemeProvider>
+        </ApolloProvider>
       </Provider>
     );
 
