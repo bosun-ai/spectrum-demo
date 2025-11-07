@@ -1,6 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 import theme from '../shared/theme';
 import ActionBar from '../src/views/thread/components/actionBar';
 
@@ -12,11 +14,14 @@ const mockThread = {
 
 describe('ActionBar component', () => {
   it('renders the ActionsDropdown inside the ActionBarContainer', () => {
+    // Minimal Redux store to satisfy connected component
+    const store = createStore((state = {}) => state);
     const { container } = render(
-      <ThemeProvider theme={theme}>
-        {/* ActionBar is connected; provide minimal props via wrapping with Provider-less connect */}
-        <ActionBar thread={mockThread} />
-      </ThemeProvider>
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <ActionBar thread={mockThread} />
+        </ThemeProvider>
+      </Provider>
     );
 
     // Assert the container exists
