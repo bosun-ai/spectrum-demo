@@ -1,8 +1,7 @@
 module.exports = {
-  roots: ['<rootDir>/regression-tests'],
+  testMatch: ['**/regression-tests/**/*.test.js'],
   testEnvironment: 'jsdom',
-  setupFilesAfterCleanup: [],
-  setupFilesAfterEnv: ['<rootDir>/regression-tests/setupTests.js'],
+  setupTestFrameworkScriptFile: '<rootDir>/regression-tests/setupTests.js',
   moduleFileExtensions: ['js', 'jsx', 'json'],
   transform: {
     '^.+\\.(js|jsx)$': 'babel-jest',
