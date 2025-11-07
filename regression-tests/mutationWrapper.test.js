@@ -69,7 +69,8 @@ describe('MutationWrapper', () => {
     fireEvent.click(screen.getByText('Idle'));
     expect(screen.getByText('Loading…')).toBeInTheDocument();
 
-    // Let rejection propagate through catch
+    // Let rejection propagate and React state update flush
+    await Promise.resolve();
     await Promise.resolve();
     // Also flush macrotasks queued by addToastWithTimeout's setTimeout
     jest.runOnlyPendingTimers();
