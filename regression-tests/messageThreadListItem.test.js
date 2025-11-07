@@ -80,6 +80,8 @@ describe('ListCardItemDirectMessageThread', () => {
     );
 
     // Should render "Grace Hopper and Alan Turing"
-    expect(screen.getByText(/Grace Hopper and Alan Turing/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Grace Hopper and Alan Turing/)
+    ).toBeInTheDocument();
   });
 });
