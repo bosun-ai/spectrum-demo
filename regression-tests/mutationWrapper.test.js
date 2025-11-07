@@ -46,10 +46,11 @@ describe('MutationWrapper', () => {
     // Verify success toast dispatched
     const actions = store.getActions();
     const successToast = actions.find(
-      a => a && a.type === 'ADD_TOAST' && a.toast && a.toast.type === 'success'
+      a =>
+        a && a.type === 'ADD_TOAST' && a.payload && a.payload.kind === 'success'
     );
     expect(successToast).toBeTruthy();
-    expect(successToast.toast && successToast.toast.message).toBe(
+    expect(successToast.payload && successToast.payload.message).toBe(
       'Saved permissions'
     );
   });
@@ -76,9 +77,10 @@ describe('MutationWrapper', () => {
 
     const actions = store.getActions();
     const errorToast = actions.find(
-      a => a && a.type === 'ADD_TOAST' && a.toast && a.toast.type === 'error'
+      a =>
+        a && a.type === 'ADD_TOAST' && a.payload && a.payload.kind === 'error'
     );
     expect(errorToast).toBeTruthy();
-    expect(errorToast.toast && errorToast.toast.message).toBe('Boom');
+    expect(errorToast.payload && errorToast.payload.message).toBe('Boom');
   });
 });
