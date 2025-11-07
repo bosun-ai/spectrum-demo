@@ -71,6 +71,8 @@ describe('MutationWrapper', () => {
 
     // Let rejection propagate through catch
     await Promise.resolve();
+    // Also flush macrotasks queued by addToastWithTimeout's setTimeout
+    jest.runOnlyPendingTimers();
 
     // Terminates back to idle
     expect(screen.getByText('Idle')).toBeInTheDocument();
