@@ -1,13 +1,18 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
+import { MemoryRouter } from 'react-router';
 import theme from '../shared/theme';
 // Import the component; it is exported as default composed HOC.
 import MessagesSubscriber from '../src/views/thread/components/messagesSubscriber';
 
 // Helper to render with theme
 const renderWithTheme = ui =>
-  render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
+  render(
+    <MemoryRouter>
+      <ThemeProvider theme={theme}>{ui}</ThemeProvider>
+    </MemoryRouter>
+  );
 
 describe('Thread MessagesSubscriber', () => {
   it('shows Loading when isLoading and no thread data', () => {
