@@ -3,6 +3,10 @@ import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { ThemeProvider } from 'styled-components';
+import { ApolloProvider } from 'react-apollo';
+import ApolloClient from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloLink } from 'apollo-link';
 import theme from '../shared/theme';
 import CommunityMembersSettings from '../src/views/communityMembers';
 
@@ -11,9 +15,15 @@ const reducer = (state = {}) => state;
 
 const renderWithProviders = ui => {
   const store = createStore(reducer);
+  const client = new ApolloClient({
+    link: ApolloLink.empty(),
+    cache: new InMemoryCache(),
+  });
   return render(
     <Provider store={store}>
-      <ThemeProvider theme={theme}>{ui}</ThemeProvider>
+      <ApolloProvider client={client}>
+        <ThemeProvider theme={theme}>{ui}</ThemeProvider>
+      </ApolloProvider>
     </Provider>
   );
 };
