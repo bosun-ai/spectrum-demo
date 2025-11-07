@@ -2,7 +2,15 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
 import theme from '../shared/theme';
-import MessagesWithData from '../src/views/directMessages/components/messages';
+// Import the unwrapped component to avoid Apollo/Redux context
+import { default as WrappedMessages } from '../src/views/directMessages/components/messages';
+const { MessagesWithData } = WrappedMessages.__Rewire__
+  ? { MessagesWithData: WrappedMessages.__get__('MessagesWithData') }
+  : {
+      MessagesWithData:
+        require('../src/views/directMessages/components/messages')
+          .MessagesWithData || WrappedMessages,
+    };
 
 // Helper to render with theme
 const renderWithTheme = ui =>
