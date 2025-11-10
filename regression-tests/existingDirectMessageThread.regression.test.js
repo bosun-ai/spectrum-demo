@@ -2,6 +2,16 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { ExistingThread } from '../src/views/directMessages/containers/existingThread';
+// Mock the connected titlebar to avoid Redux store requirements and complex styling
+jest.mock('../src/components/titlebar', () => ({
+  DesktopTitlebar: ({ title, titleIcon, rightAction }) => (
+    <div>
+      <span>{title}</span>
+      {titleIcon}
+      {rightAction}
+    </div>
+  ),
+}));
 
 // Helper to render with route params via MemoryRouter
 const renderWithRoute = (ui, { route = '/messages/thread/abc123' } = {}) => {
