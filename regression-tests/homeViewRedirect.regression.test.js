@@ -2,7 +2,9 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
-import HomeViewRedirect from '../src/views/homeViewRedirect';
+// Import the unwrapped component to avoid Apollo HOC requiring ApolloProvider
+import { __RewireAPI__ as HomeRewireAPI } from '../src/views/homeViewRedirect/index.js';
+const HomeViewRedirect = HomeRewireAPI.__get__('HomeViewRedirect');
 
 // Helper to render with router history
 const renderWithRouter = (ui, { history } = {}) => {
