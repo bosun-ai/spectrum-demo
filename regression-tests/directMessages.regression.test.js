@@ -4,6 +4,10 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { MemoryRouter, Route } from 'react-router-dom';
 import DirectMessages from '../src/views/directMessages/containers/index.js';
+import { ApolloProvider } from 'react-apollo';
+import ApolloClient from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { HttpLink } from 'apollo-link-http';
 
 // Minimal reducer to satisfy connected components used inside DirectMessages
 function reducer(
@@ -29,14 +33,22 @@ function renderWithProviders(
   { route = '/messages', path = '/messages/:threadId?' } = {}
 ) {
   const store = createStore(reducer);
+  // Create a minimal Apollo Client; network calls won't be made in this test
+  const client = new ApolloClient({
+    link: new HttpLink({ uri: '/graphql', fetch: window.fetch.bind(window) }),
+    cache: new InMemoryCache(),
+    ssrMode: true,
+  });
   return render(
     <Provider store={store}>
-      <MemoryRouter initialEntries={[route]}>
-        <Route
-          path={path}
-          render={routeProps => React.cloneElement(ui, { ...routeProps })}
-        />
-      </MemoryRouter>
+      <ApolloProvider client={client}>
+        <MemoryRouter initialEntries={[route]}>
+          <Route
+            path={path}
+            render={routeProps => React.cloneElement(ui, { ...routeProps })}
+          />
+        </MemoryRouter>
+      </ApolloProvider>
     </Provider>
   );
 }
