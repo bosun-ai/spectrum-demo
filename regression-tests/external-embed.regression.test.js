@@ -44,7 +44,9 @@ test('ExternalEmbed uses AspectRatio + EmbedComponent when aspectRatio provided'
   expect(iframe).toHaveAttribute('src', src);
 
   // The immediate wrapper should be the styled AspectRatio div
-  const aspectWrapper = iframe.parentElement?.parentElement; // EmbedComponent wraps iframe; AspectRatio wraps EmbedComponent
+  const embedComponentWrapper = iframe.parentElement; // styled(EmbedComponent) wrapper
+  const aspectWrapper =
+    embedComponentWrapper && embedComponentWrapper.parentElement; // AspectRatio wraps EmbedComponent
   expect(aspectWrapper).toBeInTheDocument();
   expect(aspectWrapper.style.height).toBe(`${height}px`);
 });
