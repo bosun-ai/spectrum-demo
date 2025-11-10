@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 
 // Import renderer factory
 import { createRenderer } from '../shared/clients/draft-js/renderer/index.js';
@@ -35,7 +36,7 @@ test('Embed ignores invalid external src', () => {
   const element = renderer.entities.embed([], data, { key: 'k2' });
   const { container } = render(element);
   // Should render nothing
-  expect(container).toBeEmptyDOMElement();
+  expect(container.firstChild).toBeNull();
 });
 
 test('LINK entity renders internal Link for Spectrum URLs', () => {
@@ -43,7 +44,7 @@ test('LINK entity renders internal Link for Spectrum URLs', () => {
   const children = renderNodeArray('Go to thread');
   const data = { url: 'https://spectrum.chat/mycommunity/thread/123' };
   const element = renderer.entities.LINK(children, data, { key: 'lk1' });
-  render(element);
+  render(<MemoryRouter>{element}</MemoryRouter>);
   // It should render a react-router Link, which appears as an anchor with href
   const anchor = screen.getByText(/go to thread/i).closest('a');
   expect(anchor).toBeInTheDocument();
