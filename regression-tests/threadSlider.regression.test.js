@@ -31,7 +31,6 @@ jest.mock('../src/components/icon', () => {
 
 // Regression: ensure overlay and close button trigger history.push to previousLocation
 test('ThreadSlider renders and closes via overlay and button', async () => {
-  const user = userEvent.setup();
   const previousLocation = {
     pathname: '/threads',
     search: '',
@@ -57,7 +56,7 @@ test('ThreadSlider renders and closes via overlay and button', async () => {
     .querySelector('[data-cy="overlay"]');
   expect(overlay).toBeInTheDocument();
 
-  await user.click(overlay);
+  await userEvent.click(overlay);
   expect(push).toHaveBeenCalledWith({
     ...previousLocation,
     state: { modal: false },
@@ -69,7 +68,7 @@ test('ThreadSlider renders and closes via overlay and button', async () => {
     .parentElement.querySelector('[data-cy="thread-slider-close"]');
   expect(closeBtn).toBeInTheDocument();
 
-  await user.click(closeBtn);
+  await userEvent.click(closeBtn);
   expect(push).toHaveBeenCalledTimes(2);
 });
 
