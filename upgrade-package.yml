@@ -5,12 +5,59 @@ inputs:
     description: The package to update
 
 steps:
-  - name: Install packages
-    run: . ~/.nvm/nvm.sh && npm install --legacy-peer-deps || true
+  - name: Determine Node.JS version
+    id: node_instructions
+    agent:
+      extends: coding_new
+      role: You determine the Node.JS version that is required for the project
+      instructions: |
+        Determine the Node.JS version that is required for the project.
+
+        Possible sources:
+
+        .nvmrc	Specifies the Node version for nvm (Node Version Manager)
+        .node-version	Similar purpose for other version managers.
+        package.json	Check for an "engines" field.
+        Dockerfile or CI/CD config	May specify a Node base image or version.
+
+        Be sure to check all options, in case there are multiple versions, pick the latest version.
+
+        When you have determined the Node.JS version, create a .nvmrc file with the version number.
+
+        Verify that you can run the version of node with NVM. Determine what command you need to run to verify this.
+
+        Then call stop with the instructions to prefix every command with `nvm use`, as each command is run as a script in a new shell.
+  
+  - name: Determine the package manager and install the packages
+    id: package_manager_instructions
+    agent:
+      extends: coding_new
+      role: You determine the package manager that is required for the project
+      instructions: |
+        Determine the package manager that is required for the project by looking at the lock files.
+
+        Run the necessary commands to install the packages. It could be that flags such as "--legacy-peer-deps" are required.
+
+        Remember that to use node you should follow these instructions: {{ outputs.node_instructions }}.
+
+        When you have succesfully installed the packages, call stop with instructions to use the package manager.
+  
+  # - name: Get current package version
+  #   id: source
+  #   run: . ~/.nvm/nvm.sh && npm list {{ inputs.package_name }} --depth=0 2>/dev/null | grep {{ inputs.package_name }} | awk '{print $2}' | sed 's/@//g'
+  #
   
   - name: Get current package version
     id: source
-    run: . ~/.nvm/nvm.sh && npm list {{ inputs.package_name }} --depth=0 2>/dev/null | grep {{ inputs.package_name }} | awk '{print $2}' | sed 's/@//g'
+    agent:
+      extends: coding_new
+      role: You identify the current version of the package {{ inputs.package_name }}
+      instructions: |
+        Use the repositories package manager and tooling available to you to identify the current version. Then stop with the last version.
+
+        Remember that you should follow these instructions to work with the package manager: {{ outputs.package_manager_instructions }}.
+
+        For example, if the identified target version is `0.11.0`, call stop with just that value. The value must be exactly the same as in the package manager.
 
   - name: Get target version
     id: target
@@ -27,6 +74,8 @@ steps:
         We *always* want to use the latest available patch version (the last digit).
 
         Use the repositories package manager and tooling available to you to identify the target version. Then stop with the last version.
+
+        Remember that you should follow these instructions to work with the package manager: {{ outputs.package_manager_instructions }}.
 
         For example, if the identified target version is `0.11.0`, call stop with just that value. The value must be exactly the same as in the package manager.
       toolboxes: ['repository_read', 'research', 'dangerous']
@@ -53,7 +102,9 @@ steps:
     agent:
       role: "Your task is to research each step needed to upgrade a package. You do this by searching the webfor an upgrade guide for each relevant version upgrade. Then for each upgrade guide, fetch all the possible changes necessary. The goal is to have a list of potential changes and checks needed for upgrading a package."
       extends: Default
-      instructions: "We are upgrading {{ inputs.package_name }} from version {{ outputs.source }} to version {{ outputs.target }}. Provide an upgrade guide. Start with creating a plan for what you will search for."
+      instructions: |
+        We are upgrading {{ inputs.package_name }} from version {{ outputs.source }} to version {{ outputs.target }}.
+        Provide an upgrade guide. Start with creating a plan for what you will search for.
       constraints:
         - "When you are done, respond in the stop tool with a single json array of instructions that need to be fixed. For each instructions, make sure it mentions the source and target version and a thorough explanation on the problem and instructions to fix."
         - "Example output: ['0.10 -> 0.11: <change instructions>', '0.11 -> 0.12: <other change instruction>']"
@@ -69,19 +120,23 @@ steps:
       extends: coding_new
       instructions: |
         Set up a regression test suite to ensure package upgrades don't break existing functionality.
-        
+
+        Consider that to use node you should follow these instructions: {{ outputs.node_instructions }}.
+        Consider that to use the package manager you should follow these instructions: {{ outputs.package_manager_instructions }}.
+
         1. Create a new directory called `regression-tests`. Add jest, react-testing-library, and msw to the project.
         2. The regression-tests directory should have its own jest.config.js file
         3. Find a simple React component in the project to generate the first regression test for
         4. Use Jest, React Testing Library, and Mock Service Worker (MSW) to implement the test.
         5. Make sure the versions of Jest, RTL and MSW are compatible with the React version in the project. If one of the tools complains they are not compatible, decrease their major version number and try again.
         6. Generate a complete, working regression test for that single component in the `regression-tests` directory.
-        7. Add a .github/workflows/regression-tests.yml file to the project that runs the regression tests.
+
+        When you are successful, call the stop tool with a 2-line explanation of how to run a regression test for a single component,
+         including an example command that incorporates the package manager instructions and/or node instructions.
       constraints:
         - "Use jest, react-testing-library, and msw (Mock Service Worker) for the test implementation"
         - "Choose a simple React component that has clear, testable behavior"
         - "Ensure the test actually runs and passes before completing"
-        - "When you are successful, call the stop tool with a 2-line explanation of how to run a regression test for a single component, including an example command"
 
   - name: Update pull request with regression setup
     agent:
@@ -104,6 +159,26 @@ steps:
           extends: create_or_update_pull_request
           with:
             draft: true
+
+  - name: Add regression test github workflow
+    agent:
+      extends: coding_new
+      instructions: |
+        Add a .github/workflows/regression-tests.yml file to the project that runs the regression tests.
+
+        Run the instructions from the workflow to verify that the workflow is set up correctly.
+
+        Consider that to use node you should follow these instructions: {{ outputs.node_instructions }}.
+        Consider that to use the package manager you should follow these instructions: {{ outputs.package_manager_instructions }}.
+
+        For reference, these are the instructions for running the regression tests:
+
+        {{ outputs.regression_setup }}
+      constraints:
+        - The workflow should run successfully
+        - The workflow should use the correct version of Node.JS
+        - The workflow should use the correct version of the package manager
+        - The workflow should run on push regardless of the branch name
 
   - name: Find all React components
     id: find_components
@@ -152,7 +227,13 @@ steps:
     agent:
       role: "Your task is to upgrade the requested package"
       extends: coding_new
-      instructions: "We are upgrading {{ inputs.package_name }} from version {{ outputs.source }} to version {{ outputs.target }}."
+      instructions: | 
+        We are upgrading {{ inputs.package_name }} from version {{ outputs.source }} to version {{ outputs.target }}.
+
+        Use the package manager and node instructions from the previous steps to ensure consistency:
+
+        {{ outputs.package_manager_instructions }}
+        {{ outputs.node_instructions }}
       constraints:
         - "Use npm to upgrade the requested package. If that introduces conflicts, fix it."
         - "If pinned versions cause problems, unpin them."
@@ -177,6 +258,11 @@ steps:
         extends: coding_new
         instructions: >
           We are upgrading {{ inputs.package_name }} from version {{ outputs.source }} to version {{ outputs.target }}.
+
+          Use the package manager and node instructions from the previous steps to ensure consistency:
+
+          {{ outputs.package_manager_instructions }}
+          {{ outputs.node_instructions }}
 
           You need to upgrade this repo based on the folling upgrade instruction:
             {{ for_each.value }}
