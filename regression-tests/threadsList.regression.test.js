@@ -85,6 +85,8 @@ test('renders LoadingDMWithVisibility when hasNextPage and triggers fetchMore on
     threadLastActive: new Date().toISOString(),
   };
   const dmData = buildDmData({ edges: [thread], hasNextPage: true });
+  // Ensure desktop width so paginate isn't blocked
+  Object.defineProperty(window, 'innerWidth', { writable: true, value: 1024 });
 
   renderWithProviders(
     <ThreadsList
