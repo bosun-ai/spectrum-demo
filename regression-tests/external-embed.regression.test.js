@@ -48,7 +48,10 @@ test('ExternalEmbed uses AspectRatio + EmbedComponent when aspectRatio provided'
   const aspectWrapper =
     embedComponentWrapper && embedComponentWrapper.parentElement; // AspectRatio wraps EmbedComponent
   expect(aspectWrapper).toBeInTheDocument();
+  // Height is applied inline to AspectRatio via style prop
   expect(aspectWrapper.style.height).toBe(`${height}px`);
+  // AspectRatio uses padding-bottom based on ratio prop; ensure present
+  expect(aspectWrapper.style.paddingBottom).toBe(ratio);
 });
 
 test('ExternalEmbed returns null when src/url missing', () => {
