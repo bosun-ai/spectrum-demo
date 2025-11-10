@@ -208,7 +208,11 @@ export const ShimmerLine = styled.span`
   background: linear-gradient(
     to right,
     ${theme.bg.wash} 10%,
-    ${({ theme }) => hexa(theme.generic.default, 0.65)} 20%,
+    ${({ theme }) =>
+      hexa(
+        (theme && theme.generic && theme.generic.default) || '#999999',
+        0.65
+      )} 20%,
     ${theme.bg.wash} 30%
   );
   ${/* background-size: 100%; */ ''} animation-name: ${placeHolderShimmer};

@@ -22,7 +22,10 @@ import type {
   InternalEmbedData,
 } from '../../../draft-utils/add-embeds-to-draft-js';
 
-const ExternalEmbed = (props: { ...ExternalEmbedData, src?: string }) => {
+export const ExternalEmbed = (props: {
+  ...ExternalEmbedData,
+  src?: string,
+}) => {
   let { aspectRatio, url, src, width = '100%', height = 200 } = props;
 
   if (!src && url) src = url;

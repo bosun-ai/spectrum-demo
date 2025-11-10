@@ -170,3 +170,6 @@ export default compose(
   withCurrentUser,
   viewNetworkHandler
 )(ExistingThread);
+
+// Also export the unconnected component for testing
+export { ExistingThread };

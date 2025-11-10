@@ -1,0 +1,42 @@
+name: Regression tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Ensure nvm is available
+        run: |
+          if [ ! -d "$HOME/.nvm" ]; then
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+          fi
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm --version
+
+      - name: Use Node via nvm and run regression tests
+        shell: bash -l {0}
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm use || nvm install
+          node -v
+          if command -v yarn >/dev/null 2>&1; then
+            yarn -v
+            yarn install
+            yarn run build
+            yarn run jest -- --config regression-tests/jest.config.js --runInBand
+          else
+            npm -v || true
+            npm install --legacy-peer-deps
+            npm run build
+            npm run jest -- --config regression-tests/jest.config.js --runInBand
+          fi
