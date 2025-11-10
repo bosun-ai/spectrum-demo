@@ -5,7 +5,6 @@ import { Button } from '../src/components/button';
 
 // A simple regression: ensure Button renders children and respects disabled
 test('Button renders label and disables when isLoading', async () => {
-  const user = userEvent.setup();
   const onClick = jest.fn();
   render(
     <Button isLoading onClick={onClick}>
@@ -17,6 +16,6 @@ test('Button renders label and disables when isLoading', async () => {
   expect(btn).toBeInTheDocument();
   expect(btn).toBeDisabled();
 
-  await user.click(btn);
+  await userEvent.click(btn);
   expect(onClick).not.toHaveBeenCalled();
 });
