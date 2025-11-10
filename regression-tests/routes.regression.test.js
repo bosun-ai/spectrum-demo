@@ -46,7 +46,8 @@ test('Routes renders maintenance view when maintenanceMode enabled', () => {
   history.replace('/any');
   renderWithProviders(<Routes maintenanceMode={true} />);
 
-  // Expect the maintenance title to be set; Helmet updates document.title.
-  // jsdom updates synchronously in tests.
-  expect(document.title).toMatch(/Ongoing Maintenance - Spectrum/i);
+  // Expect maintenance UI text to be present
+  expect(
+    screen.getByText(/Spectrum is currently undergoing maintenance/i)
+  ).toBeInTheDocument();
 });

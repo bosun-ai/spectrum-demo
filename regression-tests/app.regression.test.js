@@ -1,6 +1,27 @@
 import React from 'react';
 import * as ReactDOM from 'react-dom';
 
+// Mock modules that cause side effects in the entry
+jest.mock('offline-plugin/runtime', () => ({
+  install: jest.fn(),
+  applyUpdate: jest.fn(),
+}));
+jest.mock('react-loadable', () => ({
+  preloadReady: () => Promise.resolve(),
+}));
+// Mock shared/graphql wsLink to avoid real websocket attempts
+jest.mock('shared/graphql', () => {
+  const original = jest.requireActual('shared/graphql');
+  return {
+    ...original,
+    wsLink: {
+      subscriptionClient: {
+        on: jest.fn(),
+      },
+    },
+  };
+});
+
 // Ensure a root element exists for the App to render/hydrate into
 beforeEach(() => {
   const root = document.createElement('div');
