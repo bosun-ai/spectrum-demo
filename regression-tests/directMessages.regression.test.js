@@ -32,7 +32,10 @@ function renderWithProviders(
   return render(
     <Provider store={store}>
       <MemoryRouter initialEntries={[route]}>
-        <Route path={path} component={() => ui} />
+        <Route
+          path={path}
+          render={routeProps => React.cloneElement(ui, { ...routeProps })}
+        />
       </MemoryRouter>
     </Provider>
   );

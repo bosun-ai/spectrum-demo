@@ -3,8 +3,15 @@ import { render } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 // Import the unwrapped component to avoid Apollo HOC requiring ApolloProvider
-import { __RewireAPI__ as HomeRewireAPI } from '../src/views/homeViewRedirect/index.js';
-const HomeViewRedirect = HomeRewireAPI.__get__('HomeViewRedirect');
+// Mock the GraphQL HOC to pass-through the component to avoid Apollo
+jest.mock(
+  '../src/shared/graphql/queries/user/getUserCommunityConnection',
+  () => ({
+    getCurrentUserCommunityConnection: Comp => Comp,
+  })
+);
+// Import default which is compose(getCurrentUserCommunityConnection, withRouter)(HomeViewRedirect)
+import HomeViewRedirect from '../src/views/homeViewRedirect';
 
 // Helper to render with router history
 const renderWithRouter = (ui, { history } = {}) => {
