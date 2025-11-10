@@ -14,6 +14,10 @@ afterEach(() => {
 });
 
 test('App renders into #root without crashing', () => {
+  // Pretend server rendered state so entry chooses hydrate
+  // and avoids certain client-only branches in tests
+  // $FlowIgnore
+  window.__SERVER_STATE__ = {};
   // Spy on ReactDOM.render and hydrate to avoid actual DOM updates and side effects
   const renderSpy = jest.spyOn(ReactDOM, 'render').mockImplementation(() => {});
   const hydrateSpy = jest

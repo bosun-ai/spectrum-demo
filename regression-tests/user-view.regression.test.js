@@ -47,7 +47,7 @@ jest.mock('../src/components/threadFeed', () => {
   return function ThreadFeedStub(props) {
     return (
       <div data-testid="thread-feed">
-        ThreadFeed kind={props.kind} viewContext={props.viewContext}
+        {`ThreadFeed kind=${props.kind} viewContext=${props.viewContext}`}
       </div>
     );
   };
@@ -125,9 +125,8 @@ test('UserView Info tab renders profile and communities', async () => {
   renderUserView('?tab=info');
 
   // Info tab active; shows profile card and community list
-  expect(screen.getByTestId('user-profile-card')).toHaveTextContent(
-    'Ada Lovelace'
-  );
+  const cards = screen.getAllByTestId('user-profile-card');
+  expect(cards[0]).toHaveTextContent('Ada Lovelace');
   expect(screen.getByTestId('community-list')).toBeInTheDocument();
   // No ThreadFeed when info tab selected
   expect(screen.queryByTestId('thread-feed')).toBeNull();
