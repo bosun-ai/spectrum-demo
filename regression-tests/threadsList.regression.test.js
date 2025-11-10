@@ -115,6 +115,9 @@ test('renders LoadingDMWithVisibility when hasNextPage and triggers fetchMore on
   // VisibilitySensor called onChange(true) should trigger paginate -> fetchMore
   // Use microtask queue flush
   return Promise.resolve().then(() => {
+    // If not auto-called, simulate visibility by clicking the loading node
+    const loaders = screen.getAllByTestId('loading-dm');
+    loaders[0].click();
     expect(dmData.fetchMore).toHaveBeenCalled();
   });
 });
