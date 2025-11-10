@@ -1,12 +1,14 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import Messages from '../src/views/directMessages/components/messages';
+// Import the unwrapped component to avoid Apollo/viewNetworkHandler requirements
+import { default as MessagesModule } from '../src/views/directMessages/components/messages';
+const MessagesWithData = MessagesModule.WrappedComponent || MessagesModule;
 
 // Minimal regression: renders loading when isLoading, and messages when provided
 test('MessagesWithData renders loading and messages list', () => {
   // Render loading state
   const { rerender } = render(
-    <Messages
+    <MessagesWithData
       id="dm-1"
       data={{
         loading: true,
@@ -30,7 +32,7 @@ test('MessagesWithData renders loading and messages list', () => {
   const edges = [{ node: msg1 }, { node: msg2 }];
 
   rerender(
-    <Messages
+    <MessagesWithData
       id="dm-1"
       data={{
         loading: false,
