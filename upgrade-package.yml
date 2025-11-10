@@ -105,12 +105,15 @@ steps:
       instructions: |
         We are upgrading {{ inputs.package_name }} from version {{ outputs.source }} to version {{ outputs.target }}.
         Provide an upgrade guide. Start with creating a plan for what you will search for.
+        At the end, call the stop tool with ONLY the JSON array as your final message (no prose, no code fences, no explanations).
       constraints:
-        - "When you are done, respond in the stop tool with a single json array of instructions that need to be fixed. For each instructions, make sure it mentions the source and target version and a thorough explanation on the problem and instructions to fix."
-        - "Example output: ['0.10 -> 0.11: <change instructions>', '0.11 -> 0.12: <other change instruction>']"
-        - "IMPORTANT: Be very thorough in your research and make sure all potential code changes and things to account for are included."
-        - "Search and browse the web until you a clear picture of all the required upgrade steps. Explicitly search and read for upgrade guides. Do not provide links to the upgrade guides, actually research them."
-        - "IMPORTANT: When upgrading older packages, multiple upgrade guides might be present, i.e. when upgrading from 9 to 11, there could be an upgrade guide for 10 and for 11"
+        - "In your stop message, give ONLY a valid JSON array (no prose, no code fences)."
+        - "Each item must be a string instruction that mentions the source and target versions and includes thorough explanation and fix steps."
+        - "Use valid JSON (double quotes, no trailing commas)."
+        - "Example (JSON): [\"0.10.0 -> 0.11.0: <change instructions>\", \"0.11.0 -> 0.12.0: <other change instruction>\"]"
+        - "IMPORTANT: Be very thorough; include all potential code changes and checks required for each step."
+        - "Search and browse until you have a clear, complete list of required upgrade steps. Do not include links; extract the actual steps."
+        - "IMPORTANT: When upgrading across multiple majors, include steps for each intermediate major version."
       toolboxes: ["repository_read", "research"]
 
   - name: Setup regression test suite
