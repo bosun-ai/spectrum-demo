@@ -6,9 +6,11 @@ jest.mock('offline-plugin/runtime', () => ({
   install: jest.fn(),
   applyUpdate: jest.fn(),
 }));
-jest.mock('react-loadable', () => ({
-  preloadReady: () => Promise.resolve(),
-}));
+jest.mock('react-loadable', () => {
+  const mod = () => ({ preload: () => {} });
+  mod.preloadReady = () => Promise.resolve();
+  return mod;
+});
 // Mock shared/graphql wsLink to avoid real websocket attempts
 jest.mock('shared/graphql', () => {
   const original = jest.requireActual('shared/graphql');
