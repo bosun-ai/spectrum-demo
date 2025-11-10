@@ -1,5 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { ThemeProvider } from 'styled-components';
+import theme from '../shared/theme';
 import { MemoryRouter } from 'react-router-dom';
 import { ExistingThread } from '../src/views/directMessages/containers/existingThread';
 // Mock the connected titlebar to avoid Redux store requirements and complex styling
@@ -15,7 +17,11 @@ jest.mock('../src/components/titlebar', () => ({
 
 // Helper to render with route params via MemoryRouter
 const renderWithRoute = (ui, { route = '/messages/thread/abc123' } = {}) => {
-  return render(<MemoryRouter initialEntries={[route]}>{ui}</MemoryRouter>);
+  return render(
+    <ThemeProvider theme={theme}>
+      <MemoryRouter initialEntries={[route]}>{ui}</MemoryRouter>
+    </ThemeProvider>
+  );
 };
 
 // Build minimal props; component expects these injected by HOCs but we can pass directly
