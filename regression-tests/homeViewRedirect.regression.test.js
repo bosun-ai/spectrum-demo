@@ -4,12 +4,9 @@ import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 // Import the unwrapped component to avoid Apollo HOC requiring ApolloProvider
 // Mock the GraphQL HOC to pass-through the component to avoid Apollo
-jest.mock(
-  '../src/shared/graphql/queries/user/getUserCommunityConnection',
-  () => ({
-    getCurrentUserCommunityConnection: Comp => Comp,
-  })
-);
+jest.mock('../shared/graphql/queries/user/getUserCommunityConnection', () => ({
+  getCurrentUserCommunityConnection: Comp => Comp,
+}));
 // Import default which is compose(getCurrentUserCommunityConnection, withRouter)(HomeViewRedirect)
 import HomeViewRedirect from '../src/views/homeViewRedirect';
 
