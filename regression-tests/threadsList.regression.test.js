@@ -23,7 +23,11 @@ jest.mock('react-visibility-sensor', () => {
 
 // Mock LoadingDM to a simple identifiable element
 jest.mock('../src/components/loading', () => ({
-  LoadingDM: () => <div data-testid="loading-dm">Loading...</div>,
+  LoadingDM: ({ onClick }) => (
+    <div data-testid="loading-dm" onClick={onClick}>
+      Loading...
+    </div>
+  ),
 }));
 
 // Mock style container to a div
