@@ -35,8 +35,14 @@ test('MessagesWithData renders loading and messages list', () => {
   expect(document.querySelector('[class*="Spinner"]')).toBeTruthy();
 
   // Provide a couple messages and a minimal thread
-  const msg1 = { id: 'm1', content: { body: 'Hello' } };
-  const msg2 = { id: 'm2', content: { body: 'World' } };
+  const baseMsg = (id, body) => ({
+    id,
+    timestamp: new Date().toISOString(),
+    author: { user: { id: 'u1' } },
+    content: { body },
+  });
+  const msg1 = baseMsg('m1', 'Hello');
+  const msg2 = baseMsg('m2', 'World');
   const edges = [{ node: msg1 }, { node: msg2 }];
 
   rerender(
