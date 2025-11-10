@@ -31,8 +31,8 @@ test('MessagesWithData renders loading and messages list', () => {
     </Wrapper>
   );
 
-  // Loading component renders inside wrapper
-  expect(screen.getByText(/loading/i)).toBeInTheDocument();
+  // Loading component renders spinner inside wrapper
+  expect(document.querySelector('[class*="Spinner"]')).toBeTruthy();
 
   // Provide a couple messages and a minimal thread
   const msg1 = { id: 'm1', content: { body: 'Hello' } };

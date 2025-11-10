@@ -7,6 +7,7 @@ import ApolloClient from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 import ThreadsList from '../src/views/directMessages/components/threadsList.js';
+import { MemoryRouter } from 'react-router-dom';
 
 // Mock VisibilitySensor to immediately call onChange(true) and render children
 jest.mock('react-visibility-sensor', () => {
@@ -52,7 +53,12 @@ function renderWithProviders(ui, { apolloOptions = {} } = {}) {
   });
   return render(
     <Provider store={store}>
-      <ApolloProvider client={client}>{ui}</ApolloProvider>
+      <ApolloProvider client={client}>
+        <MemoryRouter initialEntries={[{ pathname: '/messages' }]}>
+          {' '}
+          {ui}{' '}
+        </MemoryRouter>
+      </ApolloProvider>
     </Provider>
   );
 }
