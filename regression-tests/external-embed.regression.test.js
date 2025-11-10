@@ -48,8 +48,10 @@ test('ExternalEmbed uses AspectRatio + EmbedComponent when aspectRatio provided'
   const aspectWrapper =
     embedComponentWrapper && embedComponentWrapper.parentElement; // AspectRatio wraps EmbedComponent
   expect(aspectWrapper).toBeInTheDocument();
-  // Structural assertion: EmbedComponent (styled iframe) is wrapped by AspectRatio container
-  expect(embedComponentWrapper.tagName.toLowerCase()).toBe('iframe');
+  // Structural assertion: EmbedComponent (styled iframe) exists inside AspectRatio container
+  expect(embedComponentWrapper.tagName.toLowerCase()).toBe('div');
+  const innerIframe = embedComponentWrapper.querySelector('iframe');
+  expect(innerIframe).toBeTruthy();
 });
 
 test('ExternalEmbed returns null when src/url missing', () => {

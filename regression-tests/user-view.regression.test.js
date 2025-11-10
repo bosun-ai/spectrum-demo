@@ -112,12 +112,12 @@ test('UserView defaults to Posts tab and switches tabs', async () => {
   expect(activityTab).toHaveAttribute('data-cy', 'user-activity-tab');
 
   // Thread feed renders with posts (creator)
-  expect(screen.getByTestId('thread-feed')).toHaveTextContent(/kind=creator/i);
+  expect(screen.getByTestId('thread-feed')).toHaveTextContent('kind=creator');
 
   // Switch to activity
   await userEvent.click(activityTab);
   expect(screen.getByTestId('thread-feed')).toHaveTextContent(
-    /kind=participant/i
+    'kind=participant'
   );
 });
 
@@ -127,7 +127,8 @@ test('UserView Info tab renders profile and communities', async () => {
   // Info tab active; shows profile card and community list
   const cards = screen.getAllByTestId('user-profile-card');
   expect(cards[0]).toHaveTextContent('Ada Lovelace');
-  expect(screen.getByTestId('community-list')).toBeInTheDocument();
+  const communities = screen.getAllByTestId('community-list');
+  expect(communities.length).toBeGreaterThan(0);
   // No ThreadFeed when info tab selected
   expect(screen.queryByTestId('thread-feed')).toBeNull();
 });
