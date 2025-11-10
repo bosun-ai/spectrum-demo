@@ -8,6 +8,12 @@ import { Router } from 'react-router';
 // Import the connected composed component
 import UserView from '../src/views/user';
 
+// Mock Head to avoid react-helmet-async context issues in jsdom
+jest.mock('../src/components/head', () => ({
+  __esModule: true,
+  default: ({ children }) => <div data-testid="head">{children}</div>,
+}));
+
 // The view composes GraphQL HOCs; we mock them to inject props
 jest.mock('../shared/graphql/queries/user/getUser', () => ({
   getUserByMatch: Component => props => (

@@ -48,8 +48,8 @@ describe('InternalEmbed regression', () => {
     const { entities } = renderer;
     const element = entities.embed([], data, { key: 'k2' });
 
-    const { container } = render(<div>{element}</div>);
-    // Should render null -> no child
+    const { container } = render(<>{element}</>);
+    // Should render null -> empty fragment
     expect(container.innerHTML).toBe('');
   });
 });
