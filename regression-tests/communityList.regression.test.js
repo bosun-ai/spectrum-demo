@@ -1,6 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
+import { ThemeProvider } from 'styled-components';
+import theme from '../shared/theme';
 // Mock graphql HOC to avoid requiring ApolloProvider in regression
 jest.mock('../shared/graphql/queries/user/getUserCommunityConnection', () => ({
   getUserCommunityConnection: Comp => Comp,
@@ -13,23 +15,27 @@ import CommunityList from '../src/views/user/components/communityList';
 test('CommunityList shows loading, empty, then items', () => {
   // 1) Loading state
   const { rerender } = render(
-    <MemoryRouter>
-      <CommunityList data={{ loading: true }} />
-    </MemoryRouter>
+    <ThemeProvider theme={theme}>
+      <MemoryRouter>
+        <CommunityList data={{ loading: true }} />
+      </MemoryRouter>
+    </ThemeProvider>
   );
   // Loading component renders a progress role via spinner SVG or text; assert by text fallback
   expect(screen.getByText(/loading/i)).toBeInTheDocument();
 
   // 2) Empty state: no edges
   rerender(
-    <MemoryRouter>
-      <CommunityList
-        data={{
-          loading: false,
-          user: { communityConnection: { edges: [] } },
-        }}
-      />
-    </MemoryRouter>
+    <ThemeProvider theme={theme}>
+      <MemoryRouter>
+        <CommunityList
+          data={{
+            loading: false,
+            user: { communityConnection: { edges: [] } },
+          }}
+        />
+      </MemoryRouter>
+    </ThemeProvider>
   );
   // PrimaryOutlineButton should render link to explore communities
   const explore = screen.getByRole('link', { name: /explore communities/i });
@@ -51,9 +57,11 @@ test('CommunityList shows loading, empty, then items', () => {
     },
   };
   rerender(
-    <MemoryRouter>
-      <CommunityList data={dataWithCommunities} />
-    </MemoryRouter>
+    <ThemeProvider theme={theme}>
+      <MemoryRouter>
+        <CommunityList data={dataWithCommunities} />
+      </MemoryRouter>
+    </ThemeProvider>
   );
 
   // CommunityListItem renders each community name as a label
