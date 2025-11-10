@@ -21,8 +21,8 @@ test('CommunityList shows loading, empty, then items', () => {
       </MemoryRouter>
     </ThemeProvider>
   );
-  // Loading component renders a progress role via spinner SVG or text; assert by text fallback
-  expect(screen.getByText(/loading/i)).toBeInTheDocument();
+  // Loading renders a Spinner inside the container
+  expect(document.querySelector('[class*="Spinner"]')).toBeTruthy();
 
   // 2) Empty state: no edges
   rerender(

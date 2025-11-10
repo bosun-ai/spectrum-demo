@@ -63,9 +63,7 @@ test('ThreadSlider renders and closes via overlay and button', async () => {
   });
 
   // Close button should also trigger close (sibling of ThreadContainer)
-  const closeBtn =
-    screen.getByRole('button', { name: '' }) ||
-    document.querySelector('[data-cy="thread-slider-close"]');
+  const closeBtn = document.querySelector('[data-cy="thread-slider-close"]');
   expect(closeBtn).toBeInTheDocument();
 
   await userEvent.click(closeBtn);
