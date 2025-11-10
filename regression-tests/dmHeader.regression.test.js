@@ -78,7 +78,7 @@ test('Header renders avatars and names for group DM', () => {
   );
 
   // StyledHeader is present
-  const header = screen.getByTestId('dm-header');
+  const header = document.querySelector('[data-cy="dm-header"]');
   expect(header).toBeInTheDocument();
 
   // Names should combine participants excluding current user
