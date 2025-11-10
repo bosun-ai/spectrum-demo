@@ -1,6 +1,14 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { HelmetProvider } from 'react-helmet-async';
 import Header from '../src/views/directMessages/components/header';
+
+// Mock Avatar to avoid Apollo dependency in tests
+jest.mock('../src/components/avatar', () => ({
+  UserAvatar: ({ children }) => (
+    <span data-testid="mock-avatar">{children}</span>
+  ),
+}));
 
 // Helpers to build thread + user objects
 const makeUser = (overrides = {}) => ({
@@ -37,7 +45,9 @@ test('Header shows Head meta only in 1:1 DM', () => {
   ]);
 
   const { container } = render(
-    <Header thread={thread} currentUser={currentUser} />
+    <HelmetProvider>
+      <Header thread={thread} currentUser={currentUser} />
+    </HelmetProvider>
   );
 
   // In 1:1, StyledHeader should not render; component returns only <Head />
@@ -61,7 +71,11 @@ test('Header renders avatars and names for group DM', () => {
   const me = makeUser({ id: 'me', userId: 'me', name: 'Me', username: 'me' });
   const thread = makeThread([me, alice, bob]);
 
-  render(<Header thread={thread} currentUser={currentUser} />);
+  render(
+    <HelmetProvider>
+      <Header thread={thread} currentUser={currentUser} />
+    </HelmetProvider>
+  );
 
   // StyledHeader is present
   const header = screen.getByTestId('dm-header');
