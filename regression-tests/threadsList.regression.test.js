@@ -13,7 +13,10 @@ import { MemoryRouter } from 'react-router-dom';
 jest.mock('react-visibility-sensor', () => {
   const React = require('react');
   return ({ onChange, children }) => {
-    if (typeof onChange === 'function') onChange(true);
+    // schedule visibility change after mount to ensure handlers bound
+    React.useEffect(() => {
+      if (typeof onChange === 'function') onChange(true);
+    }, []);
     return <div data-testid="visibility-sensor">{children}</div>;
   };
 });
