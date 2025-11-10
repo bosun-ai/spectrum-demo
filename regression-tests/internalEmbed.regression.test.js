@@ -49,7 +49,7 @@ describe('InternalEmbed regression', () => {
     const element = entities.embed([], data, { key: 'k2' });
 
     const { container } = render(<div>{element}</div>);
-    // Should render null -> empty fragment
-    expect(container.innerHTML).toBe('');
+    // Should render null -> wrapper remains empty element with no children
+    expect(container.firstChild.childNodes.length).toBe(0);
   });
 });
