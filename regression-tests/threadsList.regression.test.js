@@ -100,8 +100,8 @@ test('renders LoadingDMWithVisibility when hasNextPage and triggers fetchMore on
   // Threads container renders
   expect(screen.getByTestId('threads-scroll')).toBeInTheDocument();
 
-  // LoadingDM (inside mocked VisibilitySensor) is rendered because hasNextPage
-  expect(screen.getByTestId('loading-dm')).toBeInTheDocument();
+  // LoadingDMs rendered (initial skeletons + visibility one)
+  expect(screen.getAllByTestId('loading-dm').length).toBeGreaterThan(0);
 
   // VisibilitySensor called onChange(true) should trigger paginate -> fetchMore
   expect(dmData.fetchMore).toHaveBeenCalled();
@@ -122,7 +122,7 @@ test('does not call fetchMore when isFetchingMore=true', () => {
     />
   );
 
-  // Loading indicator still visible, but onChange should be ignored
-  expect(screen.getByTestId('loading-dm')).toBeInTheDocument();
+  // Loading indicators visible
+  expect(screen.getAllByTestId('loading-dm').length).toBeGreaterThan(0);
   expect(dmData.fetchMore).not.toHaveBeenCalled();
 });

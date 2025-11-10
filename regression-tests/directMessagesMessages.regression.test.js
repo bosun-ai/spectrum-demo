@@ -4,7 +4,20 @@ import { ThemeProvider } from 'styled-components';
 import theme from '../shared/theme';
 // Import the unwrapped component via the HOC's WrappedComponent
 import MessagesDefault from '../src/views/directMessages/components/messages';
+// Use the unwrapped inner class component
 const MessagesWithData = MessagesDefault.WrappedComponent;
+// Also stub ChatMessages to avoid Apollo in withCurrentUser
+jest.mock('../src/components/messageGroup', () => {
+  const React = require('react');
+  const DirectMessages = ({ messages }) => (
+    <div>
+      {messages.flat().map(m => (
+        <div key={m.id}>{m.content && m.content.body}</div>
+      ))}
+    </div>
+  );
+  return DirectMessages;
+});
 
 // Minimal regression: renders loading when isLoading, and messages when provided
 test('MessagesWithData renders loading and messages list', () => {
