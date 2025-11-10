@@ -1,6 +1,12 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
+// Mock graphql HOC to avoid requiring ApolloProvider in regression
+jest.mock('../shared/graphql/queries/user/getUserCommunityConnection', () => ({
+  getUserCommunityConnection: Comp => Comp,
+}));
+// Mock react-redux connect to identity HOC
+jest.mock('react-redux', () => ({ connect: () => Comp => Comp }));
 import CommunityList from '../src/views/user/components/communityList';
 
 // Minimal regression: renders loading, empty state, and list items
