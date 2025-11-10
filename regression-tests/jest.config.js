@@ -12,6 +12,9 @@ module.exports = {
   moduleNameMapper: {
     '^src/(.*)$': '<rootDir>/src/$1',
     '^shared/(.*)$': '<rootDir>/shared/$1',
+    // Mock raw-loader CSS import used in reset.css.js
+    '^!!raw-loader!src/components/rich-text-editor/prism-theme.css$':
+      '<rootDir>/regression-tests/mocks/emptyString.js',
   },
   testURL: 'http://localhost/',
 };

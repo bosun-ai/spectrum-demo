@@ -4,6 +4,8 @@ import { ApolloProvider } from 'react-apollo';
 import ApolloClient from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloLink } from 'apollo-link';
+import { ThemeProvider } from 'styled-components';
+import theme from '../shared/theme';
 import * as RendererModule from '../shared/clients/draft-js/renderer/index';
 
 // Regression tests for InternalEmbed within renderer Embed handling
@@ -28,7 +30,9 @@ describe('InternalEmbed regression', () => {
 
     render(
       <ApolloProvider client={client}>
-        <div>{element}</div>
+        <ThemeProvider theme={theme}>
+          <div>{element}</div>
+        </ThemeProvider>
       </ApolloProvider>
     );
 
