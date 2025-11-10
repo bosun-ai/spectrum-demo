@@ -1,5 +1,9 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import { ApolloProvider } from 'react-apollo';
+import ApolloClient from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloLink } from 'apollo-link';
 import * as RendererModule from '../shared/clients/draft-js/renderer/index';
 
 // Regression tests for InternalEmbed within renderer Embed handling
@@ -16,7 +20,17 @@ describe('InternalEmbed regression', () => {
     const { entities } = renderer;
     const element = entities.embed([], data, { key: 'k1' });
 
-    render(<div>{element}</div>);
+    // Minimal Apollo client to satisfy context for ThreadAttachment
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: ApolloLink.empty(),
+    });
+
+    render(
+      <ApolloProvider client={client}>
+        <div>{element}</div>
+      </ApolloProvider>
+    );
 
     // ThreadAttachment component renders aria-label with thread id via img or container?
     // It renders a link with href to thread or an element with data-id; to be resilient,
