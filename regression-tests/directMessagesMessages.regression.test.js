@@ -2,9 +2,9 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
 import theme from '../shared/theme';
-// Import the unwrapped component to avoid Apollo/viewNetworkHandler requirements
-import { default as MessagesModule } from '../src/views/directMessages/components/messages';
-const MessagesWithData = MessagesModule.WrappedComponent || MessagesModule;
+// Import the unwrapped component via the HOC's WrappedComponent
+import MessagesDefault from '../src/views/directMessages/components/messages';
+const MessagesWithData = MessagesDefault.WrappedComponent;
 
 // Minimal regression: renders loading when isLoading, and messages when provided
 test('MessagesWithData renders loading and messages list', () => {

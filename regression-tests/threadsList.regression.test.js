@@ -55,8 +55,7 @@ function renderWithProviders(ui, { apolloOptions = {} } = {}) {
     <Provider store={store}>
       <ApolloProvider client={client}>
         <MemoryRouter initialEntries={[{ pathname: '/messages' }]}>
-          {' '}
-          {ui}{' '}
+          <React.Fragment>{ui}</React.Fragment>
         </MemoryRouter>
       </ApolloProvider>
     </Provider>
