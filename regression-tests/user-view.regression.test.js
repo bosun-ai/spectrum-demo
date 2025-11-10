@@ -6,7 +6,9 @@ import { Provider } from 'react-redux';
 import { Router } from 'react-router';
 
 // Import the connected composed component
-import UserView from '../src/views/user';
+// Import raw component to avoid connect HOC child issues
+import ConnectedUserView from '../src/views/user';
+const UserView = ConnectedUserView.WrappedComponent || ConnectedUserView;
 
 // Mock Head to avoid react-helmet-async context issues in jsdom
 jest.mock('../src/components/head', () => ({
