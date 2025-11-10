@@ -13,7 +13,7 @@ afterEach(() => {
   if (root) root.remove();
 });
 
-test('App renders into #root without crashing', async () => {
+test('App renders into #root without crashing', () => {
   // Spy on ReactDOM.render and hydrate to avoid actual DOM updates and side effects
   const renderSpy = jest.spyOn(ReactDOM, 'render').mockImplementation(() => {});
   const hydrateSpy = jest
@@ -22,7 +22,8 @@ test('App renders into #root without crashing', async () => {
 
   // Import the entry file which defines and triggers rendering of App
   // Note: the module will choose render vs hydrate depending on window.__SERVER_STATE__
-  const entry = await import('../src/index.js');
+  // Use CommonJS require to avoid Node v12 dynamic import issues
+  const entry = require('../src/index.js');
 
   // Verify that our render target exists
   const root = document.querySelector('#root');
