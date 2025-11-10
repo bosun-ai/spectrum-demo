@@ -91,7 +91,7 @@ test('renders LoadingDMWithVisibility when hasNextPage and triggers fetchMore on
   // Ensure desktop width so paginate isn't blocked
   Object.defineProperty(window, 'innerWidth', { writable: true, value: 1024 });
 
-  renderWithProviders(
+  const { container } = renderWithProviders(
     <ThreadsList
       currentUser={{ id: 'me' }}
       dmData={dmData}
@@ -109,7 +109,10 @@ test('renders LoadingDMWithVisibility when hasNextPage and triggers fetchMore on
   expect(screen.getAllByTestId('loading-dm').length).toBeGreaterThan(0);
 
   // VisibilitySensor called onChange(true) should trigger paginate -> fetchMore
-  expect(dmData.fetchMore).toHaveBeenCalled();
+  // Use microtask queue flush
+  return Promise.resolve().then(() => {
+    expect(dmData.fetchMore).toHaveBeenCalled();
+  });
 });
 
 test('does not call fetchMore when isFetchingMore=true', () => {
