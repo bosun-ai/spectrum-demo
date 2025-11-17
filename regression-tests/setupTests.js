@@ -1,4 +1,14 @@
 import '@testing-library/jest-dom/extend-expect';
+// Provide a URL to jsdom to enable localStorage
+if (typeof window !== 'undefined' && !window.location.href) {
+  // jsdom 11+ supports setting URL via document
+  window.document = window.document || {};
+}
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'location', {
+    value: { href: 'http://localhost/' },
+  });
+}
 import { server } from './testServer';
 
 // Establish API mocking before all tests.
