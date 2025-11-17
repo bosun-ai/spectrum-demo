@@ -4,9 +4,12 @@
   "license": "BSD-3-Clause",
   "devDependencies": {
     "@babel/preset-flow": "^7.0.0",
+    "@babel/preset-react": "7.10.0",
+    "@testing-library/jest-dom": "4.2.4",
     "babel-cli": "^6.24.1",
+    "babel-core": "6",
     "babel-eslint": "^8.2.6",
-    "babel-jest": "^22.4.4",
+    "babel-jest": "22.4.4",
     "babel-plugin-import-inspector": "^2.0.0",
     "babel-plugin-inline-import-graphql-ast": "^2.0.4",
     "babel-plugin-react-remove-properties": "^0.3.0",
