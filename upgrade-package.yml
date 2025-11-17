@@ -60,6 +60,8 @@ steps:
         Remember that you should follow these instructions to work with the package manager: {{ outputs.package_manager_instructions }}.
 
         For example, if the identified target version is `0.11.0`, call stop with just that value. The value must be exactly the same as in the package manager.
+        IMPORTANT:
+        - You must determine the version of the dependency named {{ inputs.package_name }} as listed under dependencies or devDependencies.
       stop_schema: string
 
   - name: Get target version
@@ -79,6 +81,14 @@ steps:
         Use the repositories package manager and tooling available to you to identify the target version. Then stop with the last version.
 
         Remember that you should follow these instructions to work with the package manager: {{ outputs.package_manager_instructions }}.
+
+        IMPORTANT:
+        - Query the registry for the package named {{ inputs.package_name }} (not the project itself) to find available versions.
+        - Use package manager commands, e.g.:
+          - npm: `npm view {{ inputs.package_name }} versions --json`
+          - yarn: `yarn npm info {{ inputs.package_name }} versions --json`
+          - pnpm: `pnpm view {{ inputs.package_name }} versions --json`
+        - Compute the next target per the rules above from the current dependency version {{ outputs.source }}.
 
         For example, if the identified target version is `0.11.0`, call stop with just that value. The value must be exactly the same as in the package manager.
       toolboxes: ['repository_read', 'research', 'dangerous']
