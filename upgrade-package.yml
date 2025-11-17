@@ -27,6 +27,7 @@ steps:
         Verify that you can run the version of node with NVM. Determine what command you need to run to verify this.
 
         Then call stop with the instructions to prefix every command with `nvm use`, as each command is run as a script in a new shell.
+      stop_schema: string
   
   - name: Determine the package manager and install the packages
     id: package_manager_instructions
@@ -41,6 +42,7 @@ steps:
         Remember that to use node you should follow these instructions: {{ outputs.node_instructions }}.
 
         When you have succesfully installed the packages, call stop with instructions to use the package manager.
+      stop_schema: string
   
   # - name: Get current package version
   #   id: source
@@ -58,6 +60,7 @@ steps:
         Remember that you should follow these instructions to work with the package manager: {{ outputs.package_manager_instructions }}.
 
         For example, if the identified target version is `0.11.0`, call stop with just that value. The value must be exactly the same as in the package manager.
+      stop_schema: string
 
   - name: Get target version
     id: target
@@ -79,6 +82,7 @@ steps:
 
         For example, if the identified target version is `0.11.0`, call stop with just that value. The value must be exactly the same as in the package manager.
       toolboxes: ['repository_read', 'research', 'dangerous']
+      stop_schema: string
 
   - name: Empty commit for PR
     run: 'git commit -m "wip: Initial commit" --allow-empty'
@@ -115,6 +119,7 @@ steps:
         - "Search and browse until you have a clear, complete list of required upgrade steps. Do not include links; extract the actual steps."
         - "IMPORTANT: When upgrading across multiple majors, include steps for each intermediate major version."
       toolboxes: ["repository_read", "research"]
+      stop_schema: string_array
 
   - name: Setup regression test suite
     id: regression_setup
@@ -140,6 +145,7 @@ steps:
         - "Use jest, react-testing-library, and msw (Mock Service Worker) for the test implementation"
         - "Choose a simple React component that has clear, testable behavior"
         - "Ensure the test actually runs and passes before completing"
+      stop_schema: string
 
   - name: Update pull request with regression setup
     agent:
@@ -195,6 +201,10 @@ steps:
         2. The script should return the results as a JSON array
         3. The script should limit the number of components to 15
         4. Run the script and output its results
+
+        When you finish, call the stop tool exactly once with this JSON payload shape:
+        { "components": [ { "name": "ComponentName", "path": "relative/file/path.tsx" } ] }
+        Do not include any extra prose or fields.
       constraints:
         - "The script should find .js, .jsx, .ts, .tsx files that contain React components"
         - "Look for function components, class components, and arrow function components"
@@ -203,6 +213,30 @@ steps:
         - "Run the script and ensure the JSON output is valid"
         - "If the script fails or returns an empty list, add debugging statements and try again, until it's successful"
         - "The output of the script must be a JSON array of objects with `name` and `path` properties and should not contain any debugging output"
+      stop_schema:
+        type: object
+        properties:
+          components:
+            type: array
+            maxItems: 15
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                path:
+                  type: string
+              required: [name, path]
+              additionalProperties: false
+        required: [components]
+        additionalProperties: false
+      fail_schema:
+        type: object
+        properties:
+          summary:
+            type: string
+        required: [summary]
+        additionalProperties: false
 
   - name: Generate regression tests for all components
     id: generate_tests
@@ -250,6 +284,7 @@ steps:
         - "IMPORTANT: You are not allowed to remove functionality without providing an alternative"
         - "IMPORTANT: If a conflict requires a different package, research how the package is used in the code, and be creative and thorough with a solution."
         - "When you are succesful, call the stop tool with concise bullet points of what you did."
+      stop_schema: string
 
   - name: Parallel upgrades
     id: upgrades
@@ -281,7 +316,7 @@ steps:
   - name: Run regression tests and fix upgrade issues
     id: regression_validation
     for_each:
-      from: "{{ outputs.find_components | json_encode() }}"
+      from: "{{ outputs.find_components.components | json_encode() }}"
       continue_on_error: true
       agent:
         role: "Your task is to run regression tests and fix any issues caused by the package upgrade"
