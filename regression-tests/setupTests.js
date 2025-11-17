@@ -1,13 +1,11 @@
 import '@testing-library/jest-dom/extend-expect';
-// Provide a URL to jsdom to enable localStorage
-if (typeof window !== 'undefined' && !window.location.href) {
-  // jsdom 11+ supports setting URL via document
-  window.document = window.document || {};
-}
+// Set a valid URL for jsdom to avoid opaque origin
 if (typeof window !== 'undefined') {
-  Object.defineProperty(window, 'location', {
-    value: { href: 'http://localhost/' },
-  });
+  try {
+    // jsdom 11 uses document.location
+    delete window.location;
+  } catch (e) {}
+  window.location = { href: 'http://localhost/' };
 }
 import { server } from './testServer';
 
