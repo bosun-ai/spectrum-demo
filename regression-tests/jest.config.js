@@ -3,7 +3,7 @@ module.exports = {
   testEnvironment: 'jsdom',
   testMatch: ['**/regression-tests/**/*.test.[jt]s?(x)'],
   moduleFileExtensions: ['js', 'jsx', 'json'],
-  setupFilesAfterEnv: ['<rootDir>/regression-tests/setupTests.js'],
+  setupTestFrameworkScriptFile: '<rootDir>/regression-tests/setupTests.js',
   transform: {
     '^.+\\.[jt]sx?$': '<rootDir>/regression-tests/jest.transform.js',
   },
