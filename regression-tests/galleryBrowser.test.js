@@ -6,6 +6,7 @@ const { render, screen, fireEvent } = require('@testing-library/react');
 // Mock GraphQL HOC used by Gallery component to inject messages
 jest.mock('shared/graphql/queries/message/getMediaMessagesForThread', () => {
   return Component => props => {
+    const ReactLocal = require('react');
     const data = {
       messages: [
         { id: 'm1', content: { body: 'https://example.com/1.jpg' } },
@@ -13,7 +14,10 @@ jest.mock('shared/graphql/queries/message/getMediaMessagesForThread', () => {
         { id: 'm3', content: { body: 'https://example.com/3.jpg' } },
       ],
     };
-    return React.createElement(Component, { ...props, data });
+    return ReactLocal.createElement(
+      Component,
+      Object.assign({}, props, { data })
+    );
   };
 });
 
