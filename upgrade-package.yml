@@ -276,6 +276,8 @@ steps:
         Consider that to use node you should follow these instructions: {{ outputs.node_instructions }}.
         Consider that to use the package manager you should follow these instructions: {{ outputs.package_manager_instructions }}.
 
+
+
         For reference, these are the instructions for running the regression tests:
 
         {{ outputs.regression_setup }}
@@ -284,6 +286,7 @@ steps:
         - The workflow should use the correct version of Node.JS
         - The workflow should use the correct version of the package manager
         - The workflow should run on push regardless of the branch name
+        - The workflow should include instructions for installing the correct version of Node.JS using `nvm install`
 
   - name: Find all React components
     id: find_components
@@ -337,7 +340,7 @@ steps:
   - name: Generate regression tests for all components
     id: generate_tests
     for_each:
-      from: "{{ outputs.find_components | json_encode() }}"
+      from: "{{ outputs.find_components.components | json_encode() }}"
       continue_on_error: true
       agent:
         role: "Your task is to write a regression test for a specific React component"
