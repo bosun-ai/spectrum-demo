@@ -2,7 +2,7 @@ const React = require('react');
 const { render, screen } = require('@testing-library/react');
 
 // Test CommunitySettingsFallback behavior in isolation to avoid dynamic import parsing
-const signedOutFallback = require('../src/helpers/signed-out-fallback').default;
+const signedOutFallback = require('src/helpers/signed-out-fallback').default;
 
 // Create simple stand-ins for components
 const CommunitySettingsStub = () =>
@@ -11,7 +11,7 @@ const LoginStub = () =>
   React.createElement('button', { type: 'button' }, 'Sign in');
 
 // Mock AuthViewHandler to control auth state via prop
-jest.mock('../src/views/authViewHandler', () => {
+jest.mock('src/views/authViewHandler', () => {
   return function AuthViewHandler(props) {
     const child = props.children;
     // Prefer explicit prop for tests, default to false
@@ -21,7 +21,7 @@ jest.mock('../src/views/authViewHandler', () => {
 });
 
 // Mock withCurrentUser HOC to pass through without Apollo dependency
-jest.mock('../src/components/withCurrentUser', () => {
+jest.mock('src/components/withCurrentUser', () => {
   return {
     withCurrentUser: Comp => Comp,
   };
