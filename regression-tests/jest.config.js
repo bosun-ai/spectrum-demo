@@ -13,5 +13,5 @@ module.exports = {
     '^.+\\.[jt]sx?$': '<rootDir>/transform.js',
   },
   transformIgnorePatterns: [],
-  roots: ['<rootDir>', '<rootDir>/../src', '<rootDir>/../shared'],
+  roots: ['<rootDir>'],
 };
