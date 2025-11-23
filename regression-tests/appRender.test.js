@@ -15,6 +15,12 @@ jest.mock(
 );
 jest.mock('offline-plugin/runtime', () => ({ install: () => ({}) }));
 jest.mock('src/helpers/web-push-manager', () => ({ set: () => {} }));
+// Avoid importing real routes with dynamic imports inside RedirectHandler
+jest.mock('../src/routes', () => ({ __esModule: true, default: () => null }));
+jest.mock('../src/hot-routes', () => ({
+  __esModule: true,
+  default: () => null,
+}));
 
 // Now require after mocks applied
 const App = require('../src/index.js').default || require('../src/index.js');
