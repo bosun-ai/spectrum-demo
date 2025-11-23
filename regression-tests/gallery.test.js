@@ -1,6 +1,7 @@
 const React = require('react');
 const { Provider } = require('react-redux');
-const configureStore = require('redux-mock-store').default;
+const createStore = require('redux').createStore;
+const rootReducer = require('src/reducers').default || require('src/reducers');
 const { render, screen, fireEvent } = require('@testing-library/react');
 
 // Mock GraphQL HOC used by Gallery component to inject messages
@@ -34,10 +35,8 @@ const Gallery =
   require('src/components/gallery').default ||
   require('src/components/gallery');
 
-const mockStore = configureStore([]);
-
 function renderWithStore(state) {
-  const store = mockStore(state);
+  const store = createStore(rootReducer, state);
   return render(
     React.createElement(Provider, { store }, React.createElement(Gallery))
   );
