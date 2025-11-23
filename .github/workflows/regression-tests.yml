@@ -1,0 +1,47 @@
+name: Regression Tests
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node via nvm and print version
+        shell: bash -l {0}
+        run: |
+          # Ensure nvm is available in the shell
+          if [ -s "$NVM_DIR/nvm.sh" ]; then . "$NVM_DIR/nvm.sh"; fi
+          if [ -f .nvmrc ]; then
+            nvm use && node -v
+          else
+            echo ".nvmrc not found; installing and using default LTS"
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+            . "$HOME/.nvm/nvm.sh"
+            nvm install --lts && nvm use --lts && node -v
+          fi
+
+      - name: Set up Yarn cache
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'yarn'
+
+      - name: Install dependencies (Yarn)
+        run: |
+          yarn install || yarn install --ignore-engines
+
+      - name: Run regression tests
+        run: |
+          # Prefer yarn (package manager is Yarn); script exists per context
+          if yarn run -T test:regression --version >/dev/null 2>&1; then
+            yarn test:regression
+          else
+            npm run test:regression
+          fi
