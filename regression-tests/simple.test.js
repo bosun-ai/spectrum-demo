@@ -1,5 +1,7 @@
 const React = require('react');
 const { render, screen, fireEvent } = require('@testing-library/react');
+// Register jest-dom matchers explicitly in test to ensure availability
+require('@testing-library/jest-dom/extend-expect');
 require('cross-fetch/polyfill');
 
 test('component renders', () => {
