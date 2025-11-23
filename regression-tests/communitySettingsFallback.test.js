@@ -1,42 +1,37 @@
 const React = require('react');
-const { MemoryRouter, Route } = require('react-router');
 const { render, screen } = require('@testing-library/react');
 
-// Import compiled Routes to avoid transpile issues
-const Routes = require('../src/routes').default || require('../src/routes');
+// Test CommunitySettingsFallback behavior in isolation to avoid dynamic import parsing
+const signedOutFallback = require('../src/helpers/signed-out-fallback').default;
 
-function renderAt(route, extraProps = {}) {
-  return render(
-    React.createElement(
-      MemoryRouter,
-      { initialEntries: [route] },
-      React.createElement(
-        Routes,
-        Object.assign(
-          { isLoadingCurrentUser: false, maintenanceMode: false },
-          extraProps
-        )
-      )
-    )
-  );
-}
+// Create simple stand-ins for components
+const CommunitySettingsStub = () =>
+  React.createElement('div', null, 'Community Settings View');
+const LoginStub = () =>
+  React.createElement('button', { type: 'button' }, 'Sign in');
 
-test('CommunitySettingsFallback renders login when signed out', () => {
-  // Navigate to a community settings path while signed out
-  renderAt('/some-community/settings');
-  // Expect the Login view to render; the login page includes buttons for providers
-  // Assert by looking for a generic "Login" text or provider buttons present in src/components/loginButtonSet
-  // Be resilient: the Login component typically renders a heading "Sign in to Spectrum"; fallback to presence of any button
-  const buttons = screen.getAllByRole('button');
-  expect(buttons.length).toBeGreaterThan(0);
+// Mock AuthViewHandler to control auth state via prop
+jest.mock('../src/views/authViewHandler', () => {
+  return function AuthViewHandler(props) {
+    const child = props.children;
+    // Prefer explicit prop for tests, default to false
+    const authed = props.__authed === true;
+    return child(authed);
+  };
 });
 
-test('CommunitySettingsFallback shows settings when authed', () => {
-  // Provide a fake currentUser to simulate authenticated state
-  const currentUser = { id: 'u1', username: 'tester' };
-  renderAt('/test-community/settings', { currentUser });
-  // CommunitySettings view should render; during loadable state it may show a loading view
-  // Assert existence of the document content; additionally, check that we did not get redirected to login route
-  // A simple heuristic: ensure that at least the app wrapper exists and no obvious login-only copy like "Sign in" appears
-  expect(document.body).toBeTruthy();
+// Build the fallback component under test
+const CommunitySettingsFallback = signedOutFallback(
+  CommunitySettingsStub,
+  LoginStub
+);
+
+test('CommunitySettingsFallback renders Login when signed out', () => {
+  render(React.createElement(CommunitySettingsFallback, { __authed: false }));
+  expect(screen.getByRole('button', { name: 'Sign in' })).toBeInTheDocument();
+});
+
+test('CommunitySettingsFallback renders CommunitySettings when authed', () => {
+  render(React.createElement(CommunitySettingsFallback, { __authed: true }));
+  expect(screen.getByText('Community Settings View')).toBeInTheDocument();
 });
