@@ -1,0 +1,460 @@
+name: Update React package single bump
+description: Update a package in a React project to the latest version
+inputs:
+  package_name:
+    description: The package to update
+
+steps:
+  - name: Determine Node.JS version
+    id: node_instructions
+    agent:
+      extends: coding_new
+      role: You determine the Node.JS version that is required for the project
+      instructions: |
+        Determine the Node.JS version that is required for the project.
+
+        Possible sources:
+
+        .nvmrc	Specifies the Node version for nvm (Node Version Manager)
+        .node-version	Similar purpose for other version managers.
+        package.json	Check for an "engines" field.
+        Dockerfile or CI/CD config	May specify a Node base image or version.
+
+        Be sure to check all options, in case there are multiple versions, pick the latest version.
+
+        When you have determined the Node.JS version, create a .nvmrc file with the version number.
+
+        Verify that you can run the version of node with NVM. Determine what command you need to run to verify this.
+
+        Then call stop with the instructions to prefix every command with `nvm use`, as each command is run as a script in a new shell.
+      stop_schema: string
+  
+  - name: Determine the package manager and install the packages
+    id: package_manager_instructions
+    agent:
+      extends: coding_new
+      role: You determine the package manager that is required for the project
+      instructions: |
+        Determine the package manager that is required for the project by looking at the lock files.
+
+        Run the necessary commands to install the packages. It could be that flags such as "--legacy-peer-deps" are required.
+
+        Remember that to use node you should follow these instructions: {{ outputs.node_instructions }}.
+
+        When you have succesfully installed the packages, call stop with instructions to use the package manager.
+      stop_schema: string
+  
+  # - name: Get current package version
+  #   id: source
+  #   run: . ~/.nvm/nvm.sh && npm list {{ inputs.package_name }} --depth=0 2>/dev/null | grep {{ inputs.package_name }} | awk '{print $2}' | sed 's/@//g'
+  #
+  
+  - name: Get current package version
+    id: source
+    agent:
+      extends: coding_new
+      role: You identify the current version of the package {{ inputs.package_name }}
+      instructions: |
+        Use the repositories package manager and tooling available to you to identify the current version. Then stop with the last version.
+
+        Remember that you should follow these instructions to work with the package manager: {{ outputs.package_manager_instructions }}.
+
+        For example, if the identified target version is `0.11.0`, call stop with just that value. The value must be exactly the same as in the package manager.
+        IMPORTANT:
+        - You must determine the version of the dependency named {{ inputs.package_name }} as listed under dependencies or devDependencies.
+      stop_schema: string
+
+  - name: Get target version
+    id: target
+    agent:
+      extends: default
+      role: You identify the next major target version for the package {{ inputs.package_name }}
+      instructions: |
+        We are upgrading the package {{ inputs.package_name}} from {{ outputs.source }}. Your goal is to determine the next
+        major version to upgrade. We want to avoid skipping a major version.
+
+        For instance, if the current version is 0.10.0, and 0.11.0 and 0.12.0 are available, the next major version is 0.11.
+        Similary, if the current version is 1.0.0, and 2.0.0 and 3.0.0 are available, then the next major version is 2.0.0.
+
+        We *always* want to use the latest available patch version (the last digit).
+
+        Use the repositories package manager and tooling available to you to identify the target version. Then stop with the last version.
+
+        Remember that you should follow these instructions to work with the package manager: {{ outputs.package_manager_instructions }}.
+
+        IMPORTANT:
+        - Query the registry for the package named {{ inputs.package_name }} (not the project itself) to find available versions.
+        - Use package manager commands, e.g.:
+          - npm: `npm view {{ inputs.package_name }} versions --json`
+          - yarn: `yarn npm info {{ inputs.package_name }} versions --json`
+          - pnpm: `pnpm view {{ inputs.package_name }} versions --json`
+        - Compute the next target per the rules above from the current dependency version {{ outputs.source }}.
+
+        For example, if the identified target version is `0.11.0`, call stop with just that value. The value must be exactly the same as in the package manager.
+      toolboxes: ['repository_read', 'research', 'dangerous']
+      stop_schema: string
+
+  - name: Empty commit for PR
+    run: 'git commit -m "wip: Initial commit" --allow-empty'
+ 
+  - name: Prepare pull request
+    agent:
+      extends: pull_request
+      instructions: "We are upgrading {{ inputs.package_name }} from version {{ outputs.source }} to version {{ outputs.target }}."
+      constraints:
+        - "This is a test PR and should not be merged."
+        - "This PR is a work in progress."
+        - "There are no changes yet; just prepare an empty pull request and stop"
+      tools:
+        - name: "create_pull_request"
+          extends: create_or_update_pull_request
+          with:
+            draft: true
+
+  - name: Research upgrade guide
+    id: upgradeguide
+    agent:
+      role: "Your task is to research each step needed to upgrade a package. You do this by searching the webfor an upgrade guide for each relevant version upgrade. Then for each upgrade guide, fetch all the possible changes necessary. The goal is to have a list of potential changes and checks needed for upgrading a package."
+      extends: Default
+      instructions: |
+        We are upgrading {{ inputs.package_name }} from version {{ outputs.source }} to version {{ outputs.target }}.
+        Provide an upgrade guide. Start with creating a plan for what you will search for.
+        At the end, call the stop tool with ONLY the JSON array as your final message (no prose, no code fences, no explanations).
+      constraints:
+        - "In your stop message, give ONLY a valid JSON array (no prose, no code fences)."
+        - "Each item must be a string instruction that mentions the source and target versions and includes thorough explanation and fix steps."
+        - "Use valid JSON (double quotes, no trailing commas)."
+        - "Example (JSON): [\"0.10.0 -> 0.11.0: <change instructions>\", \"0.11.0 -> 0.12.0: <other change instruction>\"]"
+        - "IMPORTANT: Be very thorough; include all potential code changes and checks required for each step."
+        - "Search and browse until you have a clear, complete list of required upgrade steps. Do not include links; extract the actual steps."
+        - "IMPORTANT: When upgrading across multiple majors, include steps for each intermediate major version."
+      toolboxes: ["repository_read", "research"]
+      stop_schema: string_array
+
+  - name: Setup regression test suite
+    id: regression_setup
+    agent:
+      role: "Your task is to set up a regression test suite for React components"
+      extends: coding_new
+      instructions: |
+        Set up a regression test suite to ensure package upgrades don't break existing functionality.
+
+        Consider that to use node you should follow these instructions: {{ outputs.node_instructions }}.
+        Consider that to use the package manager you should follow these instructions: {{ outputs.package_manager_instructions }}.
+
+        IMPORTANT: Version compatibility strategy
+        The latest versions of testing packages may not be compatible with the Node version in this project.
+        You must discover and install compatible versions by following this process:
+
+        1. First, determine the current Node version and React version in the project.
+
+        2. For each required package (msw, @testing-library/react, @testing-library/jest-dom, jest, cross-fetch),
+           find compatible versions using this approach:
+           
+           a) Try installing the latest version first
+           b) If you get "EBADENGINE", "Unsupported engine", or "requires node >=" errors, the version is incompatible
+           c) Use `npm view <package> versions --json` to list all available versions
+           d) Work backwards from recent versions, testing installation until you find one that installs successfully
+           e) For @testing-library/react, ensure it's compatible with the project's React version
+           f) Keep track of which versions successfully install
+
+        3. Test that the installed versions actually work together by running a simple test before proceeding.
+
+        Step-by-step implementation:
+
+        1. Create the regression-tests directory:
+           ```
+           mkdir -p regression-tests
+           ```
+
+        2. Discover and install compatible versions of test dependencies:
+           - Start with: msw, @testing-library/react, @testing-library/jest-dom, jest
+           - Also install cross-fetch (required for MSW in Node environment)
+           - Use the version discovery process described above
+           - Document which versions you successfully installed
+
+        3. Create regression-tests/jest.config.js:
+           ```javascript
+           module.exports = {
+             testEnvironment: 'jsdom',
+             setupFilesAfterEnv: ['<rootDir>/setupTests.js'],
+             testMatch: ['**/*.test.js'],
+             rootDir: '.',
+           };
+           ```
+
+        4. Create regression-tests/handlers.js for MSW:
+           ```javascript
+           const { rest } = require('msw');
+           const handlers = [
+             // Add API handlers as needed
+           ];
+           module.exports = { handlers };
+           ```
+
+        5. Create regression-tests/server.js:
+           ```javascript
+           const { setupServer } = require('msw/node');
+           const { handlers } = require('./handlers');
+           const server = setupServer(...handlers);
+           module.exports = { server };
+           ```
+
+        6. Create regression-tests/setupTests.js:
+           ```javascript
+           require('@testing-library/jest-dom/extend-expect');
+           const { server } = require('./server');
+           beforeAll(() => server.listen());
+           afterEach(() => server.resetHandlers());
+           afterAll(() => server.close());
+           ```
+
+        7. Find a simple React component and create a test using React.createElement (to avoid JSX/Babel complexity):
+           ```javascript
+           const React = require('react');
+           const { render, screen, fireEvent } = require('@testing-library/react');
+           
+           test('component renders', () => {
+             const element = React.createElement('button', { 'data-testid': 'btn' }, 'Click');
+             render(element);
+             expect(screen.getByTestId('btn')).toBeInTheDocument();
+           });
+           ```
+
+        8. Add test script to package.json:
+           ```json
+           "test:regression": "jest --config regression-tests/jest.config.js"
+           ```
+
+        9. Run the test to verify it passes before completing.
+
+        CRITICAL: The latest versions of packages often require newer Node versions. If installation fails with engine errors,
+        you MUST find older compatible versions. Do not give up - compatible versions exist, you just need to find them.
+
+        When you are successful, call the stop tool with a 2-line explanation of how to run a regression test for a single component,
+         including an example command that incorporates the package manager instructions and/or node instructions.
+      constraints:
+        - "Discover compatible versions systematically - do not assume latest versions will work"
+        - "If installation fails with engine errors, query available versions and try older ones"
+        - "Use React.createElement() instead of JSX to avoid Babel configuration complexity"
+        - "Install cross-fetch as it is required for MSW to work in Node environment"
+        - "Choose a simple React component that has clear, testable behavior"
+        - "Ensure the test actually runs and passes before completing"
+        - "Document which versions you successfully installed in your stop message"
+      stop_schema: string
+
+  - name: Update pull request with regression setup
+    agent:
+      extends: pull_request
+      instructions: |
+        We are upgrading {{ inputs.package_name }} from version {{ outputs.source }} to version {{ outputs.target }}.
+
+        Update the pull request to include information about the regression test suite setup.
+        
+        Add the regression test setup information to the PR description:
+        {{ outputs.regression_setup }}
+      constraints:
+        - "This is a test PR and should not be merged."
+        - "Add a section about the regression test suite that was set up"
+        - "Include the testing instructions from the regression setup output"
+        - "This PR is a work in progress."
+        - "There are no significant changes yet; just prepare the pull request and stop"
+      tools:
+        - name: "update_pull_request"
+          extends: create_or_update_pull_request
+          with:
+            draft: true
+
+  - name: Add regression test github workflow
+    agent:
+      extends: coding_new
+      instructions: |
+        Add a .github/workflows/regression-tests.yml file to the project that runs the regression tests.
+
+        Run the instructions from the workflow to verify that the workflow is set up correctly.
+
+        Consider that to use node you should follow these instructions: {{ outputs.node_instructions }}.
+        Consider that to use the package manager you should follow these instructions: {{ outputs.package_manager_instructions }}.
+
+
+
+        For reference, these are the instructions for running the regression tests:
+
+        {{ outputs.regression_setup }}
+      constraints:
+        - The workflow should run successfully
+        - The workflow should use the correct version of Node.JS
+        - The workflow should use the correct version of the package manager
+        - The workflow should run on push regardless of the branch name
+        - The workflow should include instructions for installing the correct version of Node.JS using `nvm install`
+
+  - name: Find all React components
+    id: find_components
+    agent:
+      role: "Your task is to create a Python script that finds all React components in the project"
+      extends: coding_new
+      instructions: |
+        Create and run a Python script that finds every single React component in the project.
+        
+        1. Write a Python script that scans the project for React components
+        2. The script should return the results as a JSON array
+        3. The script should limit the number of components to 15
+        4. Run the script and output its results
+
+        When you finish, call the stop tool exactly once with this JSON payload shape:
+        { "components": [ { "name": "ComponentName", "path": "relative/file/path.tsx" } ] }
+        Do not include any extra prose or fields.
+      constraints:
+        - "The script should find .js, .jsx, .ts, .tsx files that contain React components"
+        - "Look for function components, class components, and arrow function components"
+        - "Return component names and file paths as JSON"
+        - "IMPORTANT: The output of the script must be the final output of your response, as it will be used directly as input for the next step"
+        - "Run the script and ensure the JSON output is valid"
+        - "If the script fails or returns an empty list, add debugging statements and try again, until it's successful"
+        - "The output of the script must be a JSON array of objects with `name` and `path` properties and should not contain any debugging output"
+      stop_schema:
+        type: object
+        properties:
+          components:
+            type: array
+            maxItems: 15
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                path:
+                  type: string
+              required: [name, path]
+              additionalProperties: false
+        required: [components]
+        additionalProperties: false
+      fail_schema:
+        type: object
+        properties:
+          summary:
+            type: string
+        required: [summary]
+        additionalProperties: false
+
+  - name: Generate regression tests for all components
+    id: generate_tests
+    for_each:
+      from: "{{ outputs.find_components.components | json_encode() }}"
+      continue_on_error: true
+      agent:
+        role: "Your task is to write a regression test for a specific React component"
+        extends: coding_new
+        instructions: |
+          Write a regression test for the React component: {{ for_each.value.name }} at {{ for_each.value.path }}
+          
+          Use the testing setup and instructions from the regression setup step to ensure consistency:
+
+          {{ outputs.regression_setup }}
+        constraints:
+          - "Use the same testing approach as described in the regression setup: {{ outputs.regression_setup }}"
+          - "Follow the 2-line instructions from the setup step to validate your test works correctly"
+          - "Ensure the test covers the main functionality of the component"
+          - "The test should pass when run"
+          - "If the component is too complex or has external dependencies that make testing difficult, create a simplified test that at least verifies the component renders"
+
+  - name: Update package and peers
+    id: initial_update
+    agent:
+      role: "Your task is to upgrade the requested package"
+      extends: coding_new
+      instructions: | 
+        We are upgrading {{ inputs.package_name }} from version {{ outputs.source }} to version {{ outputs.target }}.
+
+        Use the package manager and node instructions from the previous steps to ensure consistency:
+
+        {{ outputs.package_manager_instructions }}
+        {{ outputs.node_instructions }}
+      constraints:
+        - "Use npm to upgrade the requested package. If that introduces conflicts, fix it."
+        - "If pinned versions cause problems, unpin them."
+        - "If other packages also need to be upgraded, do so"
+        - "Run `npm audit` to check for vulnerabilities and ensure everything works. If not, try to fix it"
+        - "You are done when npm audit shows no critical issues and the package is successfully updated"
+        - "If a peer dependency is not available for a newer package, be creative in a solution."
+        - "IMPORTANT: Be persistant and try to come with a working solution"
+        - "IMPORTANT: If more upgrades are required on peers, upgrade these as well."
+        - "IMPORTANT: If there are dependency conflicts, fix these."
+        - "IMPORTANT: You are not allowed to remove functionality without providing an alternative"
+        - "IMPORTANT: If a conflict requires a different package, research how the package is used in the code, and be creative and thorough with a solution."
+        - "When you are succesful, call the stop tool with concise bullet points of what you did."
+      stop_schema: string
+
+  - name: Parallel upgrades
+    id: upgrades
+    for_each:
+      from: "{{ outputs.upgradeguide | json_encode() }}"
+      continue_on_error: true
+      agent:
+        role: "You are part of a series of agents that is upgrading a package by its upgrade guide. Each agent is is responsible for one step of the upgrade process."
+        extends: coding_new
+        instructions: >
+          We are upgrading {{ inputs.package_name }} from version {{ outputs.source }} to version {{ outputs.target }}.
+
+          Use the package manager and node instructions from the previous steps to ensure consistency:
+
+          {{ outputs.package_manager_instructions }}
+          {{ outputs.node_instructions }}
+
+          You need to upgrade this repo based on the folling upgrade instruction:
+            {{ for_each.value }}
+        constraints:
+          - If the instructions are not actionable, or do not require changes, call stop
+          - Research the project where changes might be needed
+          - If a file requires changes, make only the minimally needed changes required
+          - "IMPORTANT: It is important you verify all affected files have been changed accordingly" 
+          - Once you are confident all changes have been made, call stop
+          - If you are unable to perform the changes, and you see no proper solution, fail with an explanation. Include the version delta.
+          - For each change, comment the change explaining why it is necessary, and include the version delta.
+        
+  - name: Run regression tests and fix upgrade issues
+    id: regression_validation
+    for_each:
+      from: "{{ outputs.find_components.components | json_encode() }}"
+      continue_on_error: true
+      agent:
+        role: "Your task is to run regression tests and fix any issues caused by the package upgrade"
+        extends: coding_new
+        instructions: |
+          Run the regression test for the React component: {{ for_each.value }}
+          
+          Use the testing instructions from the regression setup step: {{ outputs.regression_setup }}
+          
+          If the test fails, analyze whether the failure is related to the {{ inputs.package_name }} upgrade from {{ outputs.source }} to {{ outputs.target }}.
+        constraints:
+          - "Run the regression test for this specific component"
+          - "If there are no errors, you are finished - call stop"
+          - "If the test fails due to issues unrelated to the package upgrade, call stop and explain why"
+          - "If the test fails due to the package upgrade, fix the component or test to work with the new package version"
+          - "Ensure the test passes after your fixes"
+          - "Document what changes were needed due to the package upgrade"
+
+  - name: Prepare pull request
+    agent:
+      extends: pull_request
+      instructions: >
+        We are upgrading {{ inputs.package_name }} from version {{ outputs.source }} to version {{ outputs.target }}.
+
+        Update the pull request based on the changes made. Previous agents have made changes for each previous upgrade described. Format the PR body such
+        that each group of changes is clearly grouped by changes made. If no upgrades have been made for a change, explicitly state so.
+
+        When performing the initial version update, an agent reported the following findings:
+          {{ outputs.initial_update }}
+        The following upgrade instructions have been identified before changes were made:
+          {{ outputs.upgradeguide }}
+
+        Potentially, some of the upgrade steps failed. If there are any, here are the explanations:
+          {{ errors }}
+      constraints:
+        - "This is a test PR and should not be merged."
+        - "This PR is intended to test an automated upgrade workflow for Shoparize"
+      tools:
+        - name: "create_pull_request"
+          extends: create_or_update_pull_request
+          with:
+            draft: true

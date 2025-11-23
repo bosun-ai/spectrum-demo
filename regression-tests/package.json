@@ -1,0 +1,29 @@
+{
+  "name": "regression-tests",
+  "private": true,
+  "dependencies": {
+    "@babel/plugin-syntax-async-generators": "^7.8.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@testing-library/jest-dom": "5.11.10",
+    "@testing-library/react": "11.2.7",
+    "babel-jest": "26.6.3",
+    "jest": "26.6.3",
+    "msw": "0.35.0",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4",
+    "redux-mock-store": "^1.5.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0",
+    "@babel/preset-env": "^7.20.0",
+    "babel-plugin-inline-import-graphql-ast": "^1.0.7",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "styled-components": "^5.3.0"
+  },
+  "scripts": {
+    "test": "jest --config=jest.config.js"
+  }
+}
