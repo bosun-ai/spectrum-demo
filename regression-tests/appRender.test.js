@@ -1,20 +1,32 @@
 const React = require('react');
-const { render, screen } = require('@testing-library/react');
+const { render } = require('@testing-library/react');
 
-// The App component is defined and exported as default from src/index.js
+// Mock modules that cause side effects or require fetch/websocket
+jest.mock('shared/graphql', () => ({
+  client: {},
+}));
+jest.mock(
+  'shared/graphql',
+  () => ({
+    client: {},
+    wsLink: { subscriptionClient: { on: () => {} } },
+  }),
+  { virtual: true }
+);
+jest.mock('offline-plugin/runtime', () => ({ install: () => ({}) }));
+jest.mock('src/helpers/web-push-manager', () => ({ set: () => {} }));
+
+// Now require after mocks applied
 const App = require('../src/index.js').default || require('../src/index.js');
 
 describe('App (src/index.js)', () => {
-  test('renders RedirectHandler inside providers', () => {
-    // Create a container element to mimic the root element used by ReactDOM
+  test('renders without crashing', () => {
     const root = document.createElement('div');
     root.setAttribute('id', 'root');
     document.body.appendChild(root);
 
     render(React.createElement(App));
 
-    // RedirectHandler renders nothing visible by default, but attaches to DOM via Router.
-    // Assert that the root element exists which means render did not crash.
     expect(document.querySelector('#root')).toBeInTheDocument();
   });
 });
