@@ -4,18 +4,26 @@ const configureStore = require('redux-mock-store').default;
 const { render, screen, fireEvent } = require('@testing-library/react');
 
 // Mock GraphQL HOC used by Gallery component to inject messages
-jest.mock('shared/graphql/queries/message/getMediaMessagesForThread', () => {
-  return Component => props => {
-    const data = {
-      messages: [
-        { id: 'm1', content: { body: 'https://example.com/1.jpg' } },
-        { id: 'm2', content: { body: 'https://example.com/2.jpg' } },
-        { id: 'm3', content: { body: 'https://example.com/3.jpg' } },
-      ],
-    };
-    return React.createElement(Component, { ...props, data });
-  };
-});
+jest.mock(
+  'shared/graphql/queries/message/getMediaMessagesForThread',
+  () =>
+    function mockGetMediaMessagesForThread(Component) {
+      return function Wrapped(props) {
+        const ReactLocal = require('react');
+        const data = {
+          messages: [
+            { id: 'm1', content: { body: 'https://example.com/1.jpg' } },
+            { id: 'm2', content: { body: 'https://example.com/2.jpg' } },
+            { id: 'm3', content: { body: 'https://example.com/3.jpg' } },
+          ],
+        };
+        return ReactLocal.createElement(
+          Component,
+          Object.assign({}, props, { data })
+        );
+      };
+    }
+);
 
 // Mock loading HOC to just pass-through
 jest.mock('src/components/loading', () => ({
