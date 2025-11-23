@@ -14,7 +14,6 @@ module.exports = babelJest.createTransformer({
   ],
   plugins: [
     'syntax-dynamic-import',
-    'transform-dynamic-import',
     'transform-class-properties',
     ['transform-object-rest-spread', { useBuiltIns: true }],
   ],
