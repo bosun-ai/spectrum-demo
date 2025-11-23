@@ -10,6 +10,6 @@ module.exports = {
     '^shared/(.*)$': '<rootDir>/../shared/$1',
   },
   transform: {
-    '^.+\\.js$': '<rootDir>/transform-import.js',
+    '^.+\\.js$': '<rootDir>/transform-esm.js',
   },
 };
