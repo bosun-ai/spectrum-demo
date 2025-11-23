@@ -142,19 +142,105 @@ steps:
         Consider that to use node you should follow these instructions: {{ outputs.node_instructions }}.
         Consider that to use the package manager you should follow these instructions: {{ outputs.package_manager_instructions }}.
 
-        1. Create a new directory called `regression-tests`. Add jest, react-testing-library, and msw to the project.
-        2. The regression-tests directory should have its own jest.config.js file
-        3. Find a simple React component in the project to generate the first regression test for
-        4. Use Jest, React Testing Library, and Mock Service Worker (MSW) to implement the test.
-        5. Make sure the versions of Jest, RTL and MSW are compatible with the React version in the project. If one of the tools complains they are not compatible, decrease their major version number and try again.
-        6. Generate a complete, working regression test for that single component in the `regression-tests` directory.
+        IMPORTANT: Version compatibility strategy
+        The latest versions of testing packages may not be compatible with the Node version in this project.
+        You must discover and install compatible versions by following this process:
+
+        1. First, determine the current Node version and React version in the project.
+
+        2. For each required package (msw, @testing-library/react, @testing-library/jest-dom, jest, cross-fetch),
+           find compatible versions using this approach:
+           
+           a) Try installing the latest version first
+           b) If you get "EBADENGINE", "Unsupported engine", or "requires node >=" errors, the version is incompatible
+           c) Use `npm view <package> versions --json` to list all available versions
+           d) Work backwards from recent versions, testing installation until you find one that installs successfully
+           e) For @testing-library/react, ensure it's compatible with the project's React version
+           f) Keep track of which versions successfully install
+
+        3. Test that the installed versions actually work together by running a simple test before proceeding.
+
+        Step-by-step implementation:
+
+        1. Create the regression-tests directory:
+           ```
+           mkdir -p regression-tests
+           ```
+
+        2. Discover and install compatible versions of test dependencies:
+           - Start with: msw, @testing-library/react, @testing-library/jest-dom, jest
+           - Also install cross-fetch (required for MSW in Node environment)
+           - Use the version discovery process described above
+           - Document which versions you successfully installed
+
+        3. Create regression-tests/jest.config.js:
+           ```javascript
+           module.exports = {
+             testEnvironment: 'jsdom',
+             setupFilesAfterEnv: ['<rootDir>/setupTests.js'],
+             testMatch: ['**/*.test.js'],
+             rootDir: '.',
+           };
+           ```
+
+        4. Create regression-tests/handlers.js for MSW:
+           ```javascript
+           const { rest } = require('msw');
+           const handlers = [
+             // Add API handlers as needed
+           ];
+           module.exports = { handlers };
+           ```
+
+        5. Create regression-tests/server.js:
+           ```javascript
+           const { setupServer } = require('msw/node');
+           const { handlers } = require('./handlers');
+           const server = setupServer(...handlers);
+           module.exports = { server };
+           ```
+
+        6. Create regression-tests/setupTests.js:
+           ```javascript
+           require('@testing-library/jest-dom/extend-expect');
+           const { server } = require('./server');
+           beforeAll(() => server.listen());
+           afterEach(() => server.resetHandlers());
+           afterAll(() => server.close());
+           ```
+
+        7. Find a simple React component and create a test using React.createElement (to avoid JSX/Babel complexity):
+           ```javascript
+           const React = require('react');
+           const { render, screen, fireEvent } = require('@testing-library/react');
+           
+           test('component renders', () => {
+             const element = React.createElement('button', { 'data-testid': 'btn' }, 'Click');
+             render(element);
+             expect(screen.getByTestId('btn')).toBeInTheDocument();
+           });
+           ```
+
+        8. Add test script to package.json:
+           ```json
+           "test:regression": "jest --config regression-tests/jest.config.js"
+           ```
+
+        9. Run the test to verify it passes before completing.
+
+        CRITICAL: The latest versions of packages often require newer Node versions. If installation fails with engine errors,
+        you MUST find older compatible versions. Do not give up - compatible versions exist, you just need to find them.
 
         When you are successful, call the stop tool with a 2-line explanation of how to run a regression test for a single component,
          including an example command that incorporates the package manager instructions and/or node instructions.
       constraints:
-        - "Use jest, react-testing-library, and msw (Mock Service Worker) for the test implementation"
+        - "Discover compatible versions systematically - do not assume latest versions will work"
+        - "If installation fails with engine errors, query available versions and try older ones"
+        - "Use React.createElement() instead of JSX to avoid Babel configuration complexity"
+        - "Install cross-fetch as it is required for MSW to work in Node environment"
         - "Choose a simple React component that has clear, testable behavior"
         - "Ensure the test actually runs and passes before completing"
+        - "Document which versions you successfully installed in your stop message"
       stop_schema: string
 
   - name: Update pull request with regression setup
