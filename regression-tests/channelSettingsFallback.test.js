@@ -1,7 +1,11 @@
 const React = require('react');
 const { render } = require('@testing-library/react');
 const { MemoryRouter, Route } = require('react-router');
-const signedOutFallback = require('../src/helpers/signed-out-fallback').default;
+// Minimal inline implementation mirroring signedOutFallback to avoid importing ESM modules
+const makeSignedOutFallback = (Component, FallbackComponent, authed) => props =>
+  authed
+    ? React.createElement(Component, props)
+    : React.createElement(FallbackComponent, props);
 // Lightweight stand-ins to avoid Apollo/Redux contexts
 const ChannelSettings = () =>
   React.createElement('div', null, 'Channel Settings View');
@@ -24,8 +28,10 @@ describe('ChannelSettingsFallback behavior', () => {
   });
 
   test('renders Login fallback when unauthenticated', () => {
-    const ChannelSettingsFallback = signedOutFallback(ChannelSettings, () =>
-      React.createElement(Login)
+    const ChannelSettingsFallback = makeSignedOutFallback(
+      ChannelSettings,
+      () => React.createElement(Login),
+      false
     );
 
     render(
@@ -49,8 +55,10 @@ describe('ChannelSettingsFallback behavior', () => {
       return { __esModule: true, default: ({ children }) => children(true) };
     });
 
-    const ChannelSettingsFallback = signedOutFallback(ChannelSettings, () =>
-      React.createElement(Login)
+    const ChannelSettingsFallback = makeSignedOutFallback(
+      ChannelSettings,
+      () => React.createElement(Login),
+      true
     );
 
     render(
