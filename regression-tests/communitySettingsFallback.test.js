@@ -20,6 +20,13 @@ jest.mock('../src/views/authViewHandler', () => {
   };
 });
 
+// Mock withCurrentUser HOC to pass through without Apollo dependency
+jest.mock('../src/components/withCurrentUser', () => {
+  return {
+    withCurrentUser: Comp => Comp,
+  };
+});
+
 // Build the fallback component under test
 const CommunitySettingsFallback = signedOutFallback(
   CommunitySettingsStub,
