@@ -1,0 +1,51 @@
+name: Regression Tests
+
+on:
+  push:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up NVM and Node 8
+        shell: bash
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          mkdir -p "$NVM_DIR"
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+          source "$NVM_DIR/nvm.sh"
+          nvm install
+          nvm use
+          node -v
+          npm -v
+
+      - name: Install dependencies (root)
+        shell: bash
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          source "$NVM_DIR/nvm.sh"
+          nvm use
+          npm install --legacy-peer-deps
+
+      - name: Install dependencies (api)
+        shell: bash
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          source "$NVM_DIR/nvm.sh"
+          nvm use
+          cd api
+          npm install --legacy-peer-deps
+
+      - name: Run regression tests
+        shell: bash
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          source "$NVM_DIR/nvm.sh"
+          nvm use
+          npm run test:regression -- regression-tests/simpleComponent.test.js
