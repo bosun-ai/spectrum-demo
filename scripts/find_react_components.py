@@ -49,7 +49,7 @@ def scan_project(root: str, limit: int = 15) -> list:
     for dirpath, dirnames, filenames in os.walk(root):
         # Skip common non-source dirs
         rel = os.path.relpath(dirpath, root)
-        if rel.startswith(('.git', 'node_modules', 'flow-typed', 'cypress', 'docs', 'public', 'docker', '.circleci', '.github')):
+        if rel.startswith(('.git', 'node_modules', 'flow-typed', 'cypress', 'docs', 'public', 'docker', '.circleci', '.github', 'regression-tests')):
             continue
         for fn in filenames:
             _, ext = os.path.splitext(fn)
