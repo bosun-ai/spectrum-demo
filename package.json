@@ -4,7 +4,7 @@
   "license": "BSD-3-Clause",
   "devDependencies": {
     "@babel/preset-flow": "^7.0.0",
-    "@testing-library/jest-dom": "5",
+    "@testing-library/jest-dom": "4.2.4",
     "@testing-library/react": "10",
     "babel-cli": "^6.24.1",
     "babel-eslint": "^8.2.6",
@@ -264,4 +264,4 @@
     ]
   },
   "pre-commit": "lint:staged"
-  }
+}
