@@ -1,5 +1,6 @@
 const React = require('react');
-const { render, screen } = require('@testing-library/react');
+// Use React DOM to query rather than RTL to avoid legacy test-utils issues
+const { screen } = require('@testing-library/dom');
 
 // src/index.js defines App inline, but it isn't exported.
 // For regression, we verify the top-level render path mounts RedirectHandler
