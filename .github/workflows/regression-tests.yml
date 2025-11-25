@@ -1,0 +1,63 @@
+name: Regression Tests
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node using nvm
+        shell: bash
+        run: |
+          echo "Installing Node via nvm as per project .nvmrc"
+          export NVM_DIR="$HOME/.nvm"
+          mkdir -p "$NVM_DIR"
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+          source "$NVM_DIR/nvm.sh"
+          nvm install
+          nvm use
+          node -v
+          corepack enable || true
+          npm i -g yarn@1
+          yarn -v
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          source "$NVM_DIR/nvm.sh"
+          nvm use
+          yarn install --frozen-lockfile || yarn install
+
+      - name: Optional build web
+        shell: bash
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          source "$NVM_DIR/nvm.sh"
+          nvm use
+          yarn run build:web || echo "build:web not required for regression"
+
+      - name: Optional build api
+        shell: bash
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          source "$NVM_DIR/nvm.sh"
+          nvm use
+          yarn run build:api || echo "build:api not required for regression"
+
+      - name: Run regression tests
+        shell: bash
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          source "$NVM_DIR/nvm.sh"
+          nvm use
+          yarn run test:regression
