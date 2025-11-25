@@ -12,7 +12,11 @@ function Consumer() {
   return React.createElement(
     'div',
     null,
-    React.createElement('span', { 'data-testid': 'is-open' }, String(navigationIsOpen)),
+    React.createElement(
+      'span',
+      { 'data-testid': 'is-open' },
+      String(navigationIsOpen)
+    ),
     React.createElement(
       'button',
       {
