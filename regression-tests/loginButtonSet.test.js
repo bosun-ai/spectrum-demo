@@ -1,6 +1,6 @@
 const React = require('react');
-const { render, screen } = require('@testing-library/react');
-const { MemoryRouter } = require('react-router');
+const { screen } = require('@testing-library/react');
+const { renderWithThemeAndRouter } = require('./test-utils');
 
 // Import unwrapped component by reaching into the module before withRouter wraps it
 // The default export is withRouter(LoginButtonSet), but we can still render it
@@ -8,10 +8,8 @@ const { MemoryRouter } = require('react-router');
 const LoginButtonSet = require('../src/components/loginButtonSet').default;
 
 // Helpers
-function renderWithRouter(ui, { route = '/' } = {}) {
-  return render(
-    React.createElement(MemoryRouter, { initialEntries: [route] }, ui)
-  );
+function renderWithRouter(ui, opts) {
+  return renderWithThemeAndRouter(ui, opts);
 }
 
 describe('LoginButtonSet', () => {
