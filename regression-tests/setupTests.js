@@ -1,6 +1,6 @@
 // Extend Jest matchers
-// For older jest-dom versions, main entry extends expect
-require('@testing-library/jest-dom');
+// Use older extend-expect path for Jest DOM 5
+require('@testing-library/jest-dom/extend-expect');
 
 // Start MSW server
 const { server } = require('./server');
