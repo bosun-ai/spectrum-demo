@@ -1,6 +1,7 @@
 module.exports = {
   testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/setupTests.js'],
+  setupTestFrameworkScriptFile: '<rootDir>/setupTests.js',
   testMatch: ['**/*.test.js'],
   rootDir: '.',
+  testURL: 'http://localhost/',
 };
