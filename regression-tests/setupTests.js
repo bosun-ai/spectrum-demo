@@ -1,5 +1,9 @@
-// Extend Jest matchers
-require('@testing-library/jest-dom/extend-expect');
+// Extend Jest matchers when available; fallback silently if not installed
+try {
+  require('@testing-library/jest-dom/extend-expect');
+} catch (e) {
+  // jest-dom may not be present in older env; proceed without it
+}
 
 // Start MSW server lifecycle hooks
 const { server } = require('./server');
