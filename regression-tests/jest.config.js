@@ -1,6 +1,8 @@
 module.exports = {
   testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/setupTests.js'],
+  // Older Jest version expects setupTestFrameworkScriptFile
+  setupTestFrameworkScriptFile: '<rootDir>/setupTests.js',
+  testURL: 'http://localhost/',
   testMatch: ['**/*.test.js'],
   rootDir: '.',
 };
