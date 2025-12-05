@@ -20,9 +20,15 @@ try {
   // ignore if jsdom internals not exposed
 }
 
-// Setup MSW server lifecycle
+// Setup MSW server lifecycle only when Jest globals are present
 const { server } = require('./server');
 
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
+if (
+  typeof beforeAll === 'function' &&
+  typeof afterEach === 'function' &&
+  typeof afterAll === 'function'
+) {
+  beforeAll(() => server.listen());
+  afterEach(() => server.resetHandlers());
+  afterAll(() => server.close());
+}
