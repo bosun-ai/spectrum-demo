@@ -5,8 +5,13 @@ try {
   // jest-dom may not be present in older env; proceed without it
 }
 
-// Start MSW server lifecycle hooks
-const { server } = require('./server');
+// Start MSW server lifecycle hooks (disabled: msw not installed in this env)
+let server;
+try {
+  server = require('./server').server;
+} catch (e) {
+  server = null;
+}
 
 // jsdom may run with an opaque origin; provide a simple localStorage mock
 if (typeof window !== 'undefined') {
@@ -30,6 +35,8 @@ if (typeof window !== 'undefined') {
   }
 }
 
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
+if (server) {
+  beforeAll(() => server.listen());
+  afterEach(() => server.resetHandlers());
+  afterAll(() => server.close());
+}
