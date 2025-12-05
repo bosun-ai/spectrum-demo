@@ -1,5 +1,10 @@
 // Extend jest-dom matchers
-require('@testing-library/jest-dom/extend-expect');
+// For older Jest versions, import the built file to avoid expect init issues
+try {
+  require('@testing-library/jest-dom/dist/extend-expect');
+} catch (e) {
+  require('@testing-library/jest-dom/extend-expect');
+}
 // JSDOM under Jest 22 requires URL set to avoid opaque origin
 if (typeof window !== 'undefined' && !window.location) {
   // noop
