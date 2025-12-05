@@ -1,0 +1,34 @@
+name: regression-tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Use a login shell so NVM is available; honor .nvmrc (12)
+      - name: Set up Node via NVM and run regression tests
+        shell: bash -l {0}
+        run: |
+          # Ensure Node 12 per .nvmrc; install if missing
+          nvm use || nvm install
+
+          # Install worker dependencies (if the script exists)
+          if [ -f shared/install-dependencies.js ]; then
+            node shared/install-dependencies.js
+          fi
+
+          # Install top-level dependencies via yarn
+          yarn
+
+          # Build web and api
+          yarn run build:web
+          yarn run build:api
+
+          # Run Jest regression suite
+          yarn run test:regression
