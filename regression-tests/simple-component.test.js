@@ -1,5 +1,7 @@
 const React = require('react');
 const { render, screen, fireEvent } = require('@testing-library/react');
+// Manually import matchers for older jest-dom versions
+require('@testing-library/jest-dom');
 
 test('component renders and responds to click', () => {
   const handleClick = jest.fn();
