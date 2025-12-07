@@ -73,6 +73,8 @@ jest.mock('../src/components/appViewWrapper', () => {
     return ReactLocal.createElement('div', props);
   };
 });
+// Mock QueryParamToastDispatcher to avoid needing Redux provider
+jest.mock('../src/views/queryParamToastDispatcher', () => () => null);
 
 // Helper to render at a route with controllable auth state
 function renderAt(route, { authed = false } = {}) {
