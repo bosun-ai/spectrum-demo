@@ -1,0 +1,50 @@
+name: Regression Tests
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node via nvm
+        shell: bash -l {0}
+        run: |
+          nvm install
+          nvm use && node -v
+
+      - name: Install dependencies (Yarn required)
+        shell: bash -l {0}
+        run: |
+          nvm use && yarn install
+
+      - name: Build API
+        shell: bash -l {0}
+        run: |
+          nvm use && yarn run build:api
+
+      - name: Build Web
+        shell: bash -l {0}
+        run: |
+          nvm use && yarn run build:web
+
+      - name: Run unit tests (CI)
+        shell: bash -l {0}
+        run: |
+          nvm use && yarn run test:ci
+
+      - name: Run regression tests
+        shell: bash -l {0}
+        run: |
+          nvm use && yarn run test:regression -- regression-tests/simpleComponent.test.js
+
+      - name: Run e2e tests
+        shell: bash -l {0}
+        run: |
+          nvm use && yarn run test:e2e
