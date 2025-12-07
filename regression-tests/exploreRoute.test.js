@@ -18,6 +18,7 @@ jest.mock('../src/components/withCurrentUser', () => ({
 }));
 jest.mock('react-redux', () => ({ connect: () => C => C }));
 jest.mock('react-helmet-async', () => ({ Helmet: props => null }));
+jest.mock('../src/views/explore/view', () => ({ Charts: () => null }));
 
 // Render the real Routes component and navigate to /explore
 describe('Explore Route', () => {
