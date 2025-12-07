@@ -16,6 +16,7 @@ jest.mock('../src/components/modals/modalRoot', () => () => null);
 jest.mock('../src/views/globalTitlebar', () => () => null);
 jest.mock('../src/components/announcementBanner', () => () => null);
 jest.mock('../src/components/head', () => () => null);
+jest.mock('../src/views/queryParamToastDispatcher', () => () => null);
 // Mock Head to avoid react-helmet-async internals
 jest.mock('../src/components/appViewWrapper', () => {
   const ReactLocal = require('react');
@@ -56,13 +57,7 @@ test('ChannelSettingsFallback renders Login for unauthenticated users', () => {
     /continue with facebook/i,
   ];
 
-  const foundAny = providers.some(re => {
-    try {
-      return screen.getByText(re);
-    } catch (_) {
-      return false;
-    }
-  });
+  const foundAny = providers.some(re => !!screen.queryByText(re));
 
   expect(foundAny).toBe(true);
 });

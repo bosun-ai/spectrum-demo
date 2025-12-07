@@ -46,6 +46,7 @@ jest.mock('../src/views/viewHelpers', () => ({
 jest.mock('../src/views/directMessages', () => () => null);
 jest.mock('../src/views/newUserOnboarding', () => () => null);
 jest.mock('../src/components/formElements', () => () => null);
+jest.mock('../src/views/queryParamToastDispatcher', () => () => null);
 
 // Provide a trivial ThemeProvider to avoid styled-components theme requirements
 // Also mock error boundary and viewError to avoid styled-components usage deep in tree
