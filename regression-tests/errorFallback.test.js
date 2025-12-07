@@ -6,10 +6,10 @@ const { render, screen } = require('@testing-library/react');
 // the expected ViewError copy.
 
 describe('ErrorFallback (from src/routes.js)', () => {
-  test('renders BlueScreen with default headings', async () => {
-    // Dynamically import the module the same way routes.js does
-    const mod = await import('../src/components/error');
-    // Default export is BlueScreen component
+  test('renders BlueScreen with default headings', () => {
+    // Import the module similarly to routes.js but via CJS for Jest 22
+    const mod = require('../src/components/error');
+    // Default export is BlueScreen component (index.js exports default BlueScreen)
     const ErrorFallback = mod.default;
 
     render(React.createElement(ErrorFallback));
