@@ -24,7 +24,10 @@ styledMock.h6 = makeStyled('h6');
 styledMock.label = makeStyled('label');
 styledMock.input = makeStyled('input');
 styledMock.textarea = makeStyled('textarea');
-styledMock.textarea = makeStyled('textarea');
+styledMock.p = makeStyled('p');
+styledMock.p = makeStyled('p');
+styledMock.a = makeStyled('a');
+styledMock.button = makeStyled('button');
 
 module.exports = new Proxy(styledMock, {
   get: (target, prop) => {
