@@ -2,13 +2,12 @@ const React = require('react');
 const { render, screen } = require('@testing-library/react');
 const { MemoryRouter, Route } = require('react-router');
 
-// Import the app Routes which defines ChannelSettingsFallback
-// Mock withCurrentUser HOC to avoid ApolloProvider requirement
+// Make withCurrentUser a no-op HOC so Routes renders without ApolloProvider
 jest.mock('../src/components/withCurrentUser', () => ({
   withCurrentUser: Comp => Comp,
 }));
 
-// Mock redux-connected components that require Provider
+// Mock redux-connected or app-level components that expect Providers
 jest.mock('../src/views/status', () => () => null);
 jest.mock('../src/components/toasts', () => () => null);
 jest.mock('../src/components/gallery', () => () => null);
@@ -16,22 +15,36 @@ jest.mock('../src/components/modals/modalRoot', () => () => null);
 jest.mock('../src/views/globalTitlebar', () => () => null);
 jest.mock('../src/components/announcementBanner', () => () => null);
 jest.mock('../src/components/head', () => () => null);
-// Mock Head to avoid react-helmet-async internals
+
+// Provide a trivial ThemeProvider to avoid styled-components theme requirements
+jest.mock('styled-components', () => {
+  const actual = jest.requireActual('styled-components');
+  const ReactLocal = require('react');
+  const ThemeProvider = ({ children, theme }) =>
+    ReactLocal.createElement(
+      'div',
+      { 'data-testid': 'theme-wrapper', theme },
+      children
+    );
+  return { ...actual, ThemeProvider };
+});
+
+// Simplify AppViewWrapper to a div passthrough
 jest.mock('../src/components/appViewWrapper', () => {
   const ReactLocal = require('react');
   return function AppViewWrapperMock(props) {
     return ReactLocal.createElement('div', props);
   };
 });
-jest.mock('../src/views/authViewHandler', () => {
-  // Always unauthenticated to trigger fallback
-  return ({ children }) => children(false);
-});
 
-// Import after mocks so HOCs are neutralized
+// Force unauthenticated state so signedOutFallback renders <Login />
+jest.mock('../src/views/authViewHandler', () => ({ children }) =>
+  children(false)
+);
+
+// Import app routes after mocks so fallbacks use our mocked environment
 const AppRoutes = require('../src/routes').default;
 
-// Helper to render with a given initial route
 function renderAt(route) {
   return render(
     React.createElement(
@@ -42,13 +55,11 @@ function renderAt(route) {
   );
 }
 
-test('ChannelSettingsFallback renders Login for unauthenticated users', () => {
-  // Use a plausible community/channel settings route
-  renderAt('/reactiflux/general/settings');
+test('CommunitySettingsFallback renders Login for unauthenticated users', () => {
+  // Route that hits CommunitySettingsFallback
+  renderAt('/reactiflux/settings');
 
-  // The signedOutFallback for ChannelSettingsFallback renders <Login /> without redirectPath
-  // The Login component renders buttons with provider names; assert a stable bit of UI text.
-  // We look for common provider button labels defined in src/components/loginButtonSet
+  // The Login view renders provider buttons; assert at least one appears
   const providers = [
     /continue with github/i,
     /continue with google/i,
@@ -58,7 +69,7 @@ test('ChannelSettingsFallback renders Login for unauthenticated users', () => {
 
   const foundAny = providers.some(re => {
     try {
-      return screen.getByText(re);
+      return !!screen.getByText(re);
     } catch (_) {
       return false;
     }
