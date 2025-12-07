@@ -42,7 +42,6 @@ styledMock.label = makeStyled('label');
 styledMock.input = makeStyled('input');
 styledMock.textarea = makeStyled('textarea');
 styledMock.p = makeStyled('p');
-styledMock.p = makeStyled('p');
 styledMock.a = makeStyled('a');
 styledMock.button = makeStyled('button');
 

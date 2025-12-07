@@ -2,7 +2,7 @@ const React = require('react');
 const { render, screen } = require('@testing-library/react');
 const { MemoryRouter, Route } = require('react-router');
 
-// Make withCurrentUser a no-op HOC so Routes renders without ApolloProvider
+// Make withCurrentUser a no-op HOC so Routes renders without Apollo/ApolloProvider
 jest.mock('../src/components/withCurrentUser', () => ({
   withCurrentUser: Comp => Comp,
 }));
@@ -29,9 +29,10 @@ jest.mock('../src/components/layout', () => () => null);
 jest.mock('../src/views/navigation', () => () => null);
 jest.mock('../src/components/illustrations', () => () => null);
 jest.mock('../src/components/fullscreenView', () => () => null);
+
+// Mock Login view to render recognizable provider text
 jest.mock('../src/views/login', () => () => {
   const ReactLocal = require('react');
-  // Render minimal text similar to provider buttons
   return ReactLocal.createElement('div', null, [
     'Continue with GitHub',
     'Continue with Google',
@@ -39,13 +40,8 @@ jest.mock('../src/views/login', () => () => {
     'Continue with Facebook',
   ]);
 });
-jest.mock('../src/views/viewHelpers', () => ({
-  LoadingView: () => null,
-}));
-jest.mock('../src/views/directMessages', () => () => null);
 
-// Provide a trivial ThemeProvider to avoid styled-components theme requirements
-// Also mock error boundary and viewError to avoid styled-components usage deep in tree
+// Provide a trivial ErrorBoundary passthrough
 jest.mock('../src/components/error', () => ({
   ErrorBoundary: ({ children }) => children,
 }));
@@ -77,9 +73,8 @@ function renderAt(route) {
   );
 }
 
-test('CommunitySettingsFallback renders Login for unauthenticated users', () => {
-  // Route that hits CommunitySettingsFallback
-  renderAt('/reactiflux/settings');
+test('LoginFallback renders Login on /login for unauthenticated users', () => {
+  renderAt('/login');
 
   // The Login view renders provider buttons; assert at least one appears
   const providers = [
