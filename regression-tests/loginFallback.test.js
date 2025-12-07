@@ -35,6 +35,9 @@ jest.mock('../src/views/viewHelpers/errorView', () => () => null);
 jest.mock('../src/views/viewHelpers/style', () => ({}));
 // Mock DirectMessages route used in routes to avoid deep imports
 jest.mock('../src/views/directMessages', () => () => null);
+// Mock pages and maintenance to avoid styled-components theme usage
+jest.mock('../src/views/pages', () => () => null);
+jest.mock('../src/components/maintenance', () => () => null);
 
 // Mock Login view to render recognizable provider text
 jest.mock('../src/views/login', () => () => {
