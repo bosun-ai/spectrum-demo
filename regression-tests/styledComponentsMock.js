@@ -11,6 +11,21 @@ function makeStyled(tag) {
 }
 
 function styledMock() {}
+// Allow calls like styled('div')``
+const callable = new Proxy(styledMock, {
+  apply: (target, thisArg, argArray) => {
+    const tag = argArray && argArray[0] ? argArray[0] : 'div';
+    return makeStyled(tag);
+  },
+  get: (target, prop) => {
+    if (prop === 'ThemeProvider') return ThemeProvider;
+    if (prop === 'css') return () => '';
+    if (prop === 'keyframes') return () => '';
+    if (prop === 'createGlobalStyle') return () => () => null;
+    if (prop === 'default') return callable;
+    return styledMock[prop] || makeStyled(prop);
+  },
+});
 styledMock.div = makeStyled('div');
 styledMock.span = makeStyled('span');
 styledMock.main = makeStyled('main');
@@ -29,13 +44,4 @@ styledMock.p = makeStyled('p');
 styledMock.a = makeStyled('a');
 styledMock.button = makeStyled('button');
 
-module.exports = new Proxy(styledMock, {
-  get: (target, prop) => {
-    if (prop === 'ThemeProvider') return ThemeProvider;
-    if (prop === 'css') return () => '';
-    if (prop === 'keyframes') return () => '';
-    if (prop === 'createGlobalStyle') return () => () => null;
-    if (prop === 'default') return styledMock;
-    return styledMock[prop] || makeStyled(prop);
-  },
-});
+module.exports = callable;
