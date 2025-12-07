@@ -15,6 +15,7 @@ jest.mock('styled-components', () => {
   const makeTagged = () => {
     const fn = () => () => null;
     fn.withConfig = () => fn;
+    fn.attrs = () => fn;
     return fn;
   };
   const css = () => '';
