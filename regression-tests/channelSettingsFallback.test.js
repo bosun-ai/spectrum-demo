@@ -52,17 +52,6 @@ test('ChannelSettingsFallback renders Login for unauthenticated users', () => {
   // Use a plausible community/channel settings route
   renderAt('/reactiflux/general/settings');
 
-  // The signedOutFallback for ChannelSettingsFallback renders <Login /> without redirectPath
-  // The Login component renders buttons with provider names; assert a stable bit of UI text.
-  // We look for common provider button labels defined in src/components/loginButtonSet
-  const providers = [
-    /continue with github/i,
-    /continue with google/i,
-    /continue with twitter/i,
-    /continue with facebook/i,
-  ];
-
-  const foundAny = providers.some(re => !!screen.queryByText(re));
-
-  expect(foundAny).toBe(true);
+  // Our mocked Login renders simple text
+  expect(screen.getByText(/log in/i)).toBeTruthy();
 });
