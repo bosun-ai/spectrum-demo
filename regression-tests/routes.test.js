@@ -10,10 +10,13 @@ jest.mock('../src/components/error', () => ({
 // Avoid styled-components theming complexity in tests
 jest.mock('styled-components', () => {
   const actual = jest.requireActual('styled-components');
+  const React = require('react');
+  const createGlobalStyle = () => () => null;
   return {
     __esModule: true,
     ...actual,
     ThemeProvider: ({ children }) => children,
+    createGlobalStyle,
   };
 });
 
