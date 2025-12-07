@@ -27,6 +27,18 @@ jest.mock('../src/components/button', () => () => null);
 jest.mock('../src/components/avatar', () => () => null);
 jest.mock('../src/components/layout', () => () => null);
 jest.mock('../src/views/navigation', () => () => null);
+jest.mock('../src/components/illustrations', () => () => null);
+jest.mock('../src/components/fullscreenView', () => () => null);
+jest.mock('../src/views/login', () => () => {
+  const ReactLocal = require('react');
+  // Render minimal text similar to provider buttons
+  return ReactLocal.createElement('div', null, [
+    'Continue with GitHub',
+    'Continue with Google',
+    'Continue with Twitter',
+    'Continue with Facebook',
+  ]);
+});
 
 // Provide a trivial ThemeProvider to avoid styled-components theme requirements
 // Also mock error boundary and viewError to avoid styled-components usage deep in tree

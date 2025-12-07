@@ -5,7 +5,9 @@ function ThemeProvider(props) {
 }
 
 function makeStyled(tag) {
-  const fn = () => () => null;
+  const base = () => () => null;
+  base.attrs = () => base;
+  const fn = () => base;
   fn.withConfig = () => fn;
   return fn;
 }
