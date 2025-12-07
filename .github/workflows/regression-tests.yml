@@ -1,0 +1,70 @@
+name: Regression Tests
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: ['**']
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    services:
+      rethinkdb:
+        image: rethinkdb:2.3
+        ports:
+          - 28015:28015
+        options: >-
+          --health-cmd "rethinkdb --version"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node via nvm and show versions
+        run: |
+          . "$NVM_DIR/nvm.sh" || . "$HOME/.nvm/nvm.sh" || true
+          nvm install
+          nvm use && node -v
+          nvm use && yarn --version
+        env:
+          NVM_DIR: ${{ runner.temp }}/.nvm
+
+      - name: Install Dependencies
+        run: |
+          . "$NVM_DIR/nvm.sh" || . "$HOME/.nvm/nvm.sh" || true
+          nvm use && node shared/install-dependencies.js || nvm use && yarn install
+        env:
+          NVM_DIR: ${{ runner.temp }}/.nvm
+
+      - name: Build API
+        run: |
+          . "$NVM_DIR/nvm.sh" || . "$HOME/.nvm/nvm.sh" || true
+          nvm use && yarn run build:api
+        env:
+          NVM_DIR: ${{ runner.temp }}/.nvm
+
+      - name: Unit Tests (CI)
+        run: |
+          . "$NVM_DIR/nvm.sh" || . "$HOME/.nvm/nvm.sh" || true
+          nvm use && yarn run test:ci
+        env:
+          NVM_DIR: ${{ runner.temp }}/.nvm
+
+      - name: Regression Tests
+        run: |
+          . "$NVM_DIR/nvm.sh" || . "$HOME/.nvm/nvm.sh" || true
+          nvm use && yarn run test:regression
+        env:
+          NVM_DIR: ${{ runner.temp }}/.nvm
+
+      - name: E2E Tests (Cypress)
+        run: |
+          . "$NVM_DIR/nvm.sh" || . "$HOME/.nvm/nvm.sh" || true
+          nvm use && yarn run test:e2e
+        env:
+          NVM_DIR: ${{ runner.temp }}/.nvm
