@@ -60,6 +60,6 @@ describe('InternalEmbed', () => {
 
     const { container } = render(element);
     // Should render nothing
-    expect(container).toBeEmptyDOMElement();
+    expect(container.innerHTML).toBe('');
   });
 });
