@@ -17,6 +17,11 @@ jest.mock('../src/views/globalTitlebar', () => () => null);
 jest.mock('../src/components/announcementBanner', () => () => null);
 jest.mock('../src/components/head', () => () => null);
 jest.mock('../src/views/queryParamToastDispatcher', () => () => null);
+// Mock login to avoid redux Provider requirement but preserve visible text
+jest.mock('../src/views/login', () => () => {
+  const ReactLocal = require('react');
+  return ReactLocal.createElement('div', null, 'Log in');
+});
 // Mock Head to avoid react-helmet-async internals
 jest.mock('../src/components/appViewWrapper', () => {
   const ReactLocal = require('react');

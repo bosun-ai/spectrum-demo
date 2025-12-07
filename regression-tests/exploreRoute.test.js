@@ -1,9 +1,15 @@
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
-jest.mock('../src/components/layout', () => ({
-  ViewGrid: props =>
-    React.createElement('div', { 'data-testid': 'explore-page', ...props }),
-}));
+jest.mock('../src/components/layout', () => {
+  const React = require('react');
+  return {
+    ViewGrid: props =>
+      React.createElement(
+        'div',
+        Object.assign({ 'data-testid': 'explore-page' }, props)
+      ),
+  };
+});
 jest.mock('../src/components/error', () => ({
   ErrorBoundary: ({ children }) => children,
 }));

@@ -84,22 +84,6 @@ function renderAt(route) {
 test('CommunitySettingsFallback renders Login for unauthenticated users', () => {
   // Route that hits CommunitySettingsFallback
   renderAt('/reactiflux/settings');
-
-  // The Login view renders provider buttons; assert at least one appears
-  const providers = [
-    /continue with github/i,
-    /continue with google/i,
-    /continue with twitter/i,
-    /continue with facebook/i,
-  ];
-
-  const foundAny = providers.some(re => {
-    try {
-      return !!screen.getByText(re);
-    } catch (_) {
-      return false;
-    }
-  });
-
-  expect(foundAny).toBe(true);
+  // Our mocked Login renders a container with provider text; check one
+  expect(screen.getByText(/continue with github/i)).toBeInTheDocument();
 });
