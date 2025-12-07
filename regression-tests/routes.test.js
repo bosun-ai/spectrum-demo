@@ -97,7 +97,7 @@ jest.mock('../src/components/maintenance', () => () => {
 });
 
 describe('Routes component', () => {
-  test('redirects / to /explore and renders Explore', async () => {
+  test('redirects / to /explore and renders Explore', () => {
     const Routes = require('../src/routes').default;
     render(
       React.createElement(
@@ -113,7 +113,7 @@ describe('Routes component', () => {
     // Base layout should render
     expect(screen.getByTestId('nav')).toBeInTheDocument();
     // Explore view should render after redirect
-    expect(await screen.findByTestId('explore-view')).toBeInTheDocument();
+    expect(screen.getByTestId('explore-view')).toBeInTheDocument();
   });
 
   test('renders maintenance mode when maintenanceMode=true', () => {
