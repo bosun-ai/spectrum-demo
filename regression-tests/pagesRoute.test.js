@@ -10,12 +10,14 @@ jest.mock('../src/components/withCurrentUser', () => ({
 }));
 jest.mock('react-redux', () => ({ connect: () => C => C }));
 jest.mock('react-helmet-async', () => ({ Helmet: () => null }));
-jest.mock('../src/components/appViewWrapper', () => props =>
-  React.createElement('div', props)
-);
-jest.mock('../src/components/scrollManager', () => props =>
-  React.createElement('div', props)
-);
+jest.mock('../src/components/appViewWrapper', () => {
+  const React = require('react');
+  return props => React.createElement('div', props);
+});
+jest.mock('../src/components/scrollManager', () => {
+  const React = require('react');
+  return props => React.createElement('div', props);
+});
 jest.mock('../src/components/modals/modalRoot', () => () => null);
 jest.mock('../src/components/gallery', () => () => null);
 jest.mock('../src/components/toasts', () => () => null);
