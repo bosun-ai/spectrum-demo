@@ -1,5 +1,5 @@
 const React = require('react');
-const { render, screen, fireEvent } = require('@testing-library/react');
+const { render, fireEvent } = require('@testing-library/react');
 
 test('component renders and clicks', () => {
   const handleClick = jest.fn();
@@ -8,8 +8,8 @@ test('component renders and clicks', () => {
     { 'data-testid': 'btn', onClick: handleClick },
     'Click'
   );
-  render(element);
-  const btn = screen.getByTestId('btn');
+  const { getByTestId } = render(element);
+  const btn = getByTestId('btn');
   expect(btn).toBeInTheDocument();
   fireEvent.click(btn);
   expect(handleClick).toHaveBeenCalledTimes(1);
