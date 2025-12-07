@@ -15,6 +15,12 @@ jest.mock('../src/components/modals/modalRoot', () => () => null);
 jest.mock('../src/views/globalTitlebar', () => () => null);
 jest.mock('../src/components/announcementBanner', () => () => null);
 jest.mock('../src/components/head', () => () => null);
+jest.mock('../src/reset.css.js', () => () => null);
+jest.mock('../src/components/message/threadAttachment/style', () => ({
+  GlobalThreadAttachmentStyles: () => null,
+}));
+jest.mock('../shared/theme', () => ({ theme: {} }));
+jest.mock('../src/components/globals', () => () => null);
 
 // Provide a trivial ThemeProvider to avoid styled-components theme requirements
 // Also mock error boundary and viewError to avoid styled-components usage deep in tree
