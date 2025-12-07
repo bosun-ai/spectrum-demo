@@ -73,6 +73,12 @@ jest.mock('../src/helpers/navigation-context', () => ({
     },
   },
 }));
+// styled-components ThemeProvider used in routes
+jest.mock('styled-components', () => ({
+  ThemeProvider: function ThemeProvider(props) {
+    return props && props.children ? props.children : null;
+  },
+}));
 
 // The dynamically loaded CommunityView component import path
 jest.mock(

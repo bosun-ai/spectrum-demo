@@ -17,17 +17,11 @@ jest.mock('../src/components/announcementBanner', () => () => null);
 jest.mock('../src/components/head', () => () => null);
 
 // Provide a trivial ThemeProvider to avoid styled-components theme requirements
-jest.mock('styled-components', () => {
-  const actual = jest.requireActual('styled-components');
-  const ReactLocal = require('react');
-  const ThemeProvider = ({ children, theme }) =>
-    ReactLocal.createElement(
-      'div',
-      { 'data-testid': 'theme-wrapper', theme },
-      children
-    );
-  return { ...actual, ThemeProvider };
-});
+// Also mock error boundary and viewError to avoid styled-components usage deep in tree
+jest.mock('../src/components/error', () => ({
+  ErrorBoundary: ({ children }) => children,
+}));
+jest.mock('../src/components/viewError', () => () => null);
 
 // Simplify AppViewWrapper to a div passthrough
 jest.mock('../src/components/appViewWrapper', () => {
