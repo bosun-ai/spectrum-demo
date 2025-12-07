@@ -2,26 +2,33 @@ const React = require('react');
 const { render, screen } = require('@testing-library/react');
 
 // Mock style components used by ExternalEmbed
-jest.mock('src/components/rich-text-editor/style', () => ({
-  AspectRatio: ({ children, style, ratio }) =>
-    React.createElement(
-      'div',
-      { 'data-testid': 'aspect-ratio', style, 'data-ratio': String(ratio) },
-      children
-    ),
-  EmbedContainer: ({ children, style }) =>
-    React.createElement(
-      'div',
-      { 'data-testid': 'embed-container', style },
-      children
-    ),
-  EmbedComponent: props => React.createElement('iframe', props),
-}));
+jest.mock('src/components/rich-text-editor/style', () => {
+  const ReactLocal = require('react');
+  return {
+    AspectRatio: ({ children, style, ratio }) =>
+      ReactLocal.createElement(
+        'div',
+        { 'data-testid': 'aspect-ratio', style, 'data-ratio': String(ratio) },
+        children
+      ),
+    EmbedContainer: ({ children, style }) =>
+      ReactLocal.createElement(
+        'div',
+        { 'data-testid': 'embed-container', style },
+        children
+      ),
+    EmbedComponent: props => ReactLocal.createElement('iframe', props),
+  };
+});
 
 // Mock any router usage (not used directly in ExternalEmbed but renderer file imports Link)
-jest.mock('react-router-dom', () => ({
-  Link: ({ to, children }) => React.createElement('a', { href: to }, children),
-}));
+jest.mock('react-router-dom', () => {
+  const ReactLocal = require('react');
+  return {
+    Link: ({ to, children }) =>
+      ReactLocal.createElement('a', { href: to }, children),
+  };
+});
 
 // Require the module to access ExternalEmbed via the Embed path
 const RendererModule = require('../shared/clients/draft-js/renderer/index.js');
