@@ -8,6 +8,22 @@ jest.mock('../src/components/withCurrentUser', () => ({
   withCurrentUser: Comp => Comp,
 }));
 
+// Mock redux-connected components that require Provider
+jest.mock('../src/views/status', () => () => null);
+jest.mock('../src/components/toasts', () => () => null);
+jest.mock('../src/components/gallery', () => () => null);
+jest.mock('../src/components/modals/modalRoot', () => () => null);
+jest.mock('../src/views/globalTitlebar', () => () => null);
+jest.mock('../src/components/announcementBanner', () => () => null);
+jest.mock('../src/components/head', () => () => null);
+jest.mock('../src/components/appViewWrapper', () => props =>
+  React.createElement('div', props)
+);
+jest.mock('../src/views/authViewHandler', () => {
+  // Always unauthenticated to trigger fallback
+  return ({ children }) => children(false);
+});
+
 // Import after mocks so HOCs are neutralized
 const AppRoutes = require('../src/routes').default;
 

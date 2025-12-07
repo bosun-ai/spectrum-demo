@@ -41,6 +41,7 @@ describe('InternalEmbed', () => {
     const renderer = createRenderer({ headings: false });
     const Embed = renderer.entities.embed;
     const data = { type: 'internal', entity: 'thread', id: 'thread-123' };
+    // The third argument to entities.embed is an object with a "key"
     const element = React.createElement(Embed, [null], data, { key: 'k1' });
 
     render(element);
