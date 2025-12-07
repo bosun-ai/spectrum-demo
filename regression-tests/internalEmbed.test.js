@@ -41,8 +41,12 @@ describe('InternalEmbed', () => {
     const renderer = createRenderer({ headings: false });
     const Embed = renderer.entities.embed;
     const data = { type: 'internal', entity: 'thread', id: 'thread-123' };
-    // The third argument to entities.embed is an object with a "key"
-    const element = React.createElement(Embed, [null], data, { key: 'k1' });
+    // Pass props as a single object with "children", "data", and "key" similar to how renderer consumers call these entity renderers
+    const element = React.createElement(Embed, {
+      children: [null],
+      data,
+      key: 'k1',
+    });
 
     render(element);
 
@@ -56,7 +60,11 @@ describe('InternalEmbed', () => {
     const renderer = createRenderer({ headings: false });
     const Embed = renderer.entities.embed;
     const data = { type: 'internal', entity: 'message', id: 'msg-1' };
-    const element = React.createElement(Embed, [null], data, { key: 'k2' });
+    const element = React.createElement(Embed, {
+      children: [null],
+      data,
+      key: 'k2',
+    });
 
     const { container } = render(element);
     // Should render nothing
