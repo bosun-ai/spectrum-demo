@@ -12,9 +12,14 @@ jest.mock('styled-components', () => {
   const actual = jest.requireActual('styled-components');
   const React = require('react');
   const createGlobalStyle = () => () => null;
+  const makeTagged = () => {
+    const fn = () => () => null;
+    fn.withConfig = () => fn;
+    return fn;
+  };
   const styled = new Proxy(() => null, {
-    get: () => () => () => null,
-    apply: () => () => () => null,
+    get: () => makeTagged(),
+    apply: () => makeTagged(),
   });
   return {
     __esModule: true,
