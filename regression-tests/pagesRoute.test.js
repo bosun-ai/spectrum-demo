@@ -40,16 +40,10 @@ jest.mock('../src/components/message/threadAttachment/style', () => ({
   GlobalThreadAttachmentStyles: () => null,
 }));
 jest.mock('../src/reset.css.js', () => () => null);
-// Mock dynamic business pages loader to return sync component
-jest.mock('../src/views/pages', () => ({
-  default: require('../src/views/pages').default,
-}));
-// Mock Loadable to return the loader() result directly
-jest.mock('react-loadable', () => config => {
-  // if given plain loader function, try to return its default export
-  const mod = config && config.loader ? config.loader() : null;
-  if (mod && mod.default) return mod.default;
-  return () => null;
+// Mock Loadable to avoid dynamic import issues and return a dummy component
+jest.mock('react-loadable', () => {
+  const React = require('react');
+  return () => () => null;
 });
 
 // Use memory history to push locations into the router
