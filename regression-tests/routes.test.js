@@ -18,6 +18,7 @@ jest.mock('styled-components', () => {
     return fn;
   };
   const css = () => '';
+  const keyframes = () => '';
   const styled = new Proxy(() => null, {
     get: () => makeTagged(),
     apply: () => makeTagged(),
@@ -30,6 +31,7 @@ jest.mock('styled-components', () => {
     default: styled,
     styled,
     css,
+    keyframes,
   };
 });
 
