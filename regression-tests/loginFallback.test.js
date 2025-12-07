@@ -70,6 +70,8 @@ jest.mock('../src/components/appViewWrapper', () => {
 jest.mock('../src/views/authViewHandler', () => ({ children }) =>
   children(false)
 );
+// Mock QueryParamToastDispatcher to avoid needing Redux provider
+jest.mock('../src/views/queryParamToastDispatcher', () => () => null);
 
 // Import app routes after mocks so fallbacks use our mocked environment
 const AppRoutes = require('../src/routes').default;
