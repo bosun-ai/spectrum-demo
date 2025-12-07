@@ -39,14 +39,10 @@ jest.mock('react-router-dom', () => ({
 describe('InternalEmbed', () => {
   test('renders ThreadAttachment when entity is thread', () => {
     const renderer = createRenderer({ headings: false });
-    const Embed = renderer.entities.embed;
+    // renderer.entities.embed is a function (children, data, {key}) => ReactElement
+    const renderEmbed = renderer.entities.embed;
     const data = { type: 'internal', entity: 'thread', id: 'thread-123' };
-    // Pass props as a single object with "children", "data", and "key" similar to how renderer consumers call these entity renderers
-    const element = React.createElement(Embed, {
-      children: [null],
-      data,
-      key: 'k1',
-    });
+    const element = renderEmbed([null], data, { key: 'k1' });
 
     render(element);
 
@@ -58,13 +54,9 @@ describe('InternalEmbed', () => {
 
   test('returns null for non-thread internal entity', () => {
     const renderer = createRenderer({ headings: false });
-    const Embed = renderer.entities.embed;
+    const renderEmbed = renderer.entities.embed;
     const data = { type: 'internal', entity: 'message', id: 'msg-1' };
-    const element = React.createElement(Embed, {
-      children: [null],
-      data,
-      key: 'k2',
-    });
+    const element = renderEmbed([null], data, { key: 'k2' });
 
     const { container } = render(element);
     // Should render nothing

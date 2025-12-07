@@ -16,6 +16,13 @@ jest.mock('../src/components/modals/modalRoot', () => () => null);
 jest.mock('../src/views/globalTitlebar', () => () => null);
 jest.mock('../src/components/announcementBanner', () => () => null);
 jest.mock('../src/components/head', () => () => null);
+// Provide a trivial ThemeProvider to avoid theme usage; mock styled-components ThemeProvider
+jest.mock('styled-components', () => {
+  const actual = jest.requireActual('styled-components');
+  const ReactLocal = require('react');
+  const ThemeProvider = ({ children, theme }) => ReactLocal.createElement('div', { 'data-testid': 'theme-wrapper', theme }, children);
+  return { ...actual, ThemeProvider };
+});
 jest.mock('../src/components/appViewWrapper', () => {
   const ReactLocal = require('react');
   return function AppViewWrapperMock(props) {
