@@ -33,8 +33,8 @@ jest.mock('../src/components/gallery', () => () => null);
 jest.mock('../src/components/modals/modalRoot', () => () => null);
 jest.mock('../src/components/announcementBanner', () => () => null);
 jest.mock('../src/views/globalTitlebar', () => () => null);
-jest.mock('../src/components/appViewWrapper', () => ({ children }) => children);
-jest.mock('../src/components/scrollManager', () => ({ children }) => children);
+jest.mock('../src/components/appViewWrapper', () => props => props.children);
+jest.mock('../src/components/scrollManager', () => props => props.children);
 jest.mock('../src/components/message/threadAttachment/style', () => ({
   GlobalThreadAttachmentStyles: () => null,
 }));
@@ -43,15 +43,17 @@ jest.mock('../src/components/message/threadAttachment/style', () => ({
 jest.mock('../src/components/head', () => () => null);
 
 // Navigation renders marker so we know Routes mounted base layout
-jest.mock('../src/views/navigation', () => () =>
-  React.createElement('div', { 'data-testid': 'nav' })
-);
+jest.mock('../src/views/navigation', () => () => {
+  const React = require('react');
+  return React.createElement('div', { 'data-testid': 'nav' });
+});
 
 // Status/Login keep quiet
 jest.mock('../src/views/status', () => () => null);
-jest.mock('../src/views/login', () => () =>
-  React.createElement('div', { 'data-testid': 'login' })
-);
+jest.mock('../src/views/login', () => () => {
+  const React = require('react');
+  return React.createElement('div', { 'data-testid': 'login' });
+});
 
 // Thread related views
 jest.mock('../src/views/thread', () => ({ ThreadView: () => null }));
@@ -65,13 +67,17 @@ jest.mock('../src/components/withCurrentUser', () => ({
 // Explore page marker, used for redirect assertion
 jest.mock('../src/views/explore', () => ({
   __esModule: true,
-  default: () => React.createElement('div', { 'data-testid': 'explore-view' }),
+  default: () => {
+    const React = require('react');
+    return React.createElement('div', { 'data-testid': 'explore-view' });
+  },
 }));
 
 // Maintenance view marker
-jest.mock('../src/components/maintenance', () => () =>
-  React.createElement('div', { 'data-testid': 'maintenance' })
-);
+jest.mock('../src/components/maintenance', () => () => {
+  const React = require('react');
+  return React.createElement('div', { 'data-testid': 'maintenance' });
+});
 
 describe('Routes component', () => {
   test('redirects / to /explore and renders Explore', async () => {
