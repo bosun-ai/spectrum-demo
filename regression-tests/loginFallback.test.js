@@ -38,6 +38,8 @@ jest.mock('../src/views/directMessages', () => () => null);
 // Mock pages and maintenance to avoid styled-components theme usage
 jest.mock('../src/views/pages', () => () => null);
 jest.mock('../src/components/maintenance', () => () => null);
+// Mock NewUserOnboarding to avoid pulling formElements styled-components
+jest.mock('../src/views/newUserOnboarding', () => () => null);
 
 // Mock Login view to render recognizable provider text
 jest.mock('../src/views/login', () => () => {
