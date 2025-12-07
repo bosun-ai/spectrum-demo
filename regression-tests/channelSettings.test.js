@@ -15,21 +15,37 @@ jest.mock('../src/components/message/threadAttachment/style', () => ({
   GlobalThreadAttachmentStyles: () => null,
 }));
 jest.mock('../shared/theme', () => ({ theme: {} }));
-jest.mock('../src/components/appViewWrapper', () => props =>
-  React.createElement('div', props)
+jest.mock(
+  '../src/components/appViewWrapper',
+  () =>
+    function AppViewWrapper(props) {
+      return React.createElement('div', props);
+    }
 );
-jest.mock('../src/components/scrollManager', () => props =>
-  React.createElement('div', props)
+jest.mock(
+  '../src/components/scrollManager',
+  () =>
+    function ScrollManager(props) {
+      return React.createElement('div', props);
+    }
 );
-jest.mock('../src/components/head', () => props =>
-  React.createElement('div', props)
+jest.mock(
+  '../src/components/head',
+  () =>
+    function Head(props) {
+      return React.createElement('div', props);
+    }
 );
 jest.mock('../src/components/modals/modalRoot', () => () => null);
 jest.mock('../src/components/gallery', () => () => null);
 jest.mock('../src/components/toasts', () => () => null);
 jest.mock('../src/helpers/signed-out-fallback', () => (A, B) => A);
-jest.mock('../src/views/threadSlider', () => props =>
-  React.createElement('div', props)
+jest.mock(
+  '../src/views/threadSlider',
+  () =>
+    function ThreadSlider(props) {
+      return React.createElement('div', props);
+    }
 );
 jest.mock('../src/components/announcementBanner', () => () => null);
 jest.mock('../src/views/navigation', () => () => null);
@@ -45,20 +61,30 @@ jest.mock('../src/views/thread/redirect-old-route', () => () => null);
 jest.mock('../src/views/newUserOnboarding', () => () => null);
 jest.mock('../src/views/queryParamToastDispatcher', () => () => null);
 jest.mock('../src/views/viewHelpers', () => ({
-  LoadingView: () => React.createElement('div', { 'data-testid': 'loading' }),
+  LoadingView: function LoadingView() {
+    return React.createElement('div', { 'data-testid': 'loading' });
+  },
 }));
 jest.mock('../src/views/globalTitlebar', () => () => null);
 jest.mock('../src/helpers/navigation-context', () => ({
-  NavigationContext: { Provider: ({ children }) => children },
+  NavigationContext: {
+    Provider: function Provider(props) {
+      return props.children;
+    },
+  },
 }));
 
 // The dynamically loaded ChannelSettings component import path
-jest.mock('../src/views/channelSettings', () => () =>
-  React.createElement(
-    'div',
-    { 'data-testid': 'channel-settings' },
-    'Channel Settings'
-  )
+jest.mock(
+  '../src/views/channelSettings',
+  () =>
+    function ChannelSettings() {
+      return React.createElement(
+        'div',
+        { 'data-testid': 'channel-settings' },
+        'Channel Settings'
+      );
+    }
 );
 
 // Finally import routes.js so Loadable is configured, then render ChannelSettings through the signedOutFallback route.
