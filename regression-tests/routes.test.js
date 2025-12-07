@@ -81,8 +81,16 @@ jest.mock('../src/components/withCurrentUser', () => ({
 // Avoid needing a Redux provider; make connect a no-op
 jest.mock('react-redux', () => ({ connect: () => C => C }));
 
-// Explore page marker, used for redirect assertion
+// Explore page marker, used for redirect assertion; also mock route to render marker
 jest.mock('../src/views/explore', () => ({
+  __esModule: true,
+  default: () => {
+    const React = require('react');
+    return React.createElement('div', { 'data-testid': 'explore-view' });
+  },
+}));
+// Also mock the Explore route path component to ensure Switch match renders something
+jest.mock('../src/views/explore/index.js', () => ({
   __esModule: true,
   default: () => {
     const React = require('react');
