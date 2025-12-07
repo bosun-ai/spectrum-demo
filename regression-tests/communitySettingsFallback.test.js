@@ -29,6 +29,7 @@ jest.mock('../src/components/layout', () => () => null);
 jest.mock('../src/views/navigation', () => () => null);
 jest.mock('../src/components/illustrations', () => () => null);
 jest.mock('../src/components/fullscreenView', () => () => null);
+jest.mock('../src/components/maintenance', () => () => null);
 jest.mock('../src/views/login', () => () => {
   const ReactLocal = require('react');
   // Render minimal text similar to provider buttons
