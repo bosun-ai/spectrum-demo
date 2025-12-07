@@ -31,6 +31,18 @@ jest.mock('react-router-dom', () => {
 });
 
 // Require the module to access ExternalEmbed via the Embed path
+// Mock styled-components usage in src/components/message/style to avoid construct errors
+jest.mock('src/components/message/style', () => {
+  const ReactLocal = require('react');
+  return {
+    Line: ({ children, className, style }) =>
+      ReactLocal.createElement('div', { className, style }, children),
+    Paragraph: ({ children }) => ReactLocal.createElement('p', null, children),
+    BlockQuote: ({ children }) =>
+      ReactLocal.createElement('blockquote', null, children),
+  };
+});
+
 const RendererModule = require('../shared/clients/draft-js/renderer/index.js');
 
 // Extract ExternalEmbed by recreating how Embed chooses
