@@ -16,9 +16,12 @@ jest.mock('../src/components/modals/modalRoot', () => () => null);
 jest.mock('../src/views/globalTitlebar', () => () => null);
 jest.mock('../src/components/announcementBanner', () => () => null);
 jest.mock('../src/components/head', () => () => null);
-jest.mock('../src/components/appViewWrapper', () => props =>
-  React.createElement('div', props)
-);
+jest.mock('../src/components/appViewWrapper', () => {
+  const ReactLocal = require('react');
+  return function AppViewWrapperMock(props) {
+    return ReactLocal.createElement('div', props);
+  };
+});
 jest.mock('../src/views/authViewHandler', () => {
   // Always unauthenticated to trigger fallback
   return ({ children }) => children(false);
