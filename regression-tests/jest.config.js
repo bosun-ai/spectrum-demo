@@ -4,4 +4,8 @@ module.exports = {
   testMatch: ['**/*.test.js'],
   rootDir: '.',
   testURL: 'http://localhost/',
+  moduleNameMapper: {
+    '^src/(.*)$': '<rootDir>/../src/$1',
+    '^shared/(.*)$': '<rootDir>/../shared/$1',
+  },
 };

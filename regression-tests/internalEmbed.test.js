@@ -1,0 +1,66 @@
+const React = require('react');
+const { render, screen } = require('@testing-library/react');
+
+// Import the renderer which contains InternalEmbed
+const {
+  createRenderer,
+} = require('../shared/clients/draft-js/renderer/index.js');
+
+// Mock ThreadAttachment to avoid GraphQL/data dependencies and assert render
+jest.mock('../src/components/message/threadAttachment', () => {
+  return function MockThreadAttachment(props) {
+    return React.createElement('div', {
+      'data-testid': 'thread-attachment',
+      id: props.id,
+    });
+  };
+});
+
+// Mock style components used by renderer to avoid styled-components requirements
+jest.mock('../src/components/message/style', () => {
+  return {
+    Line: props => React.createElement('div', props),
+    Paragraph: props => React.createElement('p', props),
+    BlockQuote: props => React.createElement('blockquote', props),
+  };
+});
+
+jest.mock('../src/components/rich-text-editor/style', () => {
+  return {
+    AspectRatio: props => React.createElement('div', props),
+    EmbedContainer: props => React.createElement('div', props),
+    EmbedComponent: props => React.createElement('iframe', props),
+  };
+});
+
+// Mock react-router-dom Link to a simple anchor to avoid needing a router
+jest.mock('react-router-dom', () => ({
+  Link: props => React.createElement('a', props),
+}));
+
+describe('InternalEmbed', () => {
+  test('renders ThreadAttachment when entity is thread', () => {
+    const renderer = createRenderer({ headings: false });
+    const Embed = renderer.entities.embed;
+    const data = { type: 'internal', entity: 'thread', id: 'thread-123' };
+    const element = React.createElement(Embed, [null], data, { key: 'k1' });
+
+    render(element);
+
+    const attachment = screen.getByTestId('thread-attachment');
+    expect(attachment).toBeInTheDocument();
+    // ensure id is passed through
+    expect(attachment.getAttribute('id')).toBe('thread-123');
+  });
+
+  test('returns null for non-thread internal entity', () => {
+    const renderer = createRenderer({ headings: false });
+    const Embed = renderer.entities.embed;
+    const data = { type: 'internal', entity: 'message', id: 'msg-1' };
+    const element = React.createElement(Embed, [null], data, { key: 'k2' });
+
+    const { container } = render(element);
+    // Should render nothing
+    expect(container).toBeEmptyDOMElement();
+  });
+});
