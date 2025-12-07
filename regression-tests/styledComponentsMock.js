@@ -27,6 +27,8 @@ styledMock.input = makeStyled('input');
 module.exports = new Proxy(styledMock, {
   get: (target, prop) => {
     if (prop === 'ThemeProvider') return ThemeProvider;
+    if (prop === 'css') return () => '';
+    if (prop === 'keyframes') return () => '';
     if (prop === 'createGlobalStyle') return () => () => null;
     if (prop === 'default') return styledMock;
     return styledMock[prop] || makeStyled(prop);
