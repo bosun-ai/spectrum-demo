@@ -82,6 +82,8 @@ jest.mock('../src/views/thread/redirect-old-route', () => () => null);
 jest.mock('../src/components/withCurrentUser', () => ({
   withCurrentUser: C => C,
 }));
+// Avoid needing a Redux provider; make connect a no-op
+jest.mock('react-redux', () => ({ connect: () => C => C }));
 
 // Explore page marker, used for redirect assertion
 jest.mock('../src/views/explore', () => ({
