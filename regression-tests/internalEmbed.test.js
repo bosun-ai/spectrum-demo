@@ -7,35 +7,33 @@ const {
 } = require('../shared/clients/draft-js/renderer/index.js');
 
 // Mock ThreadAttachment to avoid GraphQL/data dependencies and assert render
-jest.mock('../src/components/message/threadAttachment', () => {
-  return function MockThreadAttachment(props) {
-    return React.createElement('div', {
-      'data-testid': 'thread-attachment',
-      id: props.id,
-    });
-  };
-});
+jest.mock(
+  '../src/components/message/threadAttachment',
+  () =>
+    function MockThreadAttachment(props) {
+      return require('react').createElement('div', {
+        'data-testid': 'thread-attachment',
+        id: props.id,
+      });
+    }
+);
 
 // Mock style components used by renderer to avoid styled-components requirements
-jest.mock('../src/components/message/style', () => {
-  return {
-    Line: props => React.createElement('div', props),
-    Paragraph: props => React.createElement('p', props),
-    BlockQuote: props => React.createElement('blockquote', props),
-  };
-});
+jest.mock('../src/components/message/style', () => ({
+  Line: props => require('react').createElement('div', props),
+  Paragraph: props => require('react').createElement('p', props),
+  BlockQuote: props => require('react').createElement('blockquote', props),
+}));
 
-jest.mock('../src/components/rich-text-editor/style', () => {
-  return {
-    AspectRatio: props => React.createElement('div', props),
-    EmbedContainer: props => React.createElement('div', props),
-    EmbedComponent: props => React.createElement('iframe', props),
-  };
-});
+jest.mock('../src/components/rich-text-editor/style', () => ({
+  AspectRatio: props => require('react').createElement('div', props),
+  EmbedContainer: props => require('react').createElement('div', props),
+  EmbedComponent: props => require('react').createElement('iframe', props),
+}));
 
 // Mock react-router-dom Link to a simple anchor to avoid needing a router
 jest.mock('react-router-dom', () => ({
-  Link: props => React.createElement('a', props),
+  Link: props => require('react').createElement('a', props),
 }));
 
 describe('InternalEmbed', () => {

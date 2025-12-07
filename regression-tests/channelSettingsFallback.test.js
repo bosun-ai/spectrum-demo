@@ -3,6 +3,12 @@ const { render, screen } = require('@testing-library/react');
 const { MemoryRouter, Route } = require('react-router');
 
 // Import the app Routes which defines ChannelSettingsFallback
+// Mock withCurrentUser HOC to avoid ApolloProvider requirement
+jest.mock('../src/components/withCurrentUser', () => ({
+  withCurrentUser: Comp => Comp,
+}));
+
+// Import after mocks so HOCs are neutralized
 const AppRoutes = require('../src/routes').default;
 
 // Helper to render with a given initial route
