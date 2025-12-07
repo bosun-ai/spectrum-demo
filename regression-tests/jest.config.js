@@ -8,5 +8,6 @@ module.exports = {
     '^src/(.*)$': '<rootDir>/../src/$1',
     '^shared/(.*)$': '<rootDir>/../shared/$1',
     '^!!raw-loader!.*$': '<rootDir>/styleMock.js',
+    'styled-components': '<rootDir>/styledComponentsMock.js',
   },
 };
