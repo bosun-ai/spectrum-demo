@@ -39,14 +39,7 @@ jest.mock('styled-components', () => {
 // Avoid real Loadable behavior; just render the loaded component
 jest.mock('react-loadable', () => ({
   __esModule: true,
-  default: cfg => {
-    // If loader returns a promise (dynamic import), just render a noop component
-    const res = cfg.loader();
-    if (res && typeof res.then === 'function') {
-      return () => null;
-    }
-    return res;
-  },
+  default: cfg => () => null,
 }));
 
 // Keep global chrome like toast/gallery/modal quiet
