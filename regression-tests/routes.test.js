@@ -12,11 +12,17 @@ jest.mock('styled-components', () => {
   const actual = jest.requireActual('styled-components');
   const React = require('react');
   const createGlobalStyle = () => () => null;
+  const styled = new Proxy(() => null, {
+    get: () => () => () => null,
+    apply: () => () => () => null,
+  });
   return {
     __esModule: true,
     ...actual,
     ThemeProvider: ({ children }) => children,
     createGlobalStyle,
+    default: styled,
+    styled,
   };
 });
 
