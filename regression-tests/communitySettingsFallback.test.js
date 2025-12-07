@@ -30,15 +30,11 @@ jest.mock('../src/views/navigation', () => () => null);
 jest.mock('../src/components/illustrations', () => () => null);
 jest.mock('../src/components/fullscreenView', () => () => null);
 jest.mock('../src/components/maintenance', () => () => null);
-jest.mock('../src/views/login', () => () => {
+jest.mock('../src/views/login', () => {
   const ReactLocal = require('react');
-  // Render minimal text similar to provider buttons
-  return ReactLocal.createElement('div', null, [
-    'Continue with GitHub',
-    'Continue with Google',
-    'Continue with Twitter',
-    'Continue with Facebook',
-  ]);
+  return function LoginMock() {
+    return ReactLocal.createElement('div', null, 'Login Fallback');
+  };
 });
 jest.mock('../src/views/viewHelpers', () => ({
   LoadingView: () => null,
