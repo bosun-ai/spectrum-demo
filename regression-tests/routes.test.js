@@ -17,6 +17,7 @@ jest.mock('styled-components', () => {
     fn.withConfig = () => fn;
     return fn;
   };
+  const css = () => '';
   const styled = new Proxy(() => null, {
     get: () => makeTagged(),
     apply: () => makeTagged(),
@@ -28,6 +29,7 @@ jest.mock('styled-components', () => {
     createGlobalStyle,
     default: styled,
     styled,
+    css,
   };
 });
 
