@@ -84,6 +84,6 @@ function renderAt(route) {
 test('CommunitySettingsFallback renders Login for unauthenticated users', () => {
   // Route that hits CommunitySettingsFallback
   renderAt('/reactiflux/settings');
-  // Our mocked Login renders a container with provider text; check one
-  expect(screen.getByText(/continue with github/i)).toBeInTheDocument();
+  // Our mocked Login renders simple text
+  expect(screen.getByText(/login fallback/i)).toBeInTheDocument();
 });

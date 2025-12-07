@@ -49,15 +49,10 @@ jest.mock('../src/views/directMessages', () => () => {
   );
 });
 
-// Mock Login view to render recognizable provider text
+// Mock Login view to render simple text
 jest.mock('../src/views/login', () => () => {
   const ReactLocal = require('react');
-  return ReactLocal.createElement('div', null, [
-    'Continue with GitHub',
-    'Continue with Google',
-    'Continue with Twitter',
-    'Continue with Facebook',
-  ]);
+  return ReactLocal.createElement('div', null, 'Log in');
 });
 
 // Provide a trivial ErrorBoundary passthrough
@@ -96,22 +91,7 @@ function renderAt(route) {
 test('MessagesFallback renders Login when unauthenticated on /messages', () => {
   renderAt('/messages');
 
-  const providers = [
-    /continue with github/i,
-    /continue with google/i,
-    /continue with twitter/i,
-    /continue with facebook/i,
-  ];
-
-  const foundAny = providers.some(re => {
-    try {
-      return !!screen.getByText(re);
-    } catch (_) {
-      return false;
-    }
-  });
-
-  expect(foundAny).toBe(true);
+  expect(screen.getByText(/log in/i)).toBeTruthy();
 });
 
 describe('Authenticated MessagesFallback', () => {
