@@ -7,8 +7,10 @@ function ThemeProvider(props) {
 function makeStyled(tag) {
   const base = () => () => null;
   base.attrs = () => base;
+  base.withConfig = () => base;
   const fn = () => base;
   fn.withConfig = () => fn;
+  fn.attrs = () => fn;
   return fn;
 }
 
