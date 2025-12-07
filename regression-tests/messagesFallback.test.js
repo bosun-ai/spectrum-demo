@@ -76,16 +76,14 @@ jest.mock('../src/components/appViewWrapper', () => {
 // Mock QueryParamToastDispatcher to avoid needing Redux provider
 jest.mock('../src/views/queryParamToastDispatcher', () => () => null);
 
-// Helper to render at a route with controllable auth state
-function renderAt(route, { authed = false } = {}) {
-  // Force specific authenticated state in AuthViewHandler
-  jest.doMock('../src/views/authViewHandler', () => ({ children }) =>
-    children(authed)
-  );
+// Import app routes after mocks so fallbacks use our mocked environment
+// By default, run unauthenticated tests in this file block
+jest.mock('../src/views/authViewHandler', () => ({ children }) =>
+  children(false)
+);
+const AppRoutes = require('../src/routes').default;
 
-  // Import routes after setting auth mock
-  const AppRoutes = require('../src/routes').default;
-
+function renderAt(route) {
   return render(
     React.createElement(
       MemoryRouter,
@@ -96,7 +94,7 @@ function renderAt(route, { authed = false } = {}) {
 }
 
 test('MessagesFallback renders Login when unauthenticated on /messages', () => {
-  renderAt('/messages', { authed: false });
+  renderAt('/messages');
 
   const providers = [
     /continue with github/i,
@@ -116,7 +114,25 @@ test('MessagesFallback renders Login when unauthenticated on /messages', () => {
   expect(foundAny).toBe(true);
 });
 
-test('MessagesFallback renders DirectMessages when authenticated on /messages', () => {
-  renderAt('/messages', { authed: true });
-  expect(screen.getByTestId('direct-messages')).toBeTruthy();
+describe('Authenticated MessagesFallback', () => {
+  // In a separate module registry, mock auth as true and re-require routes
+  const { render: renderRTL } = require('@testing-library/react');
+  const { MemoryRouter: MemRouter, Route: Rt } = require('react-router');
+  const resetModules = () => jest.resetModules();
+
+  test('renders DirectMessages when authenticated on /messages', () => {
+    resetModules();
+    jest.doMock('../src/views/authViewHandler', () => ({ children }) =>
+      children(true)
+    );
+    const RoutesAuthed = require('../src/routes').default;
+    renderRTL(
+      React.createElement(
+        MemRouter,
+        { initialEntries: ['/messages'] },
+        React.createElement(Rt, { component: RoutesAuthed })
+      )
+    );
+    expect(screen.getByTestId('direct-messages')).toBeTruthy();
+  });
 });

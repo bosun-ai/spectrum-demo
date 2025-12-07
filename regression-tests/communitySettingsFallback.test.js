@@ -64,9 +64,13 @@ jest.mock('../src/components/appViewWrapper', () => {
 });
 
 // Force unauthenticated state so signedOutFallback renders <Login />
-jest.mock('../src/views/authViewHandler', () => ({ children }) =>
-  children(false)
-);
+// Make AuthViewHandler render children(false) i.e., unauthenticated
+jest.mock('../src/views/authViewHandler', () => {
+  const ReactLocal = require('react');
+  return function AuthViewHandlerMock({ children }) {
+    return ReactLocal.createElement(ReactLocal.Fragment, null, children(false));
+  };
+});
 
 // Import app routes after mocks so fallbacks use our mocked environment
 const AppRoutes = require('../src/routes').default;
