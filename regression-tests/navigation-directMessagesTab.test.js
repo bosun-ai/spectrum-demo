@@ -3,6 +3,9 @@ const React = require('react');
 const { render, screen } = require('@testing-library/react');
 const { MemoryRouter } = require('react-router-dom');
 const { Provider: ReduxProvider } = require('react-redux');
+const { ApolloProvider } = require('react-apollo');
+const ApolloClient =
+  require('apollo-client').default || require('apollo-client');
 // Provide a minimal Redux store to satisfy react-redux connect
 const createStore = require('redux').createStore;
 const emptyReducer = (state = { connectionStatus: {} }, action) => state;
@@ -22,6 +25,10 @@ const renderWithProviders = (
   } = {}
 ) => {
   const store = createStore(emptyReducer);
+  const client = new ApolloClient({
+    link: { request: () => {} },
+    cache: { read: () => null, write: () => {}, transformDocument: d => d },
+  });
   return render(
     React.createElement(
       MemoryRouter,
@@ -30,9 +37,13 @@ const renderWithProviders = (
         ReduxProvider,
         { store },
         React.createElement(
-          NavigationContext.Provider,
-          { value: contextValue },
-          ui
+          ApolloProvider,
+          { client },
+          React.createElement(
+            NavigationContext.Provider,
+            { value: contextValue },
+            ui
+          )
         )
       )
     )
