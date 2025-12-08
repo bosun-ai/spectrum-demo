@@ -6,6 +6,13 @@ const { createStore } = require('redux');
 const { Router } = require('react-router');
 const createHistory = require('history').createMemoryHistory;
 
+// Mock the toast action to avoid module alias resolution issues
+jest.mock('../src/actions/toasts', () => ({
+  addToastWithTimeout: (type, message) => ({
+    type: `TOAST_${String(type).toUpperCase()}`,
+    payload: { message },
+  }),
+}));
 // Import the connected component
 const QueryParamToastDispatcher = require('../src/views/queryParamToastDispatcher')
   .default;
