@@ -3,45 +3,55 @@ const React = require('react');
 const { render, screen } = require('@testing-library/react');
 
 // Minimal mocks for child components used by ThreadContainer
-jest.mock('src/views/thread/components/threadHead', () => props => {
+jest.mock('src/views/thread/components/threadHead', () => {
   const React = require('react');
-  return React.createElement(
-    'div',
-    { 'data-testid': 'thread-head' },
-    'ThreadHead'
-  );
+  return function ThreadHead() {
+    return React.createElement(
+      'div',
+      { 'data-testid': 'thread-head' },
+      'ThreadHead'
+    );
+  };
 });
-jest.mock('src/views/thread/components/stickyHeader', () => props => {
+jest.mock('src/views/thread/components/stickyHeader', () => {
   const React = require('react');
-  return React.createElement(
-    'div',
-    { 'data-testid': 'sticky-header' },
-    'StickyHeader'
-  );
+  return function StickyHeader() {
+    return React.createElement(
+      'div',
+      { 'data-testid': 'sticky-header' },
+      'StickyHeader'
+    );
+  };
 });
-jest.mock('src/views/thread/components/threadDetail', () => props => {
+jest.mock('src/views/thread/components/threadDetail', () => {
   const React = require('react');
-  return React.createElement(
-    'div',
-    { 'data-testid': 'thread-detail' },
-    'ThreadDetail'
-  );
+  return function ThreadDetail() {
+    return React.createElement(
+      'div',
+      { 'data-testid': 'thread-detail' },
+      'ThreadDetail'
+    );
+  };
 });
-jest.mock('src/views/thread/components/messagesSubscriber', () => props => {
+jest.mock('src/views/thread/components/messagesSubscriber', () => {
   const React = require('react');
-  return React.createElement(
-    'div',
-    { 'data-testid': 'messages-subscriber' },
-    'MessagesSubscriber'
-  );
+  return function MessagesSubscriber() {
+    return React.createElement(
+      'div',
+      { 'data-testid': 'messages-subscriber' },
+      'MessagesSubscriber'
+    );
+  };
 });
-jest.mock('src/components/communitySidebar', () => props => {
+jest.mock('src/components/communitySidebar', () => {
   const React = require('react');
-  return React.createElement(
-    'div',
-    { 'data-testid': 'community-sidebar' },
-    'CommunitySidebar'
-  );
+  return function CommunitySidebar() {
+    return React.createElement(
+      'div',
+      { 'data-testid': 'community-sidebar' },
+      'CommunitySidebar'
+    );
+  };
 });
 jest.mock('src/views/viewHelpers', () => ({
   LoadingView: () =>
