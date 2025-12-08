@@ -6,15 +6,24 @@ require('cross-fetch/polyfill');
 // Older jsdom versions used by Jest v22 can throw if URL is not set
 if (
   typeof window !== 'undefined' &&
-  window.location &&
-  window.location.href === 'about:blank'
+  typeof window.localStorage === 'undefined'
 ) {
-  try {
-    // jsdom exposes reconfigure in newer versions; fallback to setting location
-    window.location.href = 'http://localhost/';
-  } catch (e) {
-    // ignore
-  }
+  const store = {};
+  Object.defineProperty(window, 'localStorage', {
+    value: {
+      getItem: key => (key in store ? store[key] : null),
+      setItem: (key, value) => {
+        store[key] = String(value);
+      },
+      removeItem: key => {
+        delete store[key];
+      },
+      clear: () => {
+        Object.keys(store).forEach(k => delete store[k]);
+      },
+    },
+    configurable: true,
+  });
 }
 const { server } = require('./server');
 
