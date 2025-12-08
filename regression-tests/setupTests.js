@@ -73,6 +73,16 @@ jest.mock('src/components/themedSection', () => {
   return Stub;
 });
 
+// Mock shared/globals tint/hexa utilities used by styles to simple pass-throughs
+jest.mock('src/components/globals', () => {
+  const React = require('react');
+  const Stub = ({ children }) => React.createElement('div', null, children);
+  // Provide tint and hexa as identity functions to satisfy styled-components interpolations
+  const tint = (c, a) => c;
+  const hexa = (c, a) => c;
+  return { FlexCol: Stub, tint, hexa };
+});
+
 // Mock src/views/pages/style to avoid styled-components constructing with undefined ViewGrid
 jest.mock('src/views/pages/style', () => {
   const React = require('react');
