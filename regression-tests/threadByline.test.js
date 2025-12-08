@@ -3,6 +3,25 @@ const React = require('react');
 const { render, screen } = require('@testing-library/react');
 // Avoid styled-components globals issues by mocking problematic modules before requiring component
 jest.mock('src/components/button/style', () => ({}));
+// Mock globals to provide styled-components primitives used in thread/style
+jest.mock('src/components/globals', () => {
+  const styled = require('styled-components').default;
+  const css = require('styled-components').css;
+  // Provide minimal FlexRow/FlexCol used in style.js
+  const FlexRow = styled.div``;
+  const FlexCol = styled.div``;
+  // Basic heading components
+  const H3 = styled.h3``;
+  // Provide utilities referenced by style.js
+  const Truncate = () => css``;
+  const Transition = {
+    hover: { on: 'all 0.2s ease-in', off: 'all 0.2s ease-out' },
+  };
+  const zIndex = { card: 1, mobileInput: 2 };
+  const tint = (hex, amt) => hex;
+  const hexa = (hex, a) => hex;
+  return { FlexRow, FlexCol, H3, Truncate, Transition, zIndex, tint, hexa };
+});
 const ThreadByline = require('src/views/thread/components/threadByline')
   .default;
 
