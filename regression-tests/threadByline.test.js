@@ -1,0 +1,132 @@
+// @flow
+const React = require('react');
+const { render, screen } = require('@testing-library/react');
+const { MemoryRouter } = require('react-router');
+// Avoid styled-components globals issues by mocking problematic modules before requiring component
+jest.mock('src/components/button/style', () => ({}));
+// Mock globals to provide styled-components primitives used in thread/style
+jest.mock('src/components/globals', () => {
+  const styled = require('styled-components').default;
+  const css = require('styled-components').css;
+  // Provide minimal FlexRow/FlexCol used in style.js
+  const FlexRow = styled.div``;
+  const FlexCol = styled.div``;
+  // Basic heading components
+  const H1 = styled.h1``;
+  const H3 = styled.h3``;
+  // Provide utilities referenced by style.js
+  const Truncate = () => css``;
+  const Transition = {
+    hover: { on: 'all 0.2s ease-in', off: 'all 0.2s ease-out' },
+  };
+  const zIndex = { card: 1, mobileInput: 2 };
+  const tint = (hex, amt) => hex;
+  const hexa = (hex, a) => hex;
+  return { FlexRow, FlexCol, H1, H3, Truncate, Transition, zIndex, tint, hexa };
+});
+const ThreadByline = require('src/views/thread/components/threadByline')
+  .default;
+
+// Minimal stubs for subcomponents used inside ThreadByline
+jest.mock('src/components/avatar', () => {
+  const ReactLocal = require('react');
+  return {
+    UserAvatar: ({ user, size }) =>
+      ReactLocal.createElement('img', {
+        'data-testid': 'user-avatar',
+        alt: user && user.name ? user.name : 'avatar',
+        width: size,
+      }),
+  };
+});
+
+jest.mock('src/components/badges', () => {
+  const ReactLocal = require('react');
+  return function BadgeMock(props) {
+    return ReactLocal.createElement(
+      'span',
+      {
+        'data-testid': `badge-${props.type}`,
+      },
+      props.label || props.type
+    );
+  };
+});
+
+// The styled components come from src/views/thread/style.js and use react-router Link.
+// JSDOM environment provides href rendering; we only assert text content and existence.
+
+describe('ThreadByline', () => {
+  const baseUser = {
+    id: 'u1',
+    name: 'Jane Doe',
+    username: 'janed',
+    betaSupporter: false,
+    profilePhoto: 'http://example.com/avatar.png',
+  };
+
+  const makeAuthor = (overrides = {}) => ({
+    user: { ...baseUser, ...overrides },
+    roles: [],
+  });
+
+  test('renders author link, name and username when username exists', () => {
+    const author = makeAuthor();
+    render(
+      React.createElement(
+        MemoryRouter,
+        null,
+        React.createElement(ThreadByline, { author })
+      )
+    );
+
+    // Name and username should be present
+    expect(screen.getByText('Jane Doe')).toBeInTheDocument();
+    expect(screen.getByText('@janed')).toBeInTheDocument();
+
+    // Avatar stub should render
+    expect(screen.getByTestId('user-avatar')).toBeInTheDocument();
+
+    // Link container should exist pointing to /users/{username}
+    const link = screen.getByText('Jane Doe').closest('a');
+    expect(link).toBeTruthy();
+    expect(link.getAttribute('href')).toContain('/users/janed');
+  });
+
+  test('renders without link when username is missing', () => {
+    const author = makeAuthor({ username: '' });
+    render(React.createElement(ThreadByline, { author }));
+
+    expect(screen.getByText('Jane Doe')).toBeInTheDocument();
+    // No username displayed
+    expect(screen.queryByText('@')).not.toBeInTheDocument();
+
+    // Ensure name is not wrapped in a link
+    const nameEl = screen.getByText('Jane Doe');
+    const maybeLink = nameEl.closest('a');
+    expect(maybeLink).toBeNull();
+  });
+
+  test('renders role badges and beta supporter badge', () => {
+    const author = {
+      user: { ...baseUser, betaSupporter: true },
+      roles: ['moderator', 'owner'],
+    };
+    render(
+      React.createElement(
+        MemoryRouter,
+        null,
+        React.createElement(ThreadByline, { author })
+      )
+    );
+
+    // Role badges
+    expect(screen.getByTestId('badge-moderator')).toBeInTheDocument();
+    expect(screen.getByTestId('badge-owner')).toBeInTheDocument();
+
+    // Beta supporter badge renders with label
+    const supporter = screen.getByTestId('badge-beta-supporter');
+    expect(supporter).toBeInTheDocument();
+    expect(supporter).toHaveTextContent('Supporter');
+  });
+});
