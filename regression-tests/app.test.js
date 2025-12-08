@@ -5,6 +5,12 @@
 
 const React = require('react');
 const { render, cleanup } = require('@testing-library/react');
+// Provide required providers to avoid connected components errors
+const { Provider } = require('react-redux');
+const { HelmetProvider } = require('react-helmet-async');
+const { ApolloProvider } = require('react-apollo');
+const { initStore } = require('../src/store');
+const { client } = require('../shared/graphql');
 
 // Import the minimal component tree: RedirectHandler inside Router
 const { Router } = require('react-router');
@@ -45,10 +51,23 @@ describe('App component', () => {
 
   it('renders without crashing in a minimal Router', () => {
     const history = createHistory();
+    const store = initStore({});
     const element = React.createElement(
-      Router,
-      { history },
-      React.createElement(RedirectHandler, { maintenanceMode: false })
+      Provider,
+      { store },
+      React.createElement(
+        HelmetProvider,
+        null,
+        React.createElement(
+          ApolloProvider,
+          { client },
+          React.createElement(
+            Router,
+            { history },
+            React.createElement(RedirectHandler, { maintenanceMode: false })
+          )
+        )
+      )
     );
     const { container } = render(element);
     expect(container).toBeInTheDocument();
@@ -57,10 +76,23 @@ describe('App component', () => {
   it('respects maintenance mode flag', () => {
     process.env.REACT_APP_MAINTENANCE_MODE = 'enabled';
     const history = createHistory();
+    const store = initStore({});
     const element = React.createElement(
-      Router,
-      { history },
-      React.createElement(RedirectHandler, { maintenanceMode: true })
+      Provider,
+      { store },
+      React.createElement(
+        HelmetProvider,
+        null,
+        React.createElement(
+          ApolloProvider,
+          { client },
+          React.createElement(
+            Router,
+            { history },
+            React.createElement(RedirectHandler, { maintenanceMode: true })
+          )
+        )
+      )
     );
     const { container } = render(element);
     // Maintenance mode renders Maintenance component; assert text present
