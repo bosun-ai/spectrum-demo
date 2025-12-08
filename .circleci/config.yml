@@ -103,6 +103,9 @@ jobs:
       - run:
           name: Run Unit Tests
           command: yarn run test:ci
+      - run:
+          name: Run Regression Tests
+          command: yarn run test:regression
 
   # Start db and servers, then run e2e and unit tests
   test_integration:
