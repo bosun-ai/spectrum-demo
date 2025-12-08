@@ -6,4 +6,5 @@ module.exports = {
   testMatch: ['**/*.test.js'],
   rootDir: '.',
   testURL: 'http://localhost/',
+  moduleDirectories: ['node_modules', '..'],
 };

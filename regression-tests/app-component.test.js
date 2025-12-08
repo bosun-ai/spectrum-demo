@@ -20,7 +20,7 @@ describe('App component (src/index.js)', () => {
 
     // Prevent actual websocket client listeners from running causing side effects
     // by mocking shared/graphql export used in src/index.js
-    jest.mock('shared/graphql', () => {
+    jest.mock('../shared/graphql', () => {
       const ReactApollo = require('react-apollo');
       return {
         client: {},
@@ -30,7 +30,7 @@ describe('App component (src/index.js)', () => {
     });
 
     // Mock history used by Router
-    jest.mock('src/helpers/history', () => {
+    jest.mock('../src/helpers/history', () => {
       const createHistory = () => ({
         location: { search: '' },
         replace: jest.fn(),
@@ -39,7 +39,7 @@ describe('App component (src/index.js)', () => {
     });
 
     // Mock store initializer to provide a minimal Redux store
-    jest.mock('src/store', () => {
+    jest.mock('../src/store', () => {
       return {
         initStore: () => ({
           dispatch: jest.fn(),
@@ -51,7 +51,7 @@ describe('App component (src/index.js)', () => {
     });
 
     // Mock redirect handler to render a simple marker text
-    jest.mock('src/components/redirectHandler', () => {
+    jest.mock('../src/components/redirectHandler', () => {
       const React = require('react');
       return function RedirectHandler() {
         return React.createElement(
