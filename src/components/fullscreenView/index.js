@@ -17,11 +17,17 @@ type Props = {
 
 class FullscreenView extends Component<Props> {
   componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyPress, false);
+    // React 17 change: use capture phase for global key listeners
+    // Version delta: 16.8.6 -> 17.0.2
+    document.addEventListener('keydown', this.handleKeyPress, {
+      capture: true,
+    });
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyPress, false);
+    document.removeEventListener('keydown', this.handleKeyPress, {
+      capture: true,
+    });
   }
 
   handleKeyPress = (e: any) => {
