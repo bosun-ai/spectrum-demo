@@ -1,6 +1,7 @@
+const path = require('path');
 module.exports = {
   testEnvironment: 'jsdom',
-  setupTestFrameworkScriptFile: '<rootDir>/regression-tests/setupTests.js',
+  setupTestFrameworkScriptFile: path.resolve(__dirname, './setupTests.js'),
   testMatch: ['**/*.test.js'],
   rootDir: '.',
 };
