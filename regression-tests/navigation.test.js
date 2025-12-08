@@ -3,9 +3,9 @@ const React = require('react');
 const { render, screen } = require('@testing-library/react');
 const { MemoryRouter } = require('react-router-dom');
 
-// Import component and providers
-const Navigation = require('../src/views/navigation').default || require('../src/views/navigation');
-const { NavigationContext } = require('../src/helpers/navigation-context');
+// Import component and providers via relative paths to avoid Jest moduleNameMapper issues
+const Navigation = require('../src/views/navigation/index.js').default || require('../src/views/navigation/index.js');
+const { NavigationContext } = require('../src/helpers/navigation-context.js');
 
 // Helper: render Navigation with router + context
 const renderWithProviders = (ui, { route = '/', contextValue = { navigationIsOpen: true, setNavigationIsOpen: () => {} } } = {}) => {
