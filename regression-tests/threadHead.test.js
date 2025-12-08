@@ -66,8 +66,8 @@ describe('ThreadHead', () => {
     );
 
     // Canonical link uses getThreadLink
-    const canonical = screen.getByRole('link', { name: '' });
-    expect(canonical).toBeInTheDocument();
+    const canonical = document.querySelector('link[rel="canonical"]');
+    expect(canonical).toBeTruthy();
     expect(canonical.getAttribute('rel')).toBe('canonical');
     expect(canonical.getAttribute('href')).toBe(
       'https://spectrum.chat/thread/hello-world'
