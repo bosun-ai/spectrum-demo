@@ -82,8 +82,11 @@ def main():
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     results = []
     for dirpath, dirnames, filenames in os.walk(project_root):
-        # Skip build directories
-        dirnames[:] = [d for d in dirnames if not should_skip_dir(os.path.join(dirpath, d))]
+        # Skip build directories and node_modules
+        dirnames[:] = [
+            d for d in dirnames
+            if not should_skip_dir(os.path.join(dirpath, d)) and d != "node_modules"
+        ]
 
         for filename in filenames:
             if not is_js_file(filename):
