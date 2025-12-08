@@ -20,6 +20,30 @@ jest.mock('shared/graphql/queries/thread/getThreadMessageConnection', () => ({
 
 // Mock viewNetworkHandler to passthrough
 jest.mock('src/components/viewNetworkHandler', () => Comp => Comp);
+// Mock styled modules used by Loading/NullMessages wrappers
+jest.mock('src/views/thread/style', () => {
+  const React = require('react');
+  const Passthrough = ({ children, ...rest }) =>
+    React.createElement('div', rest, children);
+  return {
+    Stretch: Passthrough,
+    NullMessagesWrapper: Passthrough,
+    NullCopy: Passthrough,
+  };
+});
+// Mock button styles to avoid styled-components requiring Link
+jest.mock('src/components/button/style', () => ({}));
+// Mock Loading component to a placeholder div
+jest.mock('src/components/loading', () => ({
+  Loading: () => {
+    const ReactLocal = require('react');
+    return ReactLocal.createElement(
+      'div',
+      { 'data-testid': 'loading' },
+      'Loading'
+    );
+  },
+}));
 
 // Stub NextPageButton to a simple button-like element exposing children and href
 jest.mock('src/components/nextPageButton', () => {
@@ -155,9 +179,7 @@ describe('MessagesSubscriber (render)', () => {
       )
     );
 
-    // Loading component renders within NullMessagesWrapper; assert presence via role or structure text
-    // We fall back to checking for the wrapper text not present; loading element is not semantic, so
-    // assert that the tree does not render ChatMessages
-    expect(screen.queryByTestId('chat-messages')).toBeNull();
+    // Loading component renders within NullMessagesWrapper
+    expect(screen.getByTestId('loading')).toBeInTheDocument();
   });
 });
