@@ -9,6 +9,8 @@ const { ApolloProvider } = require('react-apollo');
 const ApolloClient = require('apollo-client').default;
 const { InMemoryCache } = require('apollo-cache-inmemory');
 const { HttpLink } = require('apollo-link-http');
+const { ThemeProvider } = require('styled-components');
+const theme = require('shared/theme').default || require('shared/theme');
 
 // Import the composed component
 const UserView = require('src/views/user').default;
@@ -49,9 +51,13 @@ function renderWithProviders(
       ApolloProvider,
       { client },
       React.createElement(
-        MemoryRouter,
-        { initialEntries: historyEntries || [route] },
-        ui
+        ThemeProvider,
+        { theme },
+        React.createElement(
+          MemoryRouter,
+          { initialEntries: historyEntries || [route] },
+          ui
+        )
       )
     )
   );
