@@ -1,0 +1,54 @@
+name: Regression Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node via NVM and verify
+        run: |
+          nvm install
+          nvm use && node -v
+          nvm use && yarn -v || corepack enable && nvm use && yarn -v
+
+      - name: Install dependencies (monorepo installer)
+        run: |
+          nvm use && node shared/install-dependencies.js
+
+      - name: Run unit tests
+        run: |
+          nvm use && yarn run test:ci
+
+      - name: Build API (for integration tests)
+        run: |
+          nvm use && yarn run build:api
+
+      - name: Start API (test mode)
+        run: |
+          nvm use && yarn run start:api:test &
+          sleep 10
+
+      - name: Start Web (dev client)
+        run: |
+          nvm use && yarn run dev:web &
+          # Give the dev server time to boot
+          nvm use && npx wait-on http://localhost:3000 --timeout=120000
+
+      - name: Run Cypress integration tests
+        env:
+          # Cypress runs headless in CI by default when using cypress run
+          CI: true
+        run: |
+          nvm use && yarn run cypress:install
+          nvm use && yarn run test:e2e
+
+      - name: Run regression tests
+        run: |
+          nvm use && yarn run test:regression

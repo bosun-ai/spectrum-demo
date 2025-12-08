@@ -60,12 +60,18 @@ class Browser extends React.Component<Props, State> {
 
   componentDidMount() {
     // $FlowFixMe
-    document.addEventListener('keydown', this.handleKeyPress, false);
+    // React 17 delegates events to the root; use capture to observe even if stopped
+    // Version delta: 16.8.6 -> 17.0.2
+    document.addEventListener('keydown', this.handleKeyPress, {
+      capture: true,
+    });
   }
 
   componentWillUnmount() {
     // $FlowFixMe
-    document.removeEventListener('keydown', this.handleKeyPress, false);
+    document.removeEventListener('keydown', this.handleKeyPress, {
+      capture: true,
+    });
   }
 
   closeGallery = () => {

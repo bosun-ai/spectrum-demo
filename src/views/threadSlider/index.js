@@ -37,11 +37,15 @@ const ThreadSlider = (props: Props) => {
       }
     };
 
-    document.addEventListener('keydown', handleKeyPress, false);
+    // React 17: attach in capture to ensure it fires even if React stops propagation
+    // Version delta: 16.8.6 -> 17.0.2
+    document.addEventListener('keydown', handleKeyPress, { capture: true });
     return () => {
       const prev = prevTitlebarProps.current;
       dispatch(setTitlebarProps({ ...prev }));
-      document.removeEventListener('keydown', handleKeyPress, false);
+      document.removeEventListener('keydown', handleKeyPress, {
+        capture: true,
+      });
     };
   }, []);
 
