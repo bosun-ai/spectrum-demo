@@ -253,7 +253,8 @@
     "lint:staged": "lint-staged",
     "webpack-defaults": "webpack-defaults",
     "deploy": "node scripts/deploy",
-    "heroku": "node scripts/heroku-deploy"
+    "heroku": "node scripts/heroku-deploy",
+    "test:regression": "jest --config regression-tests/jest.config.js"
   },
   "jest-regression": {
     "config": "regression-tests/jest.config.js"
