@@ -2,6 +2,14 @@
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
 const { MemoryRouter } = require('react-router');
+const { Provider } = require('react-redux');
+const { createStore } = require('redux');
+
+const emptyReducer = (state = {}) => state;
+const renderWithProviders = ui => {
+  const store = createStore(emptyReducer);
+  return render(React.createElement(Provider, { store }, ui));
+};
 
 // Minimal mocks for child components used by ThreadContainer
 jest.mock('src/views/thread/components/threadHead', () => {
@@ -119,7 +127,7 @@ const getBaseProps = (overrides = {}) => ({
 });
 
 test('renders loading state', () => {
-  render(
+  renderWithProviders(
     React.createElement(
       MemoryRouter,
       null,
@@ -130,7 +138,7 @@ test('renders loading state', () => {
 });
 
 test('renders error when no thread', () => {
-  render(
+  renderWithProviders(
     React.createElement(
       MemoryRouter,
       null,
@@ -147,7 +155,7 @@ test('renders error when no thread', () => {
 });
 
 test('renders thread view with sidebar by default', () => {
-  render(
+  renderWithProviders(
     React.createElement(
       MemoryRouter,
       null,
@@ -164,7 +172,7 @@ test('renders thread view with sidebar by default', () => {
 });
 
 test('renders single column when isModal', () => {
-  render(
+  renderWithProviders(
     React.createElement(
       MemoryRouter,
       null,
