@@ -25,8 +25,8 @@ describe('NavHead regression', () => {
     );
 
     // The Head component renders children within Helmet; jsdom will reflect the link in the document head
-    // Query by id to locate the favicon link injected into head
-    const link = document.head.querySelector('#dynamic-favicon');
+    // Query via document to locate the favicon link injected into head
+    const link = document.querySelector('#dynamic-favicon');
     // Validate attributes on the favicon link
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute('id', 'dynamic-favicon');
