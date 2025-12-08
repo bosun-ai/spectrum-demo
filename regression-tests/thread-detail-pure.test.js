@@ -51,8 +51,9 @@ jest.mock('src/components/entities', () => {
 jest.mock('src/components/threadRenderer', () => {
   const ReactLocal = require('react');
   return function ThreadRendererMock({ body }) {
-    const text = Array.isArray(body?.blocks)
-      ? body.blocks.map(b => b.text).join('\n')
+    const blocks = body && body.blocks ? body.blocks : [];
+    const text = Array.isArray(blocks)
+      ? blocks.map(b => b.text).join('\n')
       : '';
     return ReactLocal.createElement(
       'div',
