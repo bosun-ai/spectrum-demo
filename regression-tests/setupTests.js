@@ -39,3 +39,10 @@ jest.mock('src/components/error', () => ({
 jest.mock('shared/graphql/queries/user/getUserCommunityConnection', () => ({
   getCurrentUserCommunityConnection: Comp => Comp,
 }));
+
+// Mock raw-loader imports used by reset.css.js for prism theme
+jest.mock(
+  '!!raw-loader!./components/rich-text-editor/prism-theme.css',
+  () => '',
+  { virtual: true }
+);
