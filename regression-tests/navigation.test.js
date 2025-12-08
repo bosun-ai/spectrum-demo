@@ -12,6 +12,23 @@ const Navigation =
   require('../src/views/navigation/index.js');
 const { NavigationContext } = require('../src/helpers/navigation-context.js');
 
+// Mock styled-components in profile/style to avoid FlexRow undefined
+jest.mock('src/components/globals', () => ({
+  FlexRow: props => {
+    const ReactLocal = require('react');
+    return ReactLocal.createElement('div', props);
+  },
+  FlexCol: props => {
+    const ReactLocal = require('react');
+    return ReactLocal.createElement('div', props);
+  },
+  Truncate: () => '',
+  Transition: { hover: { on: '', off: '' } },
+  zIndex: { card: 1 },
+  Shadow: {},
+  hexa: () => 'rgba(0,0,0,0.1)',
+}));
+
 // Helper: render Navigation with router + context
 const renderWithProviders = (
   ui,
