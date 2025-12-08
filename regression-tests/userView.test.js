@@ -5,6 +5,10 @@ const { render, fireEvent } = require('@testing-library/react');
 const { Provider } = require('react-redux');
 const { createStore } = require('redux');
 const { MemoryRouter } = require('react-router');
+const { ApolloProvider } = require('react-apollo');
+const ApolloClient = require('apollo-client').default;
+const { InMemoryCache } = require('apollo-cache-inmemory');
+const { HttpLink } = require('apollo-link-http');
 
 // Import the composed component
 const UserView = require('src/views/user').default;
@@ -32,13 +36,23 @@ function renderWithProviders(
   { route = '/users/johndoe', historyEntries } = {}
 ) {
   const store = createTestStore();
+  const client = new ApolloClient({
+    link: new HttpLink({ uri: '/graphql', fetch: require('cross-fetch') }),
+    cache: new InMemoryCache(),
+    connectToDevTools: false,
+    ssrMode: true,
+  });
   const element = React.createElement(
     Provider,
     { store },
     React.createElement(
-      MemoryRouter,
-      { initialEntries: historyEntries || [route] },
-      ui
+      ApolloProvider,
+      { client },
+      React.createElement(
+        MemoryRouter,
+        { initialEntries: historyEntries || [route] },
+        ui
+      )
     )
   );
   return render(element);
