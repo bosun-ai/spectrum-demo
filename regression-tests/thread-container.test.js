@@ -80,6 +80,14 @@ jest.mock('src/components/layout', () => {
   };
 });
 
+// Mock styled components imported from src/views/thread/style
+jest.mock('src/views/thread/style', () => {
+  const React = require('react');
+  const Stretch = ({ children, ...rest }) =>
+    React.createElement('div', rest, children);
+  return { Stretch };
+});
+
 // Avoid Apollo/CurrentUser HOCs requiring provider context
 jest.mock('src/components/withCurrentUser', () => ({
   withCurrentUser: Comp => Comp,

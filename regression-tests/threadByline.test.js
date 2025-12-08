@@ -1,6 +1,7 @@
 // @flow
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
+const { MemoryRouter } = require('react-router');
 // Avoid styled-components globals issues by mocking problematic modules before requiring component
 jest.mock('src/components/button/style', () => ({}));
 // Mock globals to provide styled-components primitives used in thread/style
@@ -71,7 +72,13 @@ describe('ThreadByline', () => {
 
   test('renders author link, name and username when username exists', () => {
     const author = makeAuthor();
-    render(React.createElement(ThreadByline, { author }));
+    render(
+      React.createElement(
+        MemoryRouter,
+        null,
+        React.createElement(ThreadByline, { author })
+      )
+    );
 
     // Name and username should be present
     expect(screen.getByText('Jane Doe')).toBeInTheDocument();
@@ -105,7 +112,13 @@ describe('ThreadByline', () => {
       user: { ...baseUser, betaSupporter: true },
       roles: ['moderator', 'owner'],
     };
-    render(React.createElement(ThreadByline, { author }));
+    render(
+      React.createElement(
+        MemoryRouter,
+        null,
+        React.createElement(ThreadByline, { author })
+      )
+    );
 
     // Role badges
     expect(screen.getByTestId('badge-moderator')).toBeInTheDocument();
