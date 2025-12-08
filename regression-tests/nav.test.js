@@ -6,41 +6,52 @@ import { render, fireEvent } from '@testing-library/react';
 // The Nav component is a default export enhanced by HOCs (withCurrentUser, connect)
 // Importing default should give us the wrapped component that we can render directly.
 // Mock internal dependencies used by Nav to prevent resolution failures
-jest.mock('../src/components/icon', () => () =>
-  React.createElement('span', { 'data-testid': 'icon' })
-);
-jest.mock('../src/components/logo', () => ({
-  Logo: () => React.createElement('div', { 'data-testid': 'logo' }),
-}));
-jest.mock('../src/components/avatar', () => ({
-  UserAvatar: ({ dataCy }) =>
-    React.createElement('div', { 'data-cy': dataCy || 'avatar' }),
-}));
-jest.mock('../src/components/head', () => ({ children }) =>
-  React.createElement('div', null, children)
-);
+jest.mock('../src/components/icon', () => {
+  const ReactLocal = require('react');
+  return () => ReactLocal.createElement('span', { 'data-testid': 'icon' });
+});
+jest.mock('../src/components/logo', () => {
+  const ReactLocal = require('react');
+  return {
+    Logo: () => ReactLocal.createElement('div', { 'data-testid': 'logo' }),
+  };
+});
+jest.mock('../src/components/avatar', () => {
+  const ReactLocal = require('react');
+  return {
+    UserAvatar: ({ dataCy }) =>
+      ReactLocal.createElement('div', { 'data-cy': dataCy || 'avatar' }),
+  };
+});
+jest.mock('../src/components/head', () => {
+  const ReactLocal = require('react');
+  return ({ children }) => ReactLocal.createElement('div', null, children);
+});
 jest.mock('../src/components/withCurrentUser', () => ({
   withCurrentUser: Comp => Comp,
 }));
 jest.mock('react-redux', () => ({ connect: () => Comp => Comp }));
-jest.mock('../src/views/pages/style', () => ({
-  NavContainer: props =>
-    React.createElement('div', {
-      ...props,
-      'data-testid': 'navigation-splash',
-    }),
-  Tabs: props => React.createElement('div', props),
-  LogoTab: props => React.createElement('a', props),
-  MenuTab: props => React.createElement('div', props),
-  LoginTab: props => React.createElement('a', props),
-  AuthTab: props => React.createElement('div', props),
-  LogoLink: props => React.createElement('a', props),
-  AuthLink: props => React.createElement('a', props),
-  LoginLink: props => React.createElement('a', props),
-  ExploreLink: props => React.createElement('a', props),
-  MenuContainer: props => React.createElement('div', props),
-  MenuOverlay: props => React.createElement('div', props),
-}));
+jest.mock('../src/views/pages/style', () => {
+  const ReactLocal = require('react');
+  return {
+    NavContainer: props =>
+      ReactLocal.createElement('div', {
+        ...props,
+        'data-testid': 'navigation-splash',
+      }),
+    Tabs: props => ReactLocal.createElement('div', props),
+    LogoTab: props => ReactLocal.createElement('a', props),
+    MenuTab: props => ReactLocal.createElement('div', props),
+    LoginTab: props => ReactLocal.createElement('a', props),
+    AuthTab: props => ReactLocal.createElement('div', props),
+    LogoLink: props => ReactLocal.createElement('a', props),
+    AuthLink: props => ReactLocal.createElement('a', props),
+    LoginLink: props => ReactLocal.createElement('a', props),
+    ExploreLink: props => ReactLocal.createElement('a', props),
+    MenuContainer: props => ReactLocal.createElement('div', props),
+    MenuOverlay: props => ReactLocal.createElement('div', props),
+  };
+});
 
 import Nav from '../src/views/pages/components/nav';
 

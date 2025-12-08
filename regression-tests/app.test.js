@@ -9,6 +9,10 @@ const { render, cleanup } = require('@testing-library/react');
 // Import the minimal component tree: RedirectHandler inside Router
 const { Router } = require('react-router');
 const createHistory = require('history').createMemoryHistory;
+// Import RedirectHandler's wrapped default; we will mock withCurrentUser to a pass-through
+jest.mock('../src/components/withCurrentUser', () => ({
+  withCurrentUser: Comp => Comp,
+}));
 const RedirectHandler = require('../src/components/redirectHandler').default;
 
 describe('App component', () => {
