@@ -2,18 +2,23 @@
 const React = require('react');
 const { render, screen, fireEvent } = require('@testing-library/react');
 
-// Mock redux connect to pass through
+// Mock redux connect to pass through without out-of-scope refs
 jest.mock('react-redux', () => ({
-  connect: () => Comp => props => React.createElement(Comp, props),
+  connect: () => Comp => props => {
+    const ReactLocal = require('react');
+    return ReactLocal.createElement(Comp, props);
+  },
 }));
 
 // Mock UserAvatar to render username for assertions
 jest.mock('src/components/avatar', () => ({
-  UserAvatar: ({ username }) =>
-    React.createElement('div', {
+  UserAvatar: ({ username }) => {
+    const ReactLocal = require('react');
+    return ReactLocal.createElement('div', {
       'data-testid': 'avatar',
       'data-username': username,
-    }),
+    });
+  },
 }));
 
 // Mock getThreadLink to predictable path
@@ -37,10 +42,9 @@ jest.mock('src/helpers/utils', () => ({
   truncate: str => str,
 }));
 
-// Mock useAppScroller to expose a spyable scrollToTop
-const scrollToTop = jest.fn();
+// Mock useAppScroller; create fn within factory to satisfy hoist rules
 jest.mock('src/hooks/useAppScroller', () => ({
-  useAppScroller: () => ({ scrollToTop }),
+  useAppScroller: () => ({ scrollToTop: require('jest-mock').fn() }),
 }));
 
 // Use real styled components from style.js; they render fine in jsdom
@@ -57,11 +61,12 @@ const baseThread = {
 
 describe('StickyHeader', () => {
   beforeEach(() => {
-    scrollToTop.mockClear();
+    jest.resetModules();
   });
 
   test('renders title, avatar, and timestamp link', () => {
-    render(React.createElement(StickyHeader, { thread: baseThread }));
+    const Comp = require('src/views/thread/components/stickyHeader').default;
+    render(React.createElement(Comp, { thread: baseThread }));
 
     // Title text rendered
     expect(screen.getByText('A long thread title')).toBeInTheDocument();
@@ -78,7 +83,10 @@ describe('StickyHeader', () => {
   });
 
   test('clicking header triggers scrollToTop', () => {
-    render(React.createElement(StickyHeader, { thread: baseThread }));
+    const { useAppScroller } = require('src/hooks/useAppScroller');
+    const { scrollToTop } = useAppScroller();
+    const Comp = require('src/views/thread/components/stickyHeader').default;
+    render(React.createElement(Comp, { thread: baseThread }));
     // Find container content clickable area by role or text; use title parent
     const clickable = screen.getByText('A long thread title').closest('div');
     expect(clickable).toBeTruthy();
@@ -88,8 +96,9 @@ describe('StickyHeader', () => {
 
   test('renders actions dropdown only when channel member', () => {
     // Member -> actions present
+    const Comp = require('src/views/thread/components/stickyHeader').default;
     const { rerender } = render(
-      React.createElement(StickyHeader, { thread: baseThread })
+      React.createElement(Comp, { thread: baseThread })
     );
     expect(
       screen.getByTestId('thread-actions-dropdown-trigger')
@@ -100,7 +109,7 @@ describe('StickyHeader', () => {
       ...baseThread,
       channel: { channelPermissions: { isMember: false } },
     };
-    rerender(React.createElement(StickyHeader, { thread: nonMemberThread }));
+    rerender(React.createElement(Comp, { thread: nonMemberThread }));
     expect(screen.queryByTestId('thread-actions-dropdown-trigger')).toBeNull();
   });
 });
