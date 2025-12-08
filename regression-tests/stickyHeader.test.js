@@ -52,6 +52,10 @@ jest.mock('src/components/globals', () => ({
     return ReactLocal.createElement('div', props);
   },
   zIndex: { card: 1 },
+  H1: props => {
+    const ReactLocal = require('react');
+    return ReactLocal.createElement('h1', props);
+  },
 }));
 
 // Mock flyout to a simple container
