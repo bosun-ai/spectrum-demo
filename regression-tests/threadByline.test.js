@@ -5,24 +5,29 @@ const ThreadByline = require('src/views/thread/components/threadByline')
   .default;
 
 // Minimal stubs for subcomponents used inside ThreadByline
-jest.mock('src/components/avatar', () => ({
-  UserAvatar: ({ user, size }) =>
-    React.createElement('img', {
-      'data-testid': 'user-avatar',
-      alt: user && user.name ? user.name : 'avatar',
-      width: size,
-    }),
-}));
+jest.mock('src/components/avatar', () => {
+  const ReactLocal = require('react');
+  return {
+    UserAvatar: ({ user, size }) =>
+      ReactLocal.createElement('img', {
+        'data-testid': 'user-avatar',
+        alt: user && user.name ? user.name : 'avatar',
+        width: size,
+      }),
+  };
+});
 
-jest.mock('src/components/badges', () => props => {
-  // Render a simple span that exposes type/label for assertions
-  return React.createElement(
-    'span',
-    {
-      'data-testid': `badge-${props.type}`,
-    },
-    props.label || props.type
-  );
+jest.mock('src/components/badges', () => {
+  const ReactLocal = require('react');
+  return function BadgeMock(props) {
+    return ReactLocal.createElement(
+      'span',
+      {
+        'data-testid': `badge-${props.type}`,
+      },
+      props.label || props.type
+    );
+  };
 });
 
 // The styled components come from src/views/thread/style.js and use react-router Link.

@@ -47,6 +47,32 @@ jest.mock(
   { virtual: true }
 );
 
+// Mock src/views/pages/style to avoid styled-components constructing with undefined components
+jest.mock('src/views/pages/style', () => {
+  const React = require('react');
+  const Stub = ({ children }) => React.createElement('div', null, children);
+  return {
+    Tagline: Stub,
+    Copy: Stub,
+    ViewGrid: Stub,
+    StyledViewGrid: Stub,
+  };
+});
+
+// Mock globals used by Maintenance
+jest.mock('src/components/globals', () => {
+  const React = require('react');
+  const Stub = ({ children }) => React.createElement('div', null, children);
+  return { FlexCol: Stub };
+});
+
+// Mock themedSection used by Maintenance
+jest.mock('src/components/themedSection', () => {
+  const React = require('react');
+  const Stub = ({ children }) => React.createElement('div', null, children);
+  return Stub;
+});
+
 // Mock src/views/pages/style to avoid styled-components constructing with undefined ViewGrid
 jest.mock('src/views/pages/style', () => {
   const React = require('react');

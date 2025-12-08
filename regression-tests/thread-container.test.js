@@ -4,27 +4,59 @@ const { render, screen } = require('@testing-library/react');
 
 // Minimal mocks for child components used by ThreadContainer
 jest.mock('src/views/thread/components/threadHead', () => props => {
-  return React.createElement('div', { 'data-testid': 'thread-head' }, 'ThreadHead');
+  const React = require('react');
+  return React.createElement(
+    'div',
+    { 'data-testid': 'thread-head' },
+    'ThreadHead'
+  );
 });
 jest.mock('src/views/thread/components/stickyHeader', () => props => {
-  return React.createElement('div', { 'data-testid': 'sticky-header' }, 'StickyHeader');
+  const React = require('react');
+  return React.createElement(
+    'div',
+    { 'data-testid': 'sticky-header' },
+    'StickyHeader'
+  );
 });
 jest.mock('src/views/thread/components/threadDetail', () => props => {
-  return React.createElement('div', { 'data-testid': 'thread-detail' }, 'ThreadDetail');
+  const React = require('react');
+  return React.createElement(
+    'div',
+    { 'data-testid': 'thread-detail' },
+    'ThreadDetail'
+  );
 });
 jest.mock('src/views/thread/components/messagesSubscriber', () => props => {
-  return React.createElement('div', { 'data-testid': 'messages-subscriber' }, 'MessagesSubscriber');
+  const React = require('react');
+  return React.createElement(
+    'div',
+    { 'data-testid': 'messages-subscriber' },
+    'MessagesSubscriber'
+  );
 });
 jest.mock('src/components/communitySidebar', () => props => {
-  return React.createElement('div', { 'data-testid': 'community-sidebar' }, 'CommunitySidebar');
+  const React = require('react');
+  return React.createElement(
+    'div',
+    { 'data-testid': 'community-sidebar' },
+    'CommunitySidebar'
+  );
 });
 jest.mock('src/views/viewHelpers', () => ({
-  LoadingView: () => React.createElement('div', { 'data-testid': 'loading-view' }, 'Loading'),
-  ErrorView: props => React.createElement('div', { 'data-cy': props['data-cy'] || 'error-view' }, 'Error'),
+  LoadingView: () =>
+    React.createElement('div', { 'data-testid': 'loading-view' }, 'Loading'),
+  ErrorView: props =>
+    React.createElement(
+      'div',
+      { 'data-cy': props['data-cy'] || 'error-view' },
+      'Error'
+    ),
 }));
 jest.mock('src/components/layout', () => {
   const React = require('react');
-  const Wrapper = ({ children, ...rest }) => React.createElement('div', rest, children);
+  const Wrapper = ({ children, ...rest }) =>
+    React.createElement('div', rest, children);
   return {
     ViewGrid: Wrapper,
     SecondaryPrimaryColumnGrid: Wrapper,
@@ -33,6 +65,12 @@ jest.mock('src/components/layout', () => {
     SingleColumnGrid: Wrapper,
   };
 });
+
+// Avoid Apollo/CurrentUser HOCs requiring provider context
+jest.mock('src/components/withCurrentUser', () => ({
+  withCurrentUser: Comp => Comp,
+}));
+jest.mock('react-apollo', () => ({ withApollo: Comp => Comp }));
 
 const ThreadContainer = require('../src/views/thread/container').default;
 
@@ -54,12 +92,19 @@ const getBaseProps = (overrides = {}) => ({
 });
 
 test('renders loading state', () => {
-  render(React.createElement(ThreadContainer, getBaseProps({ isLoading: true })));
+  render(
+    React.createElement(ThreadContainer, getBaseProps({ isLoading: true }))
+  );
   expect(screen.getByTestId('loading-view')).toBeInTheDocument();
 });
 
 test('renders error when no thread', () => {
-  render(React.createElement(ThreadContainer, getBaseProps({ data: { thread: null } })));
+  render(
+    React.createElement(
+      ThreadContainer,
+      getBaseProps({ data: { thread: null } })
+    )
+  );
   // ThreadContainer sets data-cy="null-thread-view" on ErrorView for null thread
   expect(screen.getByText('Error')).toBeInTheDocument();
   const errorEl = screen.getByText('Error');
