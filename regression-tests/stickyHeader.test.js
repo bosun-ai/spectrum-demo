@@ -41,6 +41,49 @@ jest.mock('shared/time-formatting', () => ({
 jest.mock('src/helpers/utils', () => ({
   truncate: str => str,
 }));
+// Mock styled dependencies used by nested components to avoid FlexRow undefined
+jest.mock('src/components/globals', () => ({
+  FlexRow: props => {
+    const ReactLocal = require('react');
+    return ReactLocal.createElement('div', props);
+  },
+  FlexCol: props => {
+    const ReactLocal = require('react');
+    return ReactLocal.createElement('div', props);
+  },
+  zIndex: { card: 1 },
+}));
+
+// Mock flyout to a simple container
+jest.mock('src/components/flyout', () => {
+  const ReactLocal = require('react');
+  return function Flyout(props) {
+    return ReactLocal.createElement('div', props, props.children);
+  };
+});
+
+// Mock icon and button used by actions dropdown to minimal elements
+jest.mock('src/components/icon', () => {
+  const ReactLocal = require('react');
+  return function Icon(props) {
+    const { 'data-cy': dataCy, onClick } = props;
+    return ReactLocal.createElement(
+      'button',
+      { 'data-testid': dataCy, onClick },
+      'icon'
+    );
+  };
+});
+jest.mock('src/components/button', () => ({
+  TextButton: ({ children, onClick, 'data-cy': dataCy }) => {
+    const ReactLocal = require('react');
+    return ReactLocal.createElement(
+      'button',
+      { onClick, 'data-testid': dataCy },
+      children
+    );
+  },
+}));
 
 // Mock useAppScroller; create fn within factory to satisfy hoist rules
 jest.mock('src/hooks/useAppScroller', () => ({
