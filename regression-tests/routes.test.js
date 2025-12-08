@@ -6,6 +6,9 @@ const { MemoryRouter } = require('react-router');
 // Import the composed default export
 const Routes = require('../src/routes').default;
 
+// Mock zIndex used by threadAttachment styles to simple object
+jest.mock('src/components/globals', () => ({ zIndex: { card: 1 } }));
+
 // Helper: render Routes within a Router and optional props overrides
 const renderWithRouter = (initialPath = '/', props = {}) => {
   // Routes expects withRouter to inject location/history; MemoryRouter provides it
