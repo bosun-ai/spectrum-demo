@@ -1,0 +1,63 @@
+name: Regression Tests
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: ['**']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      rethinkdb:
+        image: rethinkdb:2.3
+        ports:
+          - 28015:28015
+        options: >-
+          --health-cmd "rethinkdb --bind all --daemon && sleep 5 && exit 0"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install NVM and Node 12
+        run: |
+          . "$HOME/.nvm/nvm.sh" || (
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+            . "$HOME/.nvm/nvm.sh"
+          )
+          nvm install
+          nvm use
+          node -v
+
+      - name: Cache Yarn
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/yarn
+            **/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install dependencies (Yarn v1)
+        run: |
+          . "$HOME/.nvm/nvm.sh" && nvm use && yarn install --frozen-lockfile
+
+      - name: Build API
+        run: |
+          . "$HOME/.nvm/nvm.sh" && nvm use && yarn run build:api
+
+      - name: Prepare test database (migrate + seed)
+        env:
+          TEST_DB: true
+        run: |
+          . "$HOME/.nvm/nvm.sh" && nvm use && yarn run db:migrate
+          . "$HOME/.nvm/nvm.sh" && nvm use && yarn run db:seed
+
+      - name: Run regression tests
+        run: |
+          . "$HOME/.nvm/nvm.sh" && nvm use && yarn run test:regression
