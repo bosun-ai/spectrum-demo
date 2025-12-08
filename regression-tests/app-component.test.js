@@ -34,6 +34,7 @@ describe('App component (src/index.js)', () => {
       const createHistory = () => ({
         location: { search: '' },
         replace: jest.fn(),
+        listen: jest.fn(),
       });
       return { history: createHistory() };
     });

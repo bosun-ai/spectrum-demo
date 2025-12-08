@@ -2,25 +2,53 @@
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
 const { MemoryRouter } = require('react-router-dom');
+const { ApolloProvider } = require('react-apollo');
+const ApolloClient =
+  require('apollo-client').default || require('apollo-client');
 
 // Import component and providers via relative paths to avoid Jest moduleNameMapper issues
-const Navigation = require('../src/views/navigation/index.js').default || require('../src/views/navigation/index.js');
+const Navigation =
+  require('../src/views/navigation/index.js').default ||
+  require('../src/views/navigation/index.js');
 const { NavigationContext } = require('../src/helpers/navigation-context.js');
 
 // Helper: render Navigation with router + context
-const renderWithProviders = (ui, { route = '/', contextValue = { navigationIsOpen: true, setNavigationIsOpen: () => {} } } = {}) => {
+const renderWithProviders = (
+  ui,
+  {
+    route = '/',
+    contextValue = { navigationIsOpen: true, setNavigationIsOpen: () => {} },
+  } = {}
+) => {
+  // Minimal Apollo client to satisfy withCurrentUser HOC queries
+  const client = new ApolloClient({
+    link: { request: () => {} },
+    cache: { read: () => null, write: () => {} },
+  });
   return render(
     React.createElement(
       MemoryRouter,
       { initialEntries: [route] },
-      React.createElement(NavigationContext.Provider, { value: contextValue }, ui)
+      React.createElement(
+        ApolloProvider,
+        { client },
+        React.createElement(
+          NavigationContext.Provider,
+          { value: contextValue },
+          ui
+        )
+      )
     )
   );
 };
 
 // Mock window size to ensure labels render (wide viewport)
 beforeAll(() => {
-  Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 2000 });
+  Object.defineProperty(window, 'innerWidth', {
+    writable: true,
+    configurable: true,
+    value: 2000,
+  });
 });
 
 describe('Navigation regression', () => {
@@ -39,7 +67,12 @@ describe('Navigation regression', () => {
     // Provide currentUser via props by bypassing HOC: render underlying component by default export is composed.
     // We can still pass props to composed component; it forwards to inner component.
     const currentUser = { id: 'u1', username: 'jane' };
-    renderWithProviders(React.createElement(Navigation, { currentUser, isLoadingCurrentUser: false }));
+    renderWithProviders(
+      React.createElement(Navigation, {
+        currentUser,
+        isLoadingCurrentUser: false,
+      })
+    );
     const nav = screen.getByTestId('navigation-bar');
     expect(nav).toBeInTheDocument();
     // Explore link present
