@@ -1,6 +1,7 @@
 // @flow
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
+const { MemoryRouter } = require('react-router');
 
 // Minimal mocks for child components used by ThreadContainer
 jest.mock('src/views/thread/components/threadHead', () => {
@@ -119,7 +120,11 @@ const getBaseProps = (overrides = {}) => ({
 
 test('renders loading state', () => {
   render(
-    React.createElement(ThreadContainer, getBaseProps({ isLoading: true }))
+    React.createElement(
+      MemoryRouter,
+      null,
+      React.createElement(ThreadContainer, getBaseProps({ isLoading: true }))
+    )
   );
   expect(screen.getByTestId('loading-view')).toBeInTheDocument();
 });
@@ -127,8 +132,12 @@ test('renders loading state', () => {
 test('renders error when no thread', () => {
   render(
     React.createElement(
-      ThreadContainer,
-      getBaseProps({ data: { thread: null } })
+      MemoryRouter,
+      null,
+      React.createElement(
+        ThreadContainer,
+        getBaseProps({ data: { thread: null } })
+      )
     )
   );
   // ThreadContainer sets data-cy="null-thread-view" on ErrorView for null thread
@@ -138,7 +147,13 @@ test('renders error when no thread', () => {
 });
 
 test('renders thread view with sidebar by default', () => {
-  render(React.createElement(ThreadContainer, getBaseProps()));
+  render(
+    React.createElement(
+      MemoryRouter,
+      null,
+      React.createElement(ThreadContainer, getBaseProps())
+    )
+  );
   // Outer container
   expect(screen.getByText('ThreadHead')).toBeInTheDocument();
   expect(screen.getByText('StickyHeader')).toBeInTheDocument();
@@ -149,7 +164,13 @@ test('renders thread view with sidebar by default', () => {
 });
 
 test('renders single column when isModal', () => {
-  render(React.createElement(ThreadContainer, getBaseProps({ isModal: true })));
+  render(
+    React.createElement(
+      MemoryRouter,
+      null,
+      React.createElement(ThreadContainer, getBaseProps({ isModal: true }))
+    )
+  );
   // Sidebar should not be rendered in modal view
   expect(screen.queryByText('CommunitySidebar')).toBeNull();
   // Stretch should mark modal via data-cy
