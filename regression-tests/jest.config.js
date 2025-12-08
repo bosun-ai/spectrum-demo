@@ -7,4 +7,8 @@ module.exports = {
   rootDir: '.',
   testURL: 'http://localhost/',
   moduleDirectories: ['node_modules', '..'],
+  moduleNameMapper: {
+    '^src/(.*)$': '<rootDir>/../src/$1',
+    '^shared/(.*)$': '<rootDir>/../shared/$1',
+  },
 };
