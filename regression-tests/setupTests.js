@@ -31,6 +31,10 @@ jest.mock('src/components/layout', () => ({
 }));
 
 jest.mock('src/components/viewNetworkHandler', () => Comp => Comp);
+// Avoid Apollo client requirements in withCurrentUser HOC by making it pass-through
+jest.mock('src/components/withCurrentUser', () => ({
+  withCurrentUser: Comp => Comp,
+}));
 
 jest.mock('src/components/error', () => ({
   ErrorBoundary: ({ children }) => children,
