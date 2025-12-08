@@ -3,54 +3,70 @@ const React = require('react');
 const { render, screen, fireEvent } = require('@testing-library/react');
 
 // Mock redux connect to pass through component and inject dispatch
-jest.mock('react-redux', () => ({
-  connect: () => Comp => props =>
-    React.createElement(Comp, { ...props, dispatch: jest.fn() }),
-}));
+jest.mock('react-redux', () => {
+  return {
+    connect: () => Comp => props =>
+      require('react').createElement(Comp, { ...props, dispatch: jest.fn() }),
+  };
+});
 
 // Provide minimal mocks for components used inside dropdown
 jest.mock('src/components/icon', () => {
-  const React = require('react');
   return function Icon(props) {
+    const React = require('react');
     const { 'data-cy': dataCy, onClick, glyph } = props;
     return React.createElement(
       'button',
-      { 'data-cy': dataCy, 'data-glyph': glyph, onClick },
+      { 'data-testid': dataCy, 'data-glyph': glyph, onClick },
       'icon'
     );
   };
 });
 
 jest.mock('src/components/button', () => ({
-  TextButton: ({ children, onClick, 'data-cy': dataCy }) =>
-    React.createElement('button', { onClick, 'data-cy': dataCy }, children),
+  TextButton: ({ children, onClick, 'data-cy': dataCy }) => {
+    const React = require('react');
+    return React.createElement(
+      'button',
+      { onClick, 'data-testid': dataCy },
+      children
+    );
+  },
 }));
 
 jest.mock('src/components/flyout', () => {
-  const React = require('react');
   return function Flyout(props) {
+    const React = require('react');
     return React.createElement(
       'div',
-      { 'data-cy': props['data-cy'] },
+      { 'data-testid': props['data-cy'] },
       props.children
     );
   };
 });
 
 jest.mock('src/components/outsideClickHandler', () => {
-  const React = require('react');
-  return ({ children }) => React.createElement('div', null, children);
+  return ({ children }) => {
+    const React = require('react');
+    return React.createElement('div', null, children);
+  };
 });
 
 // Mock style components used by actionsDropdown
 jest.mock('src/views/thread/style', () => {
-  const React = require('react');
-  const Stub = ({ children, ...rest }) =>
-    React.createElement('div', rest, children);
+  const StubFactory = () => {
+    const React = require('react');
+    return ({ children, ...rest }) =>
+      React.createElement('div', rest, children);
+  };
+  const Label = ({ children }) => {
+    const React = require('react');
+    return React.createElement('span', null, children);
+  };
   return {
-    DropWrap: Stub,
-    FlyoutRow: Stub,
-    Label: ({ children }) => React.createElement('span', null, children),
+    DropWrap: StubFactory(),
+    FlyoutRow: StubFactory(),
+    Label,
   };
 });
 
