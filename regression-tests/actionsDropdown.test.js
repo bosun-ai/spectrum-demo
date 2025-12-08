@@ -5,8 +5,7 @@ const { render, screen, fireEvent } = require('@testing-library/react');
 // Mock redux connect to pass through component and inject dispatch
 jest.mock('react-redux', () => {
   return {
-    connect: () => Comp => props =>
-      require('react').createElement(Comp, { ...props, dispatch: jest.fn() }),
+    connect: () => Comp => Comp,
   };
 });
 
