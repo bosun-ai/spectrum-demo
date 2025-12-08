@@ -37,7 +37,11 @@ class Status extends React.Component<Props, State> {
   componentDidMount() {
     window.addEventListener('offline', this.handleOnlineChange);
     window.addEventListener('online', this.handleOnlineChange);
-    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    // React 17: ensure capture to observe even if React stops propagation
+    // Version delta: 16.8.6 -> 17.0.2
+    document.addEventListener('visibilitychange', this.handleVisibilityChange, {
+      capture: true,
+    });
 
     // Only show the bar after a five second timeout
     setTimeout(() => {
@@ -50,6 +54,11 @@ class Status extends React.Component<Props, State> {
   componentWillUnmount() {
     window.removeEventListener('offline', this.handleOnlineChange);
     window.removeEventListener('online', this.handleOnlineChange);
+    document.removeEventListener(
+      'visibilitychange',
+      this.handleVisibilityChange,
+      { capture: true }
+    );
   }
 
   handleVisibilityChange = () => {
