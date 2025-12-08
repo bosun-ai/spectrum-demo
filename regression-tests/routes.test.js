@@ -3,12 +3,14 @@ const { render } = require('@testing-library/react');
 const { MemoryRouter } = require('react-router');
 
 // Mock aliased and code-split dependencies used by Routes to keep test focused
-jest.mock('../src/components/error', () => ({
-  __esModule: true,
-  ErrorBoundary: function ErrorBoundary(props) {
-    return props.children || null;
-  },
-}));
+jest.mock('../src/components/error', () => {
+  return {
+    __esModule: true,
+    ErrorBoundary: function ErrorBoundary(props) {
+      return props.children || null;
+    },
+  };
+});
 jest.mock('../src/components/head', () => ({
   __esModule: true,
   default: () => null,
@@ -45,14 +47,17 @@ jest.mock('../src/views/status', () => ({
   __esModule: true,
   default: () => null,
 }));
-jest.mock('../src/views/login', () => ({
-  __esModule: true,
-  default: function Login() {
-    return function Inner() {
-      return React.createElement('div', null, 'Log in');
-    };
-  },
-}));
+jest.mock('../src/views/login', () => {
+  const ReactLocal = require('react');
+  return {
+    __esModule: true,
+    default: function Login() {
+      return function Inner() {
+        return ReactLocal.createElement('div', null, 'Log in');
+      };
+    },
+  };
+});
 jest.mock('../src/views/directMessages', () => ({
   __esModule: true,
   default: () => null,
@@ -65,12 +70,15 @@ jest.mock('../src/components/withCurrentUser', () => ({
   __esModule: true,
   withCurrentUser: C => C,
 }));
-jest.mock('../src/components/maintenance', () => ({
-  __esModule: true,
-  default: function Maintenance() {
-    return React.createElement('div', null, 'Maintenance');
-  },
-}));
+jest.mock('../src/components/maintenance', () => {
+  const ReactLocal = require('react');
+  return {
+    __esModule: true,
+    default: function Maintenance() {
+      return ReactLocal.createElement('div', null, 'Maintenance');
+    },
+  };
+});
 jest.mock('../src/views/thread/redirect-old-route', () => ({
   __esModule: true,
   default: () => null,
