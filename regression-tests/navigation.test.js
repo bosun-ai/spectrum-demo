@@ -27,6 +27,7 @@ jest.mock('src/components/globals', () => ({
   zIndex: { card: 1 },
   Shadow: {},
   hexa: () => 'rgba(0,0,0,0.1)',
+  tint: (hex, amt) => hex,
 }));
 
 // Helper: render Navigation with router + context
