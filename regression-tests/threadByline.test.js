@@ -11,6 +11,7 @@ jest.mock('src/components/globals', () => {
   const FlexRow = styled.div``;
   const FlexCol = styled.div``;
   // Basic heading components
+  const H1 = styled.h1``;
   const H3 = styled.h3``;
   // Provide utilities referenced by style.js
   const Truncate = () => css``;
@@ -20,7 +21,7 @@ jest.mock('src/components/globals', () => {
   const zIndex = { card: 1, mobileInput: 2 };
   const tint = (hex, amt) => hex;
   const hexa = (hex, a) => hex;
-  return { FlexRow, FlexCol, H3, Truncate, Transition, zIndex, tint, hexa };
+  return { FlexRow, FlexCol, H1, H3, Truncate, Transition, zIndex, tint, hexa };
 });
 const ThreadByline = require('src/views/thread/components/threadByline')
   .default;

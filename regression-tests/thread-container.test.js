@@ -85,6 +85,10 @@ jest.mock('src/components/withCurrentUser', () => ({
   withCurrentUser: Comp => Comp,
 }));
 jest.mock('react-apollo', () => ({ withApollo: Comp => Comp }));
+// Mock graphql HOC used in getThreadByMatch to avoid calling real react-apollo graphql
+jest.mock('shared/graphql/queries/thread/getThread', () => ({
+  getThreadByMatch: Comp => Comp,
+}));
 
 const ThreadContainer = require('../src/views/thread/container').default;
 
