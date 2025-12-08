@@ -74,10 +74,9 @@ describe('DirectMessagesTab regression', () => {
     // Label text
     expect(screen.getByText('Messages')).toBeInTheDocument();
     // Link has data-cy attr
-    const link = screen.getByTestId
-      ? screen.getByTestId('navigation-messages')
-      : screen.getByRole('link', { name: /messages/i });
-    expect(link).toBeInTheDocument();
+    // data-cy attribute present
+    const link = document.querySelector('[data-cy="navigation-messages"]');
+    expect(link).toBeTruthy();
   });
 
   test('shows unread badge when count > 0', () => {
@@ -86,11 +85,7 @@ describe('DirectMessagesTab regression', () => {
     });
 
     // Badge should be present
-    const badge = screen.getByTestId
-      ? screen.getByTestId('unread-dm-badge')
-      : screen.getByLabelText
-      ? screen.getByLabelText('unread-dm-badge')
-      : document.querySelector('[data-cy="unread-dm-badge"]');
+    const badge = document.querySelector('[data-cy="unread-dm-badge"]');
     expect(badge).toBeTruthy();
   });
 
@@ -101,8 +96,8 @@ describe('DirectMessagesTab regression', () => {
     });
 
     // AvatarGrid receives isActive true -> we can assert link has href and exists
-    const link = screen.getByRole('link', { name: /messages/i });
-    expect(link).toBeInTheDocument();
+    const link = document.querySelector('[data-cy="navigation-messages"]');
+    expect(link).toBeTruthy();
     expect(link.getAttribute('href')).toBe('/messages');
   });
 });

@@ -1,6 +1,8 @@
 // @flow
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
+// Avoid styled-components globals issues by mocking problematic modules before requiring component
+jest.mock('src/components/button/style', () => ({}));
 const ThreadByline = require('src/views/thread/components/threadByline')
   .default;
 
