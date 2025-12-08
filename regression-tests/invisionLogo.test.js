@@ -6,7 +6,7 @@ const React = require('react');
 const { render } = require('@testing-library/react');
 
 // Import the component via CommonJS require to match jest 22 environment
-const Logos = require('../../src/views/pages/components/logos.js');
+const Logos = require('../src/views/pages/components/logos.js');
 
 // Note: @testing-library/react v8 does not export `screen`; use return value from render.
 
