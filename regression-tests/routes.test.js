@@ -5,7 +5,9 @@ const { MemoryRouter } = require('react-router');
 // Mock aliased and code-split dependencies used by Routes to keep test focused
 jest.mock('../src/components/error', () => ({
   __esModule: true,
-  ErrorBoundary: ({ children }) => children || null,
+  ErrorBoundary: function ErrorBoundary(props) {
+    return props.children || null;
+  },
 }));
 jest.mock('../src/components/head', () => ({
   __esModule: true,
@@ -45,7 +47,11 @@ jest.mock('../src/views/status', () => ({
 }));
 jest.mock('../src/views/login', () => ({
   __esModule: true,
-  default: () => () => React.createElement('div', null, 'Log in'),
+  default: function Login() {
+    return function Inner() {
+      return React.createElement('div', null, 'Log in');
+    };
+  },
 }));
 jest.mock('../src/views/directMessages', () => ({
   __esModule: true,
@@ -61,7 +67,9 @@ jest.mock('../src/components/withCurrentUser', () => ({
 }));
 jest.mock('../src/components/maintenance', () => ({
   __esModule: true,
-  default: () => React.createElement('div', null, 'Maintenance'),
+  default: function Maintenance() {
+    return React.createElement('div', null, 'Maintenance');
+  },
 }));
 jest.mock('../src/views/thread/redirect-old-route', () => ({
   __esModule: true,
@@ -85,7 +93,14 @@ jest.mock('../src/views/globalTitlebar', () => ({
 }));
 jest.mock('../src/helpers/navigation-context', () => ({
   __esModule: true,
-  NavigationContext: React.createContext({}),
+  NavigationContext: {
+    Provider: function Provider(props) {
+      return props.children;
+    },
+    Consumer: function Consumer() {
+      return null;
+    },
+  },
 }));
 jest.mock('../shared/generate-meta-info', () => ({
   __esModule: true,
