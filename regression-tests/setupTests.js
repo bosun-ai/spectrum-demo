@@ -46,3 +46,13 @@ jest.mock(
   () => '',
   { virtual: true }
 );
+
+// Mock src/views/pages/style to avoid styled-components constructing with undefined ViewGrid
+jest.mock('src/views/pages/style', () => {
+  const React = require('react');
+  const Stub = ({ children }) => React.createElement('div', null, children);
+  return {
+    ViewGrid: Stub,
+    StyledViewGrid: Stub,
+  };
+});

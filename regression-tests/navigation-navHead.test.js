@@ -1,6 +1,12 @@
 // @flow
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
+const { HelmetProvider } = require('react-helmet-async');
+
+// Bypass redux store requirement by mocking connect to identity HOC
+jest.mock('react-redux', () => ({
+  connect: () => Comp => Comp,
+}));
 
 // Import NavHead via src alias mapped in regression jest config
 const NavHead =
@@ -13,10 +19,14 @@ describe('NavHead regression', () => {
     const originalPublicUrl = process.env.PUBLIC_URL;
     process.env.PUBLIC_URL = process.env.PUBLIC_URL || '';
 
-    render(React.createElement(NavHead));
+    // Wrap in HelmetProvider to ensure react-helmet-async context exists
+    render(
+      React.createElement(HelmetProvider, null, React.createElement(NavHead))
+    );
 
     // The Head component renders children within Helmet; jsdom will reflect the link in the document head
-    const link = screen.getByRole('link', { hidden: true });
+    // Query by id to locate the favicon link injected into head
+    const link = document.head.querySelector('#dynamic-favicon');
     // Validate attributes on the favicon link
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute('id', 'dynamic-favicon');
