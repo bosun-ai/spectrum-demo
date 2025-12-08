@@ -255,6 +255,9 @@
     "deploy": "node scripts/deploy",
     "heroku": "node scripts/heroku-deploy"
   },
+  "jest-regression": {
+    "config": "regression-tests/jest.config.js"
+  },
   "lint-staged": {
     "*.js": [
       "prettier --write",
