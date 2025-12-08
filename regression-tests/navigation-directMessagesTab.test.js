@@ -25,9 +25,15 @@ const renderWithProviders = (
   } = {}
 ) => {
   const store = createStore(emptyReducer);
+  const fakeCache = {
+    read: () => null,
+    write: () => {},
+    transformDocument: d => d,
+    transformForLink: d => d,
+  };
   const client = new ApolloClient({
     link: { request: () => {} },
-    cache: { read: () => null, write: () => {}, transformDocument: d => d },
+    cache: fakeCache,
   });
   return render(
     React.createElement(
