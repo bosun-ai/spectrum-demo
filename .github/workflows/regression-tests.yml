@@ -1,0 +1,54 @@
+name: Regression Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:6-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+      rethinkdb:
+        image: rethinkdb:2.3
+        ports:
+          - 28015:28015
+          - 29015:29015
+          - 8080:8080
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node via nvm (Node 12)
+        shell: bash
+        run: |
+          nvm install && nvm use && node -v
+
+      - name: Install dependencies (yarn)
+        shell: bash
+        run: |
+          nvm use && yarn install --frozen-lockfile || (nvm use && yarn install)
+
+      - name: Build API
+        shell: bash
+        run: |
+          nvm use && yarn run build:api
+
+      - name: Start API in test mode
+        shell: bash
+        run: |
+          nvm use && yarn run start:api:test &
+          # wait for API to be ready
+          sleep 15
+
+      - name: Run regression tests
+        shell: bash
+        run: |
+          nvm use && yarn run test:regression
