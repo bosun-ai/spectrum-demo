@@ -2,9 +2,10 @@
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
 const { MemoryRouter } = require('react-router-dom');
-const { ApolloProvider } = require('react-apollo');
-const ApolloClient =
-  require('apollo-client').default || require('apollo-client');
+const { Provider: ReduxProvider } = require('react-redux');
+// Provide a minimal Redux store to satisfy react-redux connect
+const createStore = require('redux').createStore;
+const emptyReducer = (state = { connectionStatus: {} }, action) => state;
 
 // Import component and NavigationContext
 const DirectMessagesTab =
@@ -20,17 +21,14 @@ const renderWithProviders = (
     contextValue = { navigationIsOpen: true, setNavigationIsOpen: () => {} },
   } = {}
 ) => {
-  const client = new ApolloClient({
-    link: { request: () => {} },
-    cache: { read: () => null, write: () => {} },
-  });
+  const store = createStore(emptyReducer);
   return render(
     React.createElement(
       MemoryRouter,
       { initialEntries: [route] },
       React.createElement(
-        ApolloProvider,
-        { client },
+        ReduxProvider,
+        { store },
         React.createElement(
           NavigationContext.Provider,
           { value: contextValue },
