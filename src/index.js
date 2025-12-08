@@ -48,6 +48,9 @@ const App = () => {
   );
 };
 
+// Export App for testing in regression suite
+export { App };
+
 const renderMethod = window.__SERVER_STATE__
   ? // $FlowIssue
     ReactDOM.hydrate
