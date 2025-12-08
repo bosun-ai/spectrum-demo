@@ -17,11 +17,10 @@ describe('AbstractLogo', () => {
     expect(img.getAttribute('alt')).toBe('');
   });
 
-  it('applies height style via styled-components', () => {
-    const { getByRole } = render(React.createElement(AbstractLogo));
-    const img = getByRole('img');
-
-    // styled-components injects a class on the element; we can assert it exists
+  it('applies a styled-components class on the img', () => {
+    const { container } = render(React.createElement(AbstractLogo));
+    const img = container.querySelector('img');
+    expect(img).toBeTruthy();
     expect(img.className).toMatch(/sc-/);
   });
 });
