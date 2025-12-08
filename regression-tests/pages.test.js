@@ -13,14 +13,16 @@ const Pages = require('../src/views/pages/index.js').default;
 jest.mock('../src/views/pages/terms', () => ({
   __esModule: true,
   default: function TermsMock() {
-    return React.createElement('div', { 'data-testid': 'terms' }, 'Terms');
+    const R = require('react');
+    return R.createElement('div', { 'data-testid': 'terms' }, 'Terms');
   },
 }));
 
 jest.mock('../src/views/pages/privacy', () => ({
   __esModule: true,
   default: function PrivacyMock() {
-    return React.createElement('div', { 'data-testid': 'privacy' }, 'Privacy');
+    const R = require('react');
+    return R.createElement('div', { 'data-testid': 'privacy' }, 'Privacy');
   },
 }));
 
@@ -28,7 +30,8 @@ jest.mock('../src/views/pages/privacy', () => ({
 jest.mock('../src/views/pages/components/nav', () => ({
   __esModule: true,
   default: function NavMock(props) {
-    return React.createElement(
+    const R = require('react');
+    return R.createElement(
       'div',
       {
         'data-testid': 'nav',

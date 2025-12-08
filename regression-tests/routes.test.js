@@ -2,7 +2,7 @@ const React = require('react');
 const { render } = require('@testing-library/react');
 const { MemoryRouter } = require('react-router');
 
-// Import the compiled module via CommonJS require to match Jest v22 env
+// Import the component via relative path to avoid alias resolution issues
 const Routes = require('../src/routes.js').default;
 
 // Helper to render Routes with router context and minimal props

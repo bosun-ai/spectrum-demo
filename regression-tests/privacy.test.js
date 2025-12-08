@@ -12,26 +12,27 @@ const Privacy = require('../src/views/pages/privacy/index.js').default;
 // Ensure jsdom has a deterministic starting URL
 // jest.config sets testURL, but we also assert it here for clarity
 describe('Privacy component', () => {
-  let originalAssign;
+  let originalLocation;
 
   beforeEach(() => {
-    // Mock location.assign to avoid jsdom navigation error
-    originalAssign = window.location.assign;
-    window.location.assign = jest.fn();
+    // Replace window.location with a lightweight mock to avoid jsdom navigation
+    originalLocation = window.location;
+    delete window.location;
+    window.location = { href: 'http://localhost/', assign: jest.fn() };
   });
 
   afterEach(() => {
     // Reset DOM and restore original location
     cleanup();
-    window.location.assign = originalAssign;
+    window.location = originalLocation;
   });
 
   it('redirects to GitHub Privacy Statement on mount', () => {
     // Render the component; it should set window.location.href in componentDidMount
     render(React.createElement(Privacy));
 
-    // Since jsdom can't navigate, assert that assign was called
-    expect(window.location.assign).toHaveBeenCalledWith(
+    // Assert that href was set to the GitHub privacy URL
+    expect(window.location.href).toBe(
       'https://help.github.com/en/github/site-policy/github-privacy-statement'
     );
   });
