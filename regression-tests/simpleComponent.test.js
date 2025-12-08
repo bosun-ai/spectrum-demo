@@ -1,5 +1,5 @@
 const React = require('react');
-const { render, screen, fireEvent } = require('@testing-library/react');
+const { render, fireEvent } = require('@testing-library/react');
 
 test('component renders', () => {
   const element = React.createElement(
@@ -7,6 +7,6 @@ test('component renders', () => {
     { 'data-testid': 'btn' },
     'Click'
   );
-  render(element);
-  expect(screen.getByTestId('btn')).toBeInTheDocument();
+  const { getByTestId } = render(element);
+  expect(getByTestId('btn')).toBeInTheDocument();
 });
