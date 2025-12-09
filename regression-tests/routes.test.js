@@ -2,6 +2,25 @@ const React = require('react');
 const { render, screen } = require('@testing-library/react');
 const { MemoryRouter } = require('react-router');
 
+// Mock raw-loader CSS import used by GlobalStyles to avoid jest resolution errors
+jest.mock('../src/reset.css.js', () => {
+  const styled = require('styled-components');
+  return styled.createGlobalStyle``;
+});
+
+// Mock components that require complex context/providers to keep test lightweight
+jest.mock('../src/views/navigation', () => () => null);
+jest.mock('../src/views/globalTitlebar', () => () => null);
+jest.mock('../src/components/announcementBanner', () => () => null);
+jest.mock('../src/views/status', () => () => null);
+jest.mock('../src/components/toasts', () => () => null);
+jest.mock('../src/components/gallery', () => () => null);
+jest.mock('../src/components/modals/modalRoot', () => () => null);
+jest.mock('../src/views/queryParamToastDispatcher', () => () => null);
+jest.mock('../src/components/appViewWrapper', () => ({ children }) =>
+  React.createElement('div', null, children)
+);
+
 // Import the compiled component via CommonJS require to match jest config
 const Routes = require('../src/routes').default;
 
@@ -26,8 +45,6 @@ test('root path redirects to /explore', () => {
   // Assert that default meta Head renders and that AnnouncementBanner exists to confirm app shell rendered.
   // More robustly, navigate to /home which also redirects to /explore
   renderWithRouter(React.createElement(Routes, null), { route: '/home' });
-  // The GlobalTitlebar should render; sanity check by querying by role heading via default title 'Spectrum'
-  // Fallback: at least ensure the app mounted by checking for elements added by GlobalStyles, which is hard.
   // Instead, verify that the document contains the app root wrappers by checking that it didn't render Maintenance text.
   expect(
     screen.queryByText(/Spectrum is currently undergoing maintenance/i)
