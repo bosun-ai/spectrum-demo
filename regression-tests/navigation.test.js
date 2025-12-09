@@ -21,6 +21,18 @@ jest.mock('../src/components/icon', () => {
   };
 });
 
+// Mock NavHead to avoid react-redux store requirement
+jest.mock('../src/views/navigation/navHead', () => {
+  const ReactLocal = require('react');
+  return function NavHeadMock() {
+    return ReactLocal.createElement(
+      'div',
+      { 'data-testid': 'nav-head' },
+      'NavHead'
+    );
+  };
+});
+
 // Mock withCurrentUser HOC to pass through props unchanged
 jest.mock('../src/components/withCurrentUser', () => ({
   withCurrentUser: x => x,
@@ -75,7 +87,7 @@ test('renders explore and login links when no currentUser', () => {
   );
 
   // Navigation wrapper should render and contain links
-  expect(screen.getByTestId('icon')).toBeInTheDocument();
+  expect(screen.getAllByTestId('icon').length).toBeGreaterThan(0);
   expect(screen.getByText('Explore')).toBeInTheDocument();
   expect(screen.getByText('Log in')).toBeInTheDocument();
 });

@@ -17,6 +17,10 @@ jest.mock('../src/components/tooltip', () => {
 });
 jest.mock('../src/components/viewNetworkHandler', () => comp => comp);
 jest.mock('../src/components/withCurrentUser', () => comp => comp);
+jest.mock('recompose/compose', () => (...funcs) => {
+  // Identity compose: return the base component without wrapping
+  return component => component;
+});
 
 // Mock styled-components theme consumption by style.js indirectly via component render
 jest.mock('../shared/theme', () => ({
