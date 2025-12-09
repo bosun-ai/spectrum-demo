@@ -24,7 +24,7 @@ jest.mock('../shared/graphql/queries/community/getCommunities', () => {
   // Provide a HOC that injects predictable communities data
   return {
     getCommunitiesBySlug: Component => props => {
-      // Minimal deterministic dataset; slugs will be filtered by CategoryList
+      const ReactLocal = require('react');
       const mockCommunities = [
         { id: '1', slug: 'spectrum', name: 'Spectrum' },
         { id: '2', slug: 'react', name: 'React' },
@@ -34,7 +34,7 @@ jest.mock('../shared/graphql/queries/community/getCommunities', () => {
         data: { communities: mockCommunities },
         isLoading: false,
       };
-      return React.createElement(Component, { ...props, ...injected });
+      return ReactLocal.createElement(Component, { ...props, ...injected });
     },
   };
 });
