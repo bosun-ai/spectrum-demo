@@ -1,0 +1,62 @@
+name: Regression Tests
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup NVM and Node
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          mkdir -p "$NVM_DIR"
+          # Install NVM
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+          . "$NVM_DIR/nvm.sh"
+          . "$NVM_DIR/bash_completion"
+          # Use Node version from .nvmrc
+          nvm install
+          nvm use
+          node -v
+
+      - name: Install Yarn v1
+        run: |
+          npm i -g yarn@1
+          yarn -v
+
+      - name: Install dependencies across workspaces
+        run: |
+          node shared/install-dependencies.js
+
+      - name: Build API
+        run: |
+          nvm use
+          yarn run build:api
+
+      - name: Start API (test mode)
+        run: |
+          nvm use
+          yarn run start:api:test &
+          # Wait for API to be reachable (default port 3001 or similar). If wait-on is present, use it.
+          # Fallback: sleep to allow server to start.
+          sleep 10
+
+      - name: Start Web client
+        run: |
+          nvm use
+          yarn run dev:web &
+          # Allow client to boot
+          sleep 20
+
+      - name: Run regression tests
+        env:
+          CI: true
+        run: |
+          nvm use
+          yarn run test:regression
