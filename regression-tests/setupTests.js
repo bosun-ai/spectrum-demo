@@ -11,10 +11,11 @@ if (typeof window !== 'undefined') {
     // Define a default URL to avoid opaque origin
     const { URL } = require('url');
     const href = 'http://localhost/';
-    if (!window.location || !window.location.href) {
-      // jsdom sets location; ensure it has a href
-      window.location = new URL(href);
-    }
+    // Force setting a URL for the current document
+    Object.defineProperty(window, 'location', {
+      value: new URL(href),
+      writable: true,
+    });
   } catch (err) {
     // ignore
   }
