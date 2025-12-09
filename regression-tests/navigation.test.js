@@ -46,6 +46,18 @@ jest.mock('../src/components/withCurrentUser', () => ({
   withCurrentUser: x => x,
 }));
 
+// Mock Apollo-connected UserAvatar to a simple element
+jest.mock('../src/components/avatar', () => ({
+  UserAvatar: function UserAvatarMock() {
+    const ReactLocal = require('react');
+    return ReactLocal.createElement(
+      'div',
+      { 'data-testid': 'user-avatar' },
+      'Avatar'
+    );
+  },
+}));
+
 // Import component under test via CommonJS default
 const Navigation = require('../src/views/navigation/index.js').default;
 

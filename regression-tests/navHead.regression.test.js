@@ -37,12 +37,20 @@ describe('NavHead regression', () => {
       )
     );
 
-    // Query by id set in the component. Helmet renders into head,
-    // but jsdom may not reflect inside container; query document.
-    const link = document.querySelector('link#dynamic-favicon');
+    // Helmet updates may be async; poll document head briefly
+    const getLink = () => document.querySelector('link#dynamic-favicon');
+    let link = getLink();
+    if (!link) {
+      // force a microtask flush
+      return Promise.resolve().then(() => {
+        link = getLink();
+        expect(link).toBeTruthy();
+        expect(link.getAttribute('rel')).toBe('shortcut icon');
+        expect(link.getAttribute('href')).toContain('/img/favicon.ico');
+      });
+    }
     expect(link).toBeTruthy();
     expect(link.getAttribute('rel')).toBe('shortcut icon');
-    // href should include PUBLIC_URL + '/img/favicon.ico'
     expect(link.getAttribute('href')).toContain('/img/favicon.ico');
 
     // Restore env
