@@ -1,9 +1,8 @@
 const React = require('react');
 const { render, screen, fireEvent } = require('@testing-library/react');
 
-// Import the component under test
-const ExploreView = require('../src/views/explore/view.js');
-const { Charts } = ExploreView;
+// Import the component under test (only the unconnected Charts wrapper)
+const { Charts } = require('../src/views/explore/view.js');
 
 // Stub heavy child components used by CategoryList to keep test lightweight
 jest.mock('../src/components/entities', () => {
