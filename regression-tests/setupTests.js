@@ -19,9 +19,10 @@ if (typeof window !== 'undefined') {
   } catch (err) {
     // ignore
   }
-  if (!window.localStorage) {
+  try {
+    // Accessing localStorage may throw; provide a stub
     const store = {};
-    window.localStorage = {
+    const ls = {
       getItem: key => (key in store ? store[key] : null),
       setItem: (key, value) => {
         store[key] = String(value);
@@ -33,7 +34,12 @@ if (typeof window !== 'undefined') {
         Object.keys(store).forEach(k => delete store[k]);
       },
     };
-  }
+    Object.defineProperty(window, 'localStorage', {
+      configurable: true,
+      enumerable: true,
+      get: () => ls,
+    });
+  } catch (e) {}
 }
 
 beforeAll(() => server.listen());
