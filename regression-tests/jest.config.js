@@ -1,6 +1,6 @@
 module.exports = {
   testEnvironment: 'jsdom',
-  setupTestFrameworkScriptFile: '<rootDir>/setupTests.js',
+  setupTestFrameworkScriptFile: '<rootDir>/regression-tests/setupTests.js',
   testMatch: ['**/*.test.js'],
-  rootDir: 'regression-tests',
+  rootDir: '.',
 };
