@@ -1,5 +1,6 @@
 const React = require('react');
 const { render } = require('@testing-library/react');
+const { Provider } = require('react-redux');
 
 // Component under test
 const NavHead = require('src/views/navigation/navHead').default;
@@ -15,7 +16,21 @@ describe('NavHead regression', () => {
     const originalPublicUrl = process.env.PUBLIC_URL;
     process.env.PUBLIC_URL = process.env.PUBLIC_URL || '';
 
-    const { container } = render(React.createElement(NavHead));
+    // Minimal mock store for react-redux connect()
+    const mockStore = {
+      // Only the properties used by react-redux are required
+      subscribe: () => () => {},
+      dispatch: () => {},
+      getState: () => ({}),
+    };
+
+    const { container } = render(
+      React.createElement(
+        Provider,
+        { store: mockStore },
+        React.createElement(NavHead)
+      )
+    );
 
     // Query by id set in the component
     const link = container.querySelector('link#dynamic-favicon');
