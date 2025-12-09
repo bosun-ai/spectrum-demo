@@ -37,8 +37,9 @@ describe('NavHead regression', () => {
       )
     );
 
-    // Query by id set in the component
-    const link = container.querySelector('link#dynamic-favicon');
+    // Query by id set in the component. Helmet renders into head,
+    // but jsdom may not reflect inside container; query document.
+    const link = document.querySelector('link#dynamic-favicon');
     expect(link).toBeTruthy();
     expect(link.getAttribute('rel')).toBe('shortcut icon');
     // href should include PUBLIC_URL + '/img/favicon.ico'
