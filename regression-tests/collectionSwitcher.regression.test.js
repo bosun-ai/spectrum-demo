@@ -23,7 +23,7 @@ jest.mock('../src/components/entities', () => {
 jest.mock('../shared/graphql/queries/community/getCommunities', () => {
   // Provide a HOC that injects predictable communities data
   return {
-    getCommunitiesBySlug: (Component) => (props) => {
+    getCommunitiesBySlug: Component => props => {
       // Minimal deterministic dataset; slugs will be filtered by CategoryList
       const mockCommunities = [
         { id: '1', slug: 'spectrum', name: 'Spectrum' },
@@ -41,12 +41,15 @@ jest.mock('../shared/graphql/queries/community/getCommunities', () => {
 
 jest.mock('../src/components/withCurrentUser', () => {
   // Pass-through HOC
-  return { withCurrentUser: (Component) => (props) => React.createElement(Component, props) };
+  return {
+    withCurrentUser: Component => props =>
+      React.createElement(Component, props),
+  };
 });
 
 jest.mock('../src/components/viewNetworkHandler', () => {
   // Pass-through HOC
-  return (Component) => (props) => React.createElement(Component, props);
+  return Component => props => React.createElement(Component, props);
 });
 
 jest.mock('../src/components/segmentedControl', () => {
@@ -54,7 +57,11 @@ jest.mock('../src/components/segmentedControl', () => {
   // Render simple clickable buttons instead of styled segments
   return {
     SegmentedControl: ({ children }) =>
-      ReactLocal.createElement('div', { 'data-testid': 'segmented-control' }, children),
+      ReactLocal.createElement(
+        'div',
+        { 'data-testid': 'segmented-control' },
+        children
+      ),
     Segment: ({ isActive, onClick, children }) =>
       ReactLocal.createElement(
         'button',
@@ -99,7 +106,7 @@ test('CollectionSwitcher renders segments and switches active view', () => {
 
   // Click a different segment (e.g., Design)
   const segments = screen.getAllByTestId('segment');
-  const designButton = segments.find((el) => el.textContent === 'Design');
+  const designButton = segments.find(el => el.textContent === 'Design');
   expect(designButton).toBeTruthy();
   fireEvent.click(designButton);
 
