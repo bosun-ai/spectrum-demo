@@ -1,0 +1,83 @@
+name: Regression Tests
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node via nvm
+        shell: bash
+        run: |
+          if [ -f .nvmrc ]; then
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+            nvm install
+            nvm use
+            node -v
+            npm -v || true
+          else
+            echo ".nvmrc not found" && exit 1
+          fi
+
+      - name: Install dependencies (monorepo script)
+        shell: bash
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+          nvm use
+          nvm use && node shared/install-dependencies.js
+
+      - name: Build API
+        shell: bash
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+          nvm use
+          nvm use && yarn run build:api
+
+      - name: Start API (test mode)
+        shell: bash
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+          nvm use
+          nvm use && yarn run start:api:test &
+          echo $! > api_test_pid.txt
+        
+      - name: Start Web Client
+        shell: bash
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+          nvm use
+          nvm use && yarn run dev:web &
+          echo $! > web_dev_pid.txt
+
+      - name: Run Regression Tests
+        shell: bash
+        env:
+          CI: true
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+          nvm use
+          nvm use && yarn run test:regression
+
+      - name: Teardown services
+        if: always()
+        shell: bash
+        run: |
+          if [ -f api_test_pid.txt ]; then
+            kill $(cat api_test_pid.txt) || true
+          fi
+          if [ -f web_dev_pid.txt ]; then
+            kill $(cat web_dev_pid.txt) || true
+          fi
