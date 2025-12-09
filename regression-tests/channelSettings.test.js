@@ -78,8 +78,11 @@ describe('ChannelSettings view', () => {
     // Subheading link text should mention returning to community settings
     expect(screen.getByText(/Return to React settings/i)).toBeInTheDocument();
 
-    // Overview section should render
-    expect(screen.getByTestId('channel-overview')).toBeInTheDocument();
+    // Overview section should render; attribute is data-cy
+    expect(screen.getByLabelText('channel-overview')).not.toBeTruthy();
+    // Use querySelector fallback to locate data-cy
+    const overview = document.querySelector('[data-cy="channel-overview"]');
+    expect(overview).toBeTruthy();
   });
 
   test('renders permission error when user lacks permissions', () => {

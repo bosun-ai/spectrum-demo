@@ -4,8 +4,12 @@ const { MemoryRouter } = require('react-router');
 
 // Mock raw-loader CSS import used by GlobalStyles to avoid jest resolution errors
 jest.mock('../src/reset.css.js', () => {
-  const styled = require('styled-components');
-  return styled.createGlobalStyle``;
+  // Provide a dummy component to satisfy import
+  const ReactLocal = require('react');
+  function MockGlobalStyles() {
+    return ReactLocal.createElement(ReactLocal.Fragment, null);
+  }
+  return MockGlobalStyles;
 });
 
 // Mock components that require complex context/providers to keep test lightweight
