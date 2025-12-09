@@ -33,6 +33,14 @@ jest.mock('../src/views/navigation/navHead', () => {
   };
 });
 
+// Mock DirectMessagesTab which uses recompose/compose and Redux
+jest.mock('../src/views/navigation/directMessagesTab', () => {
+  const ReactLocal = require('react');
+  return function DMMock() {
+    return ReactLocal.createElement('div', { 'data-testid': 'dm-tab' }, 'DM');
+  };
+});
+
 // Mock withCurrentUser HOC to pass through props unchanged
 jest.mock('../src/components/withCurrentUser', () => ({
   withCurrentUser: x => x,
