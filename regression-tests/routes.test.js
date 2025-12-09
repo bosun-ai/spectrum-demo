@@ -5,6 +5,9 @@ const { ApolloProvider } = require('react-apollo');
 const { ApolloClient } = require('apollo-client');
 const { InMemoryCache } = require('apollo-cache-inmemory');
 const { ApolloLink } = require('apollo-link');
+const { HelmetProvider } = require('react-helmet-async');
+const { ThemeProvider } = require('styled-components');
+const { theme } = require('../shared/theme');
 
 // Mock raw-loader CSS import used by GlobalStyles to avoid jest resolution errors
 jest.mock('../src/reset.css.js', () => {
@@ -45,7 +48,15 @@ const renderWithRouter = (ui, { route = '/' } = {}) => {
     React.createElement(
       ApolloProvider,
       { client },
-      React.createElement(MemoryRouter, { initialEntries: [route] }, ui)
+      React.createElement(
+        HelmetProvider,
+        { context: {} },
+        React.createElement(
+          ThemeProvider,
+          { theme },
+          React.createElement(MemoryRouter, { initialEntries: [route] }, ui)
+        )
+      )
     )
   );
 };
