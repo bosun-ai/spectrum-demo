@@ -17,9 +17,12 @@ jest.mock('../src/components/toasts', () => () => null);
 jest.mock('../src/components/gallery', () => () => null);
 jest.mock('../src/components/modals/modalRoot', () => () => null);
 jest.mock('../src/views/queryParamToastDispatcher', () => () => null);
-jest.mock('../src/components/appViewWrapper', () => ({ children }) =>
-  React.createElement('div', null, children)
-);
+jest.mock('../src/components/appViewWrapper', () => {
+  const ReactLocal = require('react');
+  return function MockAppViewWrapper(props) {
+    return ReactLocal.createElement('div', null, props.children);
+  };
+});
 
 // Import the compiled component via CommonJS require to match jest config
 const Routes = require('../src/routes').default;

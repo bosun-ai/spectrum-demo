@@ -27,9 +27,11 @@ test('App renders via ReactDOM.render without crashing', async () => {
     render: jest.fn(),
     hydrate: jest.fn(),
   }));
-  jest.mock('react-loadable', () => ({
-    preloadReady: () => Promise.resolve(),
-  }));
+  jest.mock('react-loadable', () => {
+    const fn = () => ({ preload: jest.fn() });
+    fn.preloadReady = () => Promise.resolve();
+    return fn;
+  });
   jest.mock('offline-plugin/runtime', () => ({
     install: jest.fn(),
     applyUpdate: jest.fn(),
@@ -71,9 +73,11 @@ test('App uses ReactDOM.hydrate when __SERVER_STATE__ is present', async () => {
     render: jest.fn(),
     hydrate: jest.fn(),
   }));
-  jest.mock('react-loadable', () => ({
-    preloadReady: () => Promise.resolve(),
-  }));
+  jest.mock('react-loadable', () => {
+    const fn = () => ({ preload: jest.fn() });
+    fn.preloadReady = () => Promise.resolve();
+    return fn;
+  });
   jest.mock('offline-plugin/runtime', () => ({
     install: jest.fn(),
     applyUpdate: jest.fn(),
@@ -108,9 +112,11 @@ test('maintenanceMode prop respects REACT_APP_MAINTENANCE_MODE env', async () =>
     render: jest.fn(),
     hydrate: jest.fn(),
   }));
-  jest.mock('react-loadable', () => ({
-    preloadReady: () => Promise.resolve(),
-  }));
+  jest.mock('react-loadable', () => {
+    const fn = () => ({ preload: jest.fn() });
+    fn.preloadReady = () => Promise.resolve();
+    return fn;
+  });
   jest.mock('offline-plugin/runtime', () => ({
     install: jest.fn(),
     applyUpdate: jest.fn(),

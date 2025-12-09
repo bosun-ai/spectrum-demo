@@ -1,5 +1,9 @@
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
+const { MemoryRouter } = require('react-router');
+const ReactHelmet = require('react-helmet-async');
+const styled = require('styled-components');
+const theme = require('../shared/theme').default || require('../shared/theme');
 
 // Import the compiled module via CommonJS require
 const ChannelSettingsModule = require('../src/views/channelSettings/index.js');
@@ -13,7 +17,27 @@ const ChannelSettings = ChannelSettingsModule.default
 function renderChannelSettings(props) {
   // The exported component is composed with several HOCs. For regression,
   // we can render it directly by providing the props it consumes.
-  return render(React.createElement(ChannelSettings, props));
+  return render(
+    React.createElement(
+      ReactHelmet.HelmetProvider,
+      null,
+      React.createElement(
+        styled.ThemeProvider,
+        { theme },
+        React.createElement(
+          MemoryRouter,
+          {
+            initialEntries: [
+              props.location
+                ? props.location.pathname
+                : '/react/channel/general/settings',
+            ],
+          },
+          React.createElement(ChannelSettings, props)
+        )
+      )
+    )
+  );
 }
 
 describe('ChannelSettings view', () => {

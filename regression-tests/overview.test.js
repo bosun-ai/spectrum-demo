@@ -6,40 +6,41 @@ const Overview = require('../src/views/channelSettings/components/overview.js')
   .default;
 
 // Stub child components that Overview renders to avoid deep dependencies
-jest.mock(
-  '../src/views/channelSettings/components/editForm',
-  () =>
-    function EditFormStub(props) {
-      return React.createElement(
-        'div',
-        { 'data-testid': 'edit-form' },
-        'EditForm'
-      );
-    }
-);
-
-jest.mock(
-  '../src/views/channelSettings/components/channelMembers',
-  () =>
-    function ChannelMembersStub(props) {
-      return React.createElement(
-        'div',
-        { 'data-testid': 'channel-members-stub' },
-        `ChannelMembers:${props.id}`
-      );
-    }
-);
-
-jest.mock('../src/components/error', () => ({
-  ErrorBoundary: ({ children }) => children,
-  SettingsFallback: function SettingsFallbackStub() {
-    return React.createElement(
+jest.mock('../src/views/channelSettings/components/editForm', () => {
+  const ReactLocal = require('react');
+  return function EditFormStub(props) {
+    return ReactLocal.createElement(
       'div',
-      { 'data-testid': 'settings-fallback' },
-      'Fallback'
+      { 'data-testid': 'edit-form' },
+      'EditForm'
     );
-  },
-}));
+  };
+});
+
+jest.mock('../src/views/channelSettings/components/channelMembers', () => {
+  const ReactLocal = require('react');
+  return function ChannelMembersStub(props) {
+    return ReactLocal.createElement(
+      'div',
+      { 'data-testid': 'channel-members-stub' },
+      `ChannelMembers:${props.id}`
+    );
+  };
+});
+
+jest.mock('../src/components/error', () => {
+  const ReactLocal = require('react');
+  return {
+    ErrorBoundary: ({ children }) => children,
+    SettingsFallback: function SettingsFallbackStub() {
+      return ReactLocal.createElement(
+        'div',
+        { 'data-testid': 'settings-fallback' },
+        'Fallback'
+      );
+    },
+  };
+});
 
 test('Overview renders EditForm and ChannelMembers when channel is public', () => {
   const channel = { id: 'chan-public', isPrivate: false };
