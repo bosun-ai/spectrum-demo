@@ -1,6 +1,7 @@
 const React = require('react');
 const { render } = require('@testing-library/react');
 const { Provider } = require('react-redux');
+const { HelmetProvider } = require('react-helmet-async');
 
 // Component under test
 const NavHead = require('src/views/navigation/navHead').default;
@@ -26,9 +27,13 @@ describe('NavHead regression', () => {
 
     const { container } = render(
       React.createElement(
-        Provider,
-        { store: mockStore },
-        React.createElement(NavHead)
+        HelmetProvider,
+        null,
+        React.createElement(
+          Provider,
+          { store: mockStore },
+          React.createElement(NavHead)
+        )
       )
     );
 
