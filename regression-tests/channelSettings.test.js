@@ -3,7 +3,11 @@ const { render, screen } = require('@testing-library/react');
 
 // Import the compiled module via CommonJS require
 const ChannelSettingsModule = require('../src/views/channelSettings/index.js');
-const ChannelSettings = ChannelSettingsModule.default || ChannelSettingsModule;
+// Unwrap the composed component to avoid Redux/Router/Apollo providers
+const ChannelSettings = ChannelSettingsModule.default
+  ? ChannelSettingsModule.default.WrappedComponent ||
+    ChannelSettingsModule.default
+  : ChannelSettingsModule.WrappedComponent || ChannelSettingsModule;
 
 // Helper to render the wrapped component by bypassing HOCs with minimal props
 function renderChannelSettings(props) {
