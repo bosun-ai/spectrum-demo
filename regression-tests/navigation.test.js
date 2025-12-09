@@ -59,12 +59,10 @@ const renderNavigation = (props = {}, { route = '/' } = {}) => {
     React.createElement(
       MemoryRouter,
       { initialEntries: [route] },
-      React.createElement(NavigationContext.Consumer, null, () =>
-        React.createElement(
-          NavigationContext.Provider,
-          { value: contextValue },
-          React.createElement(Navigation, props)
-        )
+      React.createElement(
+        NavigationContext.Provider,
+        { value: contextValue },
+        React.createElement(Navigation, props)
       )
     )
   );
