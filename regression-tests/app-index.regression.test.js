@@ -47,8 +47,10 @@ test('App renders via ReactDOM.render without crashing', async () => {
     history: { location: { search: '' }, replace: jest.fn() },
   }));
 
+  // Mock reset.css raw-loader import to avoid jest resolver issues
+  jest.mock('../src/reset.css.js', () => ({}), { virtual: true });
   // Require the entry after mocks are set
-  const entry = require('../src/index.js');
+  require('../src/index.js');
   const ReactDOM = require('react-dom');
 
   // Wait a tick for preloadReady then render to resolve
@@ -88,6 +90,7 @@ test('App uses ReactDOM.hydrate when __SERVER_STATE__ is present', async () => {
     history: { location: { search: '' }, replace: jest.fn() },
   }));
 
+  jest.mock('../src/reset.css.js', () => ({}), { virtual: true });
   require('../src/index.js');
   const ReactDOM = require('react-dom');
 
@@ -141,6 +144,7 @@ test('maintenanceMode prop respects REACT_APP_MAINTENANCE_MODE env', async () =>
     history: { location: { search: '' }, replace: jest.fn() },
   }));
 
+  jest.mock('../src/reset.css.js', () => ({}), { virtual: true });
   require('../src/index.js');
   const ReactDOM = require('react-dom');
   await Promise.resolve();

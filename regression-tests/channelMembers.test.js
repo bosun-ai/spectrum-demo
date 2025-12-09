@@ -1,5 +1,10 @@
 const React = require('react');
 const { render, screen, fireEvent } = require('@testing-library/react');
+const { MemoryRouter } = require('react-router');
+const { Provider: ReduxProvider } = require('react-redux');
+const { createStore } = require('redux');
+const { ThemeProvider } = require('styled-components');
+const theme = require('../shared/theme').default || require('../shared/theme');
 
 // Import the unconnected component via require and access default export's wrapped component
 const ChannelMembersModule = require('../src/views/channelSettings/components/channelMembers.js');
@@ -12,6 +17,21 @@ const Wrapped = ChannelMembersModule && ChannelMembersModule.default;
 // Helper to render the inner component by bypassing HOCs: use Wrapped.WrappedComponent if present
 const InnerComponent =
   Wrapped && Wrapped.WrappedComponent ? Wrapped.WrappedComponent : Wrapped;
+
+function renderWithProviders(ui) {
+  const store = createStore((state = {}) => state);
+  return render(
+    React.createElement(
+      MemoryRouter,
+      null,
+      React.createElement(
+        ReduxProvider,
+        { store },
+        React.createElement(ThemeProvider, { theme }, ui)
+      )
+    )
+  );
+}
 
 test('ChannelMembers renders members and load more button', () => {
   // Build a minimal channel object matching expected shape
@@ -42,7 +62,7 @@ test('ChannelMembers renders members and load more button', () => {
     currentUser: { id: 'u1' },
   };
 
-  render(React.createElement(InnerComponent, props));
+  renderWithProviders(React.createElement(InnerComponent, props));
 
   // Header
   expect(screen.getByText('Members')).toBeInTheDocument();
@@ -67,7 +87,7 @@ test('ChannelMembers shows loading when isLoading and no data', () => {
     currentUser: null,
   };
 
-  render(React.createElement(InnerComponent, props));
+  renderWithProviders(React.createElement(InnerComponent, props));
 
   // Expect a Loading component to be rendered inside SectionCard
   // We can assert by role or text fallback; Loading may not have text, but SectionCard exists
