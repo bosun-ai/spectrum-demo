@@ -25,8 +25,8 @@ def find_components(root):
     components = []
     for dirpath, dirnames, filenames in os.walk(root):
         # Skip common directories that are not source
-        base = os.path.basename(dirpath)
-        if base in {'.git', 'node_modules', 'flow-typed', 'public', 'docs', 'cypress'}:
+        parts = set(dirpath.replace('\\', '/').split('/'))
+        if parts & {'.git', 'node_modules', 'flow-typed', 'public', 'docs', 'cypress', 'api/node_modules'}:
             continue
         for fn in filenames:
             _, ext = os.path.splitext(fn)
