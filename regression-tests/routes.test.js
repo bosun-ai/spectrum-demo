@@ -1,6 +1,9 @@
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
 const { MemoryRouter } = require('react-router');
+const { ApolloProvider } = require('react-apollo');
+const { ApolloClient } = require('apollo-client');
+const { InMemoryCache } = require('apollo-cache-inmemory');
 
 // Mock raw-loader CSS import used by GlobalStyles to avoid jest resolution errors
 jest.mock('../src/reset.css.js', () => {
@@ -33,8 +36,13 @@ const Routes = require('../src/routes').default;
 
 // Helper to render Routes within a MemoryRouter
 const renderWithRouter = (ui, { route = '/' } = {}) => {
+  const client = new ApolloClient({ cache: new InMemoryCache() });
   return render(
-    React.createElement(MemoryRouter, { initialEntries: [route] }, ui)
+    React.createElement(
+      ApolloProvider,
+      { client },
+      React.createElement(MemoryRouter, { initialEntries: [route] }, ui)
+    )
   );
 };
 
