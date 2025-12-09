@@ -28,7 +28,8 @@ jest.mock('../shared/graphql/queries/user/getUserCommunityConnection', () => ({
 // Mock viewNetworkHandler HOC to pass through unchanged
 jest.mock('../src/components/viewNetworkHandler', () => Component => Component);
 
-const CommunityList = require('../src/views/navigation/communityList.js').default;
+const CommunityList = require('../src/views/navigation/communityList.js')
+  .default;
 
 const buildProps = ({
   communities = [],
