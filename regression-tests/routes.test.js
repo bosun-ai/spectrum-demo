@@ -9,20 +9,24 @@ jest.mock('src/components/withCurrentUser', () => {
     withCurrentUser: Comp => props =>
       mockReact.createElement(Comp, {
         ...props,
-        // allow overriding via test, defaults null
         currentUser: props.currentUser || null,
         isLoadingCurrentUser: props.isLoadingCurrentUser || false,
       }),
   };
 });
 
-// Minimal mock for styled-components ThemeProvider
+// Robust mock for styled-components to satisfy styled.span.withConfig chains
 jest.mock('styled-components', () => {
   const mockReact = require('react');
   const tag = () => () => null;
-  const styled = new Proxy(tag, {
-    get: () => tag,
-    apply: () => tag,
+  const makeStyledTag = () => {
+    const comp = () => null;
+    comp.withConfig = () => comp;
+    return comp;
+  };
+  const styledProxy = new Proxy(() => makeStyledTag(), {
+    get: () => makeStyledTag(), // styled.div, styled.span, etc.
+    apply: () => makeStyledTag(), // styled(Component)
   });
   return {
     ThemeProvider: ({ children }) =>
@@ -30,7 +34,7 @@ jest.mock('styled-components', () => {
     createGlobalStyle: tag,
     css: tag,
     keyframes: tag,
-    default: styled,
+    default: styledProxy,
   };
 });
 
