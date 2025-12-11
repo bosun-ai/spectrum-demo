@@ -39,13 +39,25 @@ jest.mock('src/components/withCurrentUser', () => ({
 }));
 
 // Minimal mock for styled-components ThemeProvider used via routes
-jest.mock('styled-components', () => ({
-  ThemeProvider: ({ children }) =>
-    mockReact.createElement('div', null, children),
-  createGlobalStyle: () => () => null,
-  css: () => () => null,
-  keyframes: () => () => null,
-}));
+jest.mock('styled-components', () => {
+  const styledProxy = new Proxy(
+    {},
+    {
+      get: (target, prop) => {
+        // Return a tag function that yields a dummy component
+        return () => () => null;
+      },
+    }
+  );
+  return {
+    ThemeProvider: ({ children }) =>
+      mockReact.createElement('div', null, children),
+    createGlobalStyle: () => () => null,
+    css: () => () => null,
+    keyframes: () => () => null,
+    default: styledProxy,
+  };
+});
 
 // Mock components used inside routes to simple elements to avoid heavy rendering
 jest.mock('src/components/error', () => ({

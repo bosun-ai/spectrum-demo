@@ -5,6 +5,20 @@ const { render, screen } = require('@testing-library/react');
 const { default: Routes } = require('src/routes');
 const signedOutFallback = require('src/helpers/signed-out-fallback').default;
 
+// Mock GraphQL HOCs to avoid Apollo client requirement
+jest.mock('shared/graphql/queries/user/getUser', () => ({
+  __esModule: true,
+  getCurrentUser: Component => props => {
+    // provide minimal props shape expected by consumers
+    const data = { user: null, loading: false, networkStatus: 7 };
+    return React.createElement(Component, { ...props, data });
+  },
+}));
+jest.mock('shared/graphql/mutations/user/editUser', () => ({
+  __esModule: true,
+  default: Component => props => React.createElement(Component, props),
+}));
+
 // Import the underlying views used by the fallback
 // Mock ChannelSettings and Login to avoid Apollo/Redux dependencies
 jest.mock('src/views/channelSettings', () => {
