@@ -29,5 +29,9 @@ module.exports = {
     'react/no-string-refs': 'warn',
     'react/jsx-no-target-blank': 'warn',
     'react/no-children-prop': 0,
+    // React 17 optional new JSX transform: React no longer needs to be in scope for JSX
+    // Version delta: React 16.8.6 -> 17.0.2
+    'react/react-in-jsx-scope': 0,
+    'react/jsx-uses-react': 0,
   },
 };

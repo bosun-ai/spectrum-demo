@@ -1,5 +1,5 @@
 // @flow
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useLayoutEffect } from 'react';
 import { connect } from 'react-redux';
 import type { Location, History, Match } from 'react-router';
 import Icon from 'src/components/icon';
@@ -29,7 +29,11 @@ const ThreadSlider = (props: Props) => {
     history.push({ ...previousLocation, state: { modal: false } });
   };
 
-  useEffect(() => {
+  // React 17: cleanup runs asynchronously; we need previous titlebar
+  // restored before next paint when unmounting the modal. Migrate to
+  // useLayoutEffect to guarantee synchronous cleanup on unmount.
+  // Version delta: React 16.8.6 -> 17.0.2
+  useLayoutEffect(() => {
     const handleKeyPress = (e: any) => {
       if (e.keyCode === ESC) {
         e.stopPropagation();
@@ -37,11 +41,17 @@ const ThreadSlider = (props: Props) => {
       }
     };
 
-    document.addEventListener('keydown', handleKeyPress, false);
+    // React 17: use capture to ensure document-level listener sees events
+    // Version delta: React 16.8.6 -> 17.0.2
+    document.addEventListener('keydown', handleKeyPress, { capture: true });
     return () => {
       const prev = prevTitlebarProps.current;
       dispatch(setTitlebarProps({ ...prev }));
-      document.removeEventListener('keydown', handleKeyPress, false);
+      // React 17: match capture phase on removal
+      // Version delta: React 16.8.6 -> 17.0.2
+      document.removeEventListener('keydown', handleKeyPress, {
+        capture: true,
+      });
     };
   }, []);
 

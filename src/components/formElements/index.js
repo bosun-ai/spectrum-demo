@@ -46,8 +46,13 @@ export const Input = (props: InputProps) => {
       <StyledInput
         id={props.id}
         type={props.inputType}
-        defaultValue={props.defaultValue}
-        value={props.value}
+        // React 17: avoid passing both value and defaultValue
+        // Version delta: 16.8.6 -> 17.0.2
+        {...(props.value != null
+          ? { value: props.value }
+          : props.defaultValue != null
+          ? { defaultValue: props.defaultValue }
+          : {})}
         placeholder={props.placeholder}
         onChange={props.onChange}
         autoFocus={props.autoFocus}
@@ -172,7 +177,13 @@ export const TextArea = (props: InputProps) => {
       <StyledTextArea
         id={props.id}
         placeholder={props.placeholder}
-        defaultValue={props.defaultValue}
+        // React 17: avoid mixing controlled and uncontrolled
+        // Version delta: 16.8.6 -> 17.0.2
+        {...(props.value != null
+          ? { value: props.value }
+          : props.defaultValue != null
+          ? { defaultValue: props.defaultValue }
+          : {})}
         onChange={props.onChange}
         autoFocus={props.autoFocus}
         data-cy={props.dataCy}
@@ -190,7 +201,13 @@ export class UnderlineInput extends React.Component<InputProps> {
           type="text"
           id={this.props.id}
           placeholder={this.props.placeholder}
-          value={this.props.value || this.props.defaultValue}
+          // React 17: explicit controlled vs uncontrolled
+          // Version delta: 16.8.6 -> 17.0.2
+          {...(this.props.value != null
+            ? { value: this.props.value }
+            : this.props.defaultValue != null
+            ? { defaultValue: this.props.defaultValue }
+            : {})}
           onChange={this.props.onChange}
           autoFocus={this.props.autoFocus}
           disabled={this.props.disabled}
