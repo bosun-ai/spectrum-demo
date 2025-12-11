@@ -12,6 +12,15 @@ jest.mock('../src/components/rich-text-editor/style', () => {
     EmbedComponent: props => ReactLocal.createElement('iframe', props),
   };
 });
+// Also mock message style components to avoid alias resolution failures inside renderer
+jest.mock('../src/components/message/style', () => {
+  const ReactLocal = require('react');
+  return {
+    Line: props => ReactLocal.createElement('div', props),
+    Paragraph: props => ReactLocal.createElement('p', props),
+    BlockQuote: props => ReactLocal.createElement('blockquote', props),
+  };
+});
 
 // Import renderer to access entities.embed which renders ExternalEmbed for type 'external'
 const {
