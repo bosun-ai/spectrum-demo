@@ -2,13 +2,16 @@ const React = require('react');
 const { render, screen } = require('@testing-library/react');
 
 // Mock styled components used by ExternalEmbed to simple DOM outputs
-jest.mock('../src/components/rich-text-editor/style', () => ({
-  AspectRatio: ({ children, ...props }) =>
-    React.createElement('div', props, children),
-  EmbedContainer: ({ children, ...props }) =>
-    React.createElement('div', props, children),
-  EmbedComponent: props => React.createElement('iframe', props),
-}));
+jest.mock('../src/components/rich-text-editor/style', () => {
+  const ReactLocal = require('react');
+  return {
+    AspectRatio: ({ children, ...props }) =>
+      ReactLocal.createElement('div', props, children),
+    EmbedContainer: ({ children, ...props }) =>
+      ReactLocal.createElement('div', props, children),
+    EmbedComponent: props => ReactLocal.createElement('iframe', props),
+  };
+});
 
 // Import renderer to access entities.embed which renders ExternalEmbed for type 'external'
 const {

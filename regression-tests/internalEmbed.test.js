@@ -1,6 +1,25 @@
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
 
+// Mock style modules with aliased paths used by the renderer early
+jest.mock('../src/components/message/style', () => {
+  const ReactLocal = require('react');
+  return {
+    Line: props => ReactLocal.createElement('pre', props),
+    Paragraph: props => ReactLocal.createElement('p', props),
+    BlockQuote: props => ReactLocal.createElement('blockquote', props),
+  };
+});
+
+jest.mock('../src/components/rich-text-editor/style', () => {
+  const ReactLocal = require('react');
+  return {
+    AspectRatio: props => ReactLocal.createElement('div', props),
+    EmbedContainer: props => ReactLocal.createElement('div', props),
+    EmbedComponent: props => ReactLocal.createElement('iframe', props),
+  };
+});
+
 // Component under test renders an InternalEmbed -> ThreadAttachment
 const { createRenderer } = require('../shared/clients/draft-js/renderer');
 
