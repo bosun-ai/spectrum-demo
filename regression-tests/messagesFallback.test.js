@@ -65,10 +65,13 @@ test('MessagesFallback shows Login when signed out', async () => {
     )
   );
 
-  // Expect the login view to render; `Login` component renders a button with text "Log in"
-  // and also commonly includes redirect param. Look for generic login text.
-  const loginPage = await screen.findByTestId('login-page');
-  expect(loginPage).toBeInTheDocument();
+  // Expect the login view to render. The Login component marks the root with data-cy="login-page".
+  // Prefer an accessible query as fallback if needed; here we query by attribute.
+  const el = await screen.findByRole('heading', { name: /log in/i });
+  expect(el).toBeInTheDocument();
+  // Also ensure the container exists via data-cy
+  const loginContainer = document.querySelector('[data-cy="login-page"]');
+  expect(loginContainer).toBeTruthy();
 });
 
 test('MessagesFallback renders DirectMessages when authenticated', async () => {
@@ -100,6 +103,6 @@ test('MessagesFallback renders DirectMessages when authenticated', async () => {
   );
 
   // When authed, the DirectMessages containers render; assert that the app does not show the login page
-  const loginPage = screen.queryByTestId('login-page');
-  expect(loginPage).toBeNull();
+  const loginContainer = document.querySelector('[data-cy="login-page"]');
+  expect(loginContainer).toBeNull();
 });

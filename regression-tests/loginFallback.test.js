@@ -20,6 +20,13 @@ jest.mock('src/views/login', () => {
 jest.mock('src/components/withCurrentUser', () => ({
   withCurrentUser: Comp => Comp,
 }));
+// Also mock react-apollo HOCs used by AuthViewHandler internals if any
+jest.mock('react-apollo', () => {
+  return {
+    Query: ({ children }) => children({ data: {}, loading: false }),
+    ApolloProvider: ({ children }) => children,
+  };
+});
 
 // Helper to render a component at /login
 function renderAtLogin(Component) {
