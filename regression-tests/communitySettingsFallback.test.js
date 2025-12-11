@@ -7,7 +7,7 @@ const { MemoryRouter, Route } = require('react-router');
 // Mock withCurrentUser to avoid Apollo dependency
 jest.mock('src/components/withCurrentUser', () => ({
   withCurrentUser: Comp => props =>
-    React.createElement(Comp, {
+    require('react').createElement(Comp, {
       ...props,
       currentUser: null,
       isLoadingCurrentUser: false,
@@ -30,7 +30,6 @@ jest.mock('src/views/login', () => () => {
 
 // Mock AuthViewHandler to control authentication state used by signedOutFallback
 jest.mock('src/views/authViewHandler', () => {
-  const React = require('react');
   const AuthViewHandler = ({ children, authed = false }) => children(authed);
   return AuthViewHandler;
 });

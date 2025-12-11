@@ -31,6 +31,10 @@ jest.mock('src/views/authViewHandler', () => {
   const AuthViewHandler = ({ children, authed = false }) => children(authed);
   return AuthViewHandler;
 });
+// Mock withCurrentUser HOC to bypass Apollo requirement in tests
+jest.mock('src/components/withCurrentUser', () => ({
+  withCurrentUser: Comp => Comp,
+}));
 
 function renderComponent(Component) {
   return render(
