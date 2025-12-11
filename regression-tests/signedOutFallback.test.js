@@ -10,6 +10,15 @@ jest.mock('../src/views/authViewHandler', () => {
   };
 });
 
+// Also mock withCurrentUser HOC to avoid Apollo dependency in tests
+jest.mock('../src/components/withCurrentUser', () => {
+  const React = require('react');
+  return {
+    withCurrentUser: Component => props =>
+      React.createElement(Component, props),
+  };
+});
+
 // Import the HOC that switches based on auth state
 const signedOutFallback = require('../src/helpers/signed-out-fallback').default;
 
