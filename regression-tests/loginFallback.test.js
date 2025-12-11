@@ -4,6 +4,21 @@ const { MemoryRouter, Route } = require('react-router');
 
 // We import real signedOutFallback behavior via Routes wiring
 const signedOutFallback = require('src/helpers/signed-out-fallback').default;
+// Fully mock AuthViewHandler to a simple component that calls children
+jest.mock('src/views/authViewHandler', () => {
+  const ReactLocal = require('react');
+  class AuthViewHandler extends ReactLocal.Component {
+    render() {
+      const { children, authed = false } = this.props;
+      return ReactLocal.createElement(
+        ReactLocal.Fragment,
+        null,
+        children(authed)
+      );
+    }
+  }
+  return AuthViewHandler;
+});
 
 // Mock Login to expose a test id and inspect redirect
 jest.mock('src/views/login', () => {
