@@ -1,11 +1,17 @@
 const React = require('react');
-const { render, screen } = require('@testing-library/react');
+const { render, screen, cleanup } = require('@testing-library/react');
+
+// Mock AuthViewHandler to control auth state without Apollo setup
+jest.mock('../src/views/authViewHandler', () => {
+  const React = require('react');
+  return function AuthViewHandlerMock(props) {
+    const authed = global.__TEST_AUTH_STATE__ || false;
+    return props.children(authed);
+  };
+});
 
 // Import the HOC that switches based on auth state
 const signedOutFallback = require('../src/helpers/signed-out-fallback').default;
-
-// Since AuthViewHandler relies on Apollo and router, we only verify
-// that the wrapper renders without crashing and passes props through.
 
 function PrimaryComponent(props) {
   return React.createElement(
@@ -23,14 +29,23 @@ function FallbackComponent(props) {
   );
 }
 
-test('signedOutFallback renders without crashing', () => {
+afterEach(() => {
+  cleanup();
+  delete global.__TEST_AUTH_STATE__;
+});
+
+test('renders fallback when not authenticated', () => {
+  global.__TEST_AUTH_STATE__ = false;
   const Wrapped = signedOutFallback(PrimaryComponent, FallbackComponent);
-  // We cannot easily toggle auth state here due to real AuthViewHandler,
-  // but we can ensure the component tree mounts and one of the inner
-  // components renders to the DOM.
   render(React.createElement(Wrapped, { label: 'Test' }));
-  // Expect either primary or fallback to be present; at least one should render
-  const primary = screen.queryByTestId('primary');
-  const fallback = screen.queryByTestId('fallback');
-  expect(primary || fallback).toBeTruthy();
+  expect(screen.queryByTestId('fallback')).toBeInTheDocument();
+  expect(screen.queryByTestId('primary')).toBeNull();
+});
+
+test('renders primary component when authenticated', () => {
+  global.__TEST_AUTH_STATE__ = true;
+  const Wrapped = signedOutFallback(PrimaryComponent, FallbackComponent);
+  render(React.createElement(Wrapped, { label: 'Test' }));
+  expect(screen.queryByTestId('primary')).toBeInTheDocument();
+  expect(screen.queryByTestId('fallback')).toBeNull();
 });

@@ -22,9 +22,13 @@ jest.mock('src/components/withCurrentUser', () => ({
 }));
 // Also mock react-apollo HOCs used by AuthViewHandler internals if any
 jest.mock('react-apollo', () => {
+  const ReactLocal = require('react');
+  const passthrough = Comp => Comp;
   return {
     Query: ({ children }) => children({ data: {}, loading: false }),
     ApolloProvider: ({ children }) => children,
+    graphql: () => passthrough,
+    withApollo: () => passthrough,
   };
 });
 
