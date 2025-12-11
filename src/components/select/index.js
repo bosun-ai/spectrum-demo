@@ -7,6 +7,9 @@ type Props = {
   children: React$Node,
   onChange: (evt: SyntheticInputEvent<HTMLSelectElement>) => void,
   defaultValue?: ?string,
+  // React 17: support controlled usage to avoid controlled/uncontrolled warnings
+  // Version delta: 16.8.6 -> 17.0.2
+  value?: ?string,
 };
 
 export default (props: Props) => (
