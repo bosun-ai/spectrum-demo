@@ -3,7 +3,7 @@ const { render, screen } = require('@testing-library/react');
 const { MemoryRouter, Route } = require('react-router');
 
 // We test the signedOutFallback component behavior used to create UserSettingsFallback
-const { signedOutFallback } = require('src/helpers/signed-out-fallback');
+const signedOutFallback = require('src/helpers/signed-out-fallback').default;
 const { CLIENT_URL } = require('src/api/constants');
 
 // Mock UserSettings and Login to simplify assertions
@@ -64,9 +64,8 @@ describe('UserSettingsFallback (src/routes.js)', () => {
       const AuthViewHandler = ({ children }) => children(true);
       return AuthViewHandler;
     });
-    const {
-      signedOutFallback: signedOutFallbackAuthed,
-    } = require('src/helpers/signed-out-fallback');
+    const signedOutFallbackAuthed = require('src/helpers/signed-out-fallback')
+      .default;
     const UserSettings = require('src/views/userSettings');
     const Login = require('src/views/login');
     const UserSettingsFallbackAuthed = signedOutFallbackAuthed(
