@@ -15,6 +15,19 @@ jest.mock('../src/components/message/threadAttachment', () => {
   };
 });
 
+// Mock style modules with aliased paths used by the renderer
+jest.mock('../src/components/message/style', () => ({
+  Line: props => React.createElement('pre', props),
+  Paragraph: props => React.createElement('p', props),
+  BlockQuote: props => React.createElement('blockquote', props),
+}));
+
+jest.mock('../src/components/rich-text-editor/style', () => ({
+  AspectRatio: props => React.createElement('div', props),
+  EmbedContainer: props => React.createElement('div', props),
+  EmbedComponent: props => React.createElement('iframe', props),
+}));
+
 test('InternalEmbed returns ThreadAttachment for entity "thread"', () => {
   const renderer = createRenderer({ headings: false });
   const data = { type: 'internal', entity: 'thread', id: 'abc123' };
