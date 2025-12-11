@@ -1,4 +1,10 @@
 require('@testing-library/jest-dom/extend-expect');
+// Polyfill fetch for apollo-upload-client
+try {
+  const fetch = require('cross-fetch');
+  // cross-fetch exports fetch default
+  global.fetch = fetch.default || fetch;
+} catch (err) {}
 // Ensure a non-opaque origin for jsdom to enable localStorage
 try {
   const { JSDOM } = require('jsdom');
