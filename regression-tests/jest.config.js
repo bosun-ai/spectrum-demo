@@ -5,4 +5,8 @@ module.exports = {
   // Jest v22 uses setupTestFrameworkScriptFile; keep it only
   setupTestFrameworkScriptFile: '<rootDir>/setupTests.js',
   testMatch: ['**/*.test.js'],
+  moduleNameMapper: {
+    '^src/(.*)$': '<rootDir>/../src/$1',
+    '^shared/(.*)$': '<rootDir>/../shared/$1',
+  },
 };
