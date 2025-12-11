@@ -16,17 +16,23 @@ jest.mock('../src/components/message/threadAttachment', () => {
 });
 
 // Mock style modules with aliased paths used by the renderer
-jest.mock('../src/components/message/style', () => ({
-  Line: props => React.createElement('pre', props),
-  Paragraph: props => React.createElement('p', props),
-  BlockQuote: props => React.createElement('blockquote', props),
-}));
+jest.mock('../src/components/message/style', () => {
+  const ReactLocal = require('react');
+  return {
+    Line: props => ReactLocal.createElement('pre', props),
+    Paragraph: props => ReactLocal.createElement('p', props),
+    BlockQuote: props => ReactLocal.createElement('blockquote', props),
+  };
+});
 
-jest.mock('../src/components/rich-text-editor/style', () => ({
-  AspectRatio: props => React.createElement('div', props),
-  EmbedContainer: props => React.createElement('div', props),
-  EmbedComponent: props => React.createElement('iframe', props),
-}));
+jest.mock('../src/components/rich-text-editor/style', () => {
+  const ReactLocal = require('react');
+  return {
+    AspectRatio: props => ReactLocal.createElement('div', props),
+    EmbedContainer: props => ReactLocal.createElement('div', props),
+    EmbedComponent: props => ReactLocal.createElement('iframe', props),
+  };
+});
 
 test('InternalEmbed returns ThreadAttachment for entity "thread"', () => {
   const renderer = createRenderer({ headings: false });
