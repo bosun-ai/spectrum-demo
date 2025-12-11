@@ -91,8 +91,9 @@ describe('LoginFallback (src/routes.js)', () => {
 
     renderAtLogin(LoginFallback);
 
-    // When authed, fallback (Login) should NOT render
+    // When authed, Component branch should render Redirect; login should not be present
     expect(screen.queryByTestId('login-page')).toBeNull();
+    // We can't easily assert router navigation in this unit test; presence check suffices
   });
 
   test('renders Login when signed out', () => {
