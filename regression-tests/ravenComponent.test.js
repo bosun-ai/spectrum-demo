@@ -49,16 +49,22 @@ describe('shared/raven', () => {
   });
 
   test('uses real raven in production when SENTRY_DSN_SERVER is set', () => {
-    // Provide minimal env to trigger production branch
+    // Stub raven module so production branch is selected without real DSN parsing
+    jest.resetModules();
+    const fakeRaven = {
+      config: jest.fn(() => ({ install: jest.fn() })),
+      requestHandler: jest.fn(() => (req, res, next) => next()),
+      captureException: jest.fn(),
+    };
+    jest.doMock('raven', () => fakeRaven);
     const raven = loadRaven({
       NODE_ENV: 'production',
-      SENTRY_DSN_SERVER: 'https://example.com/123',
+      SENTRY_DSN_SERVER: 'http://dummy-dsn',
       SENTRY_NAME: 'regression-test',
     });
     expect(raven).toBeDefined();
-    // Real raven should have a requestHandler function, but config returns Raven object (not our mock shape)
+    expect(fakeRaven.config).toHaveBeenCalled();
     expect(typeof raven.requestHandler).toBe('function');
-    // captureException should exist
     expect(typeof raven.captureException).toBe('function');
   });
 });

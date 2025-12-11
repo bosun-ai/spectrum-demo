@@ -1,5 +1,25 @@
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
+// Mock styled components and attachments used by renderer to avoid alias issues
+jest.mock('../src/components/message/style', () => ({
+  Line: props => React.createElement('div', props),
+  Paragraph: props => React.createElement('p', props),
+  BlockQuote: props => React.createElement('blockquote', props),
+}));
+jest.mock('../src/components/rich-text-editor/style', () => ({
+  AspectRatio: ({ children, ...props }) =>
+    React.createElement('div', props, children),
+  EmbedContainer: ({ children, ...props }) =>
+    React.createElement('div', props, children),
+  EmbedComponent: props => React.createElement('iframe', props),
+}));
+jest.mock('../src/components/message/threadAttachment', () => props =>
+  React.createElement(
+    'button',
+    { 'data-testid': 'thread-attachment', type: 'button' },
+    'Open Thread'
+  )
+);
 
 // Import the Embed via the renderer that exposes it through entities.embed
 const {
