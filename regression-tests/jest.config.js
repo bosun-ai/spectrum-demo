@@ -2,8 +2,12 @@ module.exports = {
   rootDir: '.', // paths in this config are relative to the regression-tests directory
   testEnvironment: 'jsdom',
   testURL: 'http://localhost/',
-  // Jest v22 uses setupTestFrameworkScriptFile; keep it only
+  // For Jest v22, use setupTestFrameworkScriptFile
   setupTestFrameworkScriptFile: '<rootDir>/setupTests.js',
+  // Transform with Babel 7
+  transform: {
+    '^.+\\.(js|jsx)$': '<rootDir>/transform.js',
+  },
   testMatch: ['**/*.test.js'],
   moduleNameMapper: {
     '^src/(.*)$': '<rootDir>/../src/$1',
