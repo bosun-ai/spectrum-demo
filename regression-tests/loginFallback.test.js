@@ -31,6 +31,16 @@ jest.mock('react-apollo', () => {
     withApollo: () => passthrough,
   };
 });
+// Mock react-redux connect to pass through without requiring a Provider
+jest.mock('react-redux', () => {
+  const passthrough = Comp => Comp;
+  return {
+    connect: () => passthrough,
+    Provider: ({ children }) => children,
+    useSelector: () => ({}),
+    useDispatch: () => () => {},
+  };
+});
 
 // Helper to render a component at /login
 function renderAtLogin(Component) {

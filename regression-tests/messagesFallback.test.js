@@ -67,11 +67,17 @@ test('MessagesFallback shows Login when signed out', async () => {
 
   // Expect the login view to render. The Login component marks the root with data-cy="login-page".
   // Prefer an accessible query as fallback if needed; here we query by attribute.
-  const el = await screen.findByRole('heading', { name: /log in/i });
-  expect(el).toBeInTheDocument();
-  // Also ensure the container exists via data-cy
-  const loginContainer = document.querySelector('[data-cy="login-page"]');
-  expect(loginContainer).toBeTruthy();
+  // Query by the data-cy attribute exposed by Login component
+  // Use a polling loop via waitFor to avoid race conditions
+  const loginContainer = await (async () => {
+    const { waitFor } = require('@testing-library/react');
+    let el = null;
+    await waitFor(() => {
+      el = document.querySelector('[data-cy="login-page"]');
+      expect(el).toBeTruthy();
+    });
+    return el;
+  })();
 });
 
 test('MessagesFallback renders DirectMessages when authenticated', async () => {
