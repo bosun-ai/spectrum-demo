@@ -48,7 +48,11 @@ function renderAtLogin(Component) {
     React.createElement(
       MemoryRouter,
       { initialEntries: ['/login'] },
-      React.createElement(Route, { path: '/' }, React.createElement(Component))
+      React.createElement(
+        Route,
+        { path: '/' },
+        React.createElement(Component, { data: { user: null, loading: false } })
+      )
     )
   );
 }

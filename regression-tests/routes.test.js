@@ -2,6 +2,29 @@ const React = require('react');
 const { render, screen } = require('@testing-library/react');
 const { MemoryRouter } = require('react-router');
 
+// IMPORTANT: mock styled-components first to avoid globals importing real styled
+jest.mock('styled-components', () => {
+  const mockReact = require('react');
+  const tag = () => () => null;
+  const makeStyledTag = () => {
+    const comp = () => null;
+    comp.withConfig = () => comp;
+    return comp;
+  };
+  const styledProxy = new Proxy(() => makeStyledTag(), {
+    get: () => makeStyledTag(),
+    apply: () => makeStyledTag(),
+  });
+  return {
+    ThemeProvider: ({ children }) =>
+      mockReact.createElement('div', null, children),
+    createGlobalStyle: tag,
+    css: tag,
+    keyframes: tag,
+    default: styledProxy,
+  };
+});
+
 // Mock withCurrentUser to pass props through
 jest.mock('src/components/withCurrentUser', () => {
   const mockReact = require('react');
@@ -12,29 +35,6 @@ jest.mock('src/components/withCurrentUser', () => {
         currentUser: props.currentUser || null,
         isLoadingCurrentUser: props.isLoadingCurrentUser || false,
       }),
-  };
-});
-
-// Robust mock for styled-components to satisfy styled.span.withConfig chains
-jest.mock('styled-components', () => {
-  const mockReact = require('react');
-  const tag = () => () => null;
-  const makeStyledTag = () => {
-    const comp = () => null;
-    comp.withConfig = () => comp;
-    return comp;
-  };
-  const styledProxy = new Proxy(() => makeStyledTag(), {
-    get: () => makeStyledTag(), // styled.div, styled.span, etc.
-    apply: () => makeStyledTag(), // styled(Component)
-  });
-  return {
-    ThemeProvider: ({ children }) =>
-      mockReact.createElement('div', null, children),
-    createGlobalStyle: tag,
-    css: tag,
-    keyframes: tag,
-    default: styledProxy,
   };
 });
 
