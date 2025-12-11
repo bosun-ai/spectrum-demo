@@ -30,19 +30,24 @@ jest.mock('src/views/authViewHandler', () => {
 // Lightweight mock to ensure styled-components default export exists
 jest.mock('styled-components', () => {
   const React = require('react');
-  const styledMock = new Proxy(function() {}, {
+  const createStyledTag = () => {
+    const comp = () => React.createElement('div');
+    comp.withConfig = () => comp;
+    comp.attrs = () => comp;
+    return comp;
+  };
+  const styled = new Proxy(function() {}, {
     get: (target, prop) => {
-      if (prop === 'default') return styledMock;
+      if (prop === 'default') return styled;
       if (prop === 'ThemeProvider') {
         return ({ children }) =>
           React.createElement(React.Fragment, null, children);
       }
-      // return a curried tag function for styled.tag`` usage
-      return () => () => React.createElement('div');
+      return createStyledTag();
     },
-    apply: () => () => React.createElement('div'),
+    apply: () => createStyledTag(),
   });
-  return styledMock;
+  return styled;
 });
 
 // Helper to render the app at a specific route

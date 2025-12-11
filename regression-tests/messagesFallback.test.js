@@ -6,6 +6,11 @@ const { MemoryRouter, Route } = require('react-router');
 
 // We import the real Routes so we exercise MessagesFallback wiring
 const Routes = require('src/routes').default;
+const { ApolloProvider } = require('react-apollo');
+const { Provider } = require('react-redux');
+const { HelmetProvider } = require('react-helmet-async');
+const { initStore } = require('src/store');
+const { client } = require('shared/graphql');
 
 // MSW server is already set up by regression-tests/setupTests.js
 const { rest } = require('msw');
@@ -35,14 +40,27 @@ const mockGetCurrentUser = user => {
 
 test('MessagesFallback shows Login when signed out', async () => {
   mockGetCurrentUser(null);
+  const store = initStore({});
   render(
     React.createElement(
-      MemoryRouter,
-      { initialEntries: ['/messages'] },
+      Provider,
+      { store },
       React.createElement(
-        Route,
-        { path: '/' },
-        React.createElement(Routes, { maintenanceMode: false })
+        HelmetProvider,
+        null,
+        React.createElement(
+          ApolloProvider,
+          { client },
+          React.createElement(
+            MemoryRouter,
+            { initialEntries: ['/messages'] },
+            React.createElement(
+              Route,
+              { path: '/' },
+              React.createElement(Routes, { maintenanceMode: false })
+            )
+          )
+        )
       )
     )
   );
@@ -56,14 +74,27 @@ test('MessagesFallback shows Login when signed out', async () => {
 test('MessagesFallback renders DirectMessages when authenticated', async () => {
   // Provide a minimal authed user object with id and username
   mockGetCurrentUser({ id: 'u1', username: 'alice', timezone: 0 });
+  const store = initStore({});
   render(
     React.createElement(
-      MemoryRouter,
-      { initialEntries: ['/messages'] },
+      Provider,
+      { store },
       React.createElement(
-        Route,
-        { path: '/' },
-        React.createElement(Routes, { maintenanceMode: false })
+        HelmetProvider,
+        null,
+        React.createElement(
+          ApolloProvider,
+          { client },
+          React.createElement(
+            MemoryRouter,
+            { initialEntries: ['/messages'] },
+            React.createElement(
+              Route,
+              { path: '/' },
+              React.createElement(Routes, { maintenanceMode: false })
+            )
+          )
+        )
       )
     )
   );
