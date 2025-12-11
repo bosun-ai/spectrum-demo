@@ -39,10 +39,9 @@ describe('LoginFallback (src/routes.js)', () => {
       const AuthViewHandler = ({ children }) => children(true);
       return AuthViewHandler;
     });
+    // Re-require signedOutFallback and compose LoginFallback as in src/routes.js
     const signedOutFallbackAuthed = require('src/helpers/signed-out-fallback')
       .default;
-
-    // Use real Redirect from react-router
     const { Redirect } = require('react-router');
     const Login = require('src/views/login');
     const LoginFallback = signedOutFallbackAuthed(
@@ -67,7 +66,6 @@ describe('LoginFallback (src/routes.js)', () => {
       .default;
     const { Redirect } = require('react-router');
     const Login = require('src/views/login');
-
     const LoginFallback = signedOutFallbackSignedOut(
       () => React.createElement(Redirect, { to: '/' }),
       Login
