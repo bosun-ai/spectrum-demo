@@ -8,5 +8,8 @@ module.exports = {
   moduleNameMapper: {
     '^src/(.*)$': '<rootDir>/../src/$1',
     '^shared/(.*)$': '<rootDir>/../shared/$1',
+    // Stub raw-loader CSS import used by reset.css.js
+    '!!raw-loader!./components/rich-text-editor/prism-theme.css':
+      '<rootDir>/styleStub.js',
   },
 };

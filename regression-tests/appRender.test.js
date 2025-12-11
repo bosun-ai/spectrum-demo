@@ -1,4 +1,4 @@
-const React = require('react');
+const mockReact = require('react');
 
 // Mock ReactDOM to intercept render/hydrate calls
 jest.mock('react-dom', () => ({
@@ -31,7 +31,7 @@ jest.mock('shared/graphql', () => {
 // Mock withCurrentUser HOC to pass through component without Apollo
 jest.mock('src/components/withCurrentUser', () => ({
   withCurrentUser: Comp => props =>
-    React.createElement(Comp, {
+    mockReact.createElement(Comp, {
       ...props,
       currentUser: null,
       isLoadingCurrentUser: false,
@@ -40,57 +40,64 @@ jest.mock('src/components/withCurrentUser', () => ({
 
 // Minimal mock for styled-components ThemeProvider used via routes
 jest.mock('styled-components', () => ({
-  ThemeProvider: ({ children }) => React.createElement('div', null, children),
+  ThemeProvider: ({ children }) =>
+    mockReact.createElement('div', null, children),
 }));
 
 // Mock components used inside routes to simple elements to avoid heavy rendering
 jest.mock('src/components/error', () => ({
-  ErrorBoundary: ({ children }) => React.createElement('div', null, children),
+  ErrorBoundary: ({ children }) =>
+    mockReact.createElement('div', null, children),
 }));
 jest.mock('src/components/appViewWrapper', () => ({
   __esModule: true,
-  default: ({ children }) => React.createElement('div', null, children),
+  default: ({ children }) => mockReact.createElement('div', null, children),
 }));
 jest.mock('src/components/maintenance', () => ({
   __esModule: true,
   default: () =>
-    React.createElement('div', { 'data-testid': 'maintenance' }, 'Maintenance'),
+    mockReact.createElement(
+      'div',
+      { 'data-testid': 'maintenance' },
+      'Maintenance'
+    ),
 }));
 jest.mock('src/components/head', () => ({
   __esModule: true,
-  default: () => React.createElement('div', null, 'Head'),
+  default: () => mockReact.createElement('div', null, 'Head'),
 }));
 jest.mock('src/components/gallery', () => ({
   __esModule: true,
-  default: () => React.createElement('div', null, 'Gallery'),
+  default: () => mockReact.createElement('div', null, 'Gallery'),
 }));
 jest.mock('src/components/toasts', () => ({
   __esModule: true,
-  default: () => React.createElement('div', null, 'Toasts'),
+  default: () => mockReact.createElement('div', null, 'Toasts'),
 }));
 jest.mock('src/views/status', () => ({
   __esModule: true,
-  default: () => React.createElement('div', null, 'Status'),
+  default: () => mockReact.createElement('div', null, 'Status'),
 }));
 jest.mock('src/views/navigation', () => ({
   __esModule: true,
-  default: () => React.createElement('div', null, 'Navigation'),
+  default: () => mockReact.createElement('div', null, 'Navigation'),
 }));
 jest.mock('src/views/globalTitlebar', () => ({
   __esModule: true,
-  default: () => React.createElement('div', null, 'GlobalTitlebar'),
+  default: () => mockReact.createElement('div', null, 'GlobalTitlebar'),
 }));
 jest.mock('src/views/queryParamToastDispatcher', () => ({
   __esModule: true,
-  default: () => React.createElement('div', null, 'QueryParamToastDispatcher'),
+  default: () =>
+    mockReact.createElement('div', null, 'QueryParamToastDispatcher'),
 }));
 jest.mock('src/components/announcementBanner', () => ({
   __esModule: true,
-  default: () => React.createElement('div', null, 'AnnouncementBanner'),
+  default: () => mockReact.createElement('div', null, 'AnnouncementBanner'),
 }));
 jest.mock('src/views/thread', () => ({
   __esModule: true,
-  ThreadView: () => React.createElement('div', null, 'ThreadView'),
+  ThreadView: () => mockReact.createElement('div', null, 'ThreadView'),
 }));
 
 // Ensure a #root element exists before requiring the module under test
@@ -116,7 +123,7 @@ test('App renders into #root via ReactDOM.render', async () => {
   const [element, container] = ReactDOM.render.mock.calls[0];
   expect(container).toBe(document.querySelector('#root'));
   // Ensure we rendered a React element
-  expect(React.isValidElement(element)).toBe(true);
+  expect(mockReact.isValidElement(element)).toBe(true);
 });
 
 test('App respects maintenanceMode passed to RedirectHandler/Routes', async () => {
