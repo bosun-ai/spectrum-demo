@@ -89,13 +89,9 @@
     "prismjs": "^1.16.0",
     "query-string": "5.1.1",
     "raven": "^2.6.4",
-    // Upgrade react from 16.8.6 -> 17.0.2; align versions across packages
-    // Version delta: react 15.x -> 17.0.2
     "react": "17.0.2",
     "react-app-rewire-styled-components": "^3.0.2",
     "react-app-rewired": "1.6.2",
-    // Align react-dom to 17.0.x
-    // Version delta: react-dom 15.x -> 17.0.2
     "react-dom": "17.0.2",
     "react-helmet": "5.x",
     "react-infinite-scroller-with-scroll-element": "^1.0.4",
