@@ -1,10 +1,15 @@
 require('@testing-library/jest-dom/extend-expect');
-// Polyfill a URL for jsdom to avoid opaque origin issues with localStorage
-if (typeof window !== 'undefined' && !window.location.href) {
-  // jsdom v11 sometimes has about:blank which is fine; ensure a http origin
-  delete window.location; // remove readonly
-  global.window = Object.create(window);
-  global.window.location = { href: 'http://localhost/' };
+// Ensure a non-opaque origin for jsdom to enable localStorage
+try {
+  const { JSDOM } = require('jsdom');
+  const dom = new JSDOM('<!doctype html><html><body></body></html>', {
+    url: 'http://localhost/',
+  });
+  global.window = dom.window;
+  global.document = dom.window.document;
+  global.navigator = dom.window.navigator;
+} catch (err) {
+  // fallback: do nothing
 }
 
 const { server } = require('./server');
