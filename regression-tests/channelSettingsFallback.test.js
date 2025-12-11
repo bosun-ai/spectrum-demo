@@ -26,20 +26,20 @@ jest.mock('shared/graphql/mutations/user/editUser', () => ({
 
 // Import the underlying views used by the fallback
 // Mock ChannelSettings and Login to avoid Apollo/Redux dependencies
-jest.mock('src/views/channelSettings', () => {
-  const React = require('react');
-  return {
-    __esModule: true,
-    default: () => React.createElement('div', null, 'Channel Settings'),
-  };
-});
-jest.mock('src/views/login', () => {
-  const React = require('react');
-  return {
-    __esModule: true,
-    default: () => React.createElement('h1', null, 'Log in to Spectrum'),
-  };
-});
+jest.mock('src/views/channelSettings', () => ({
+  __esModule: true,
+  default: function MockChannelSettings() {
+    const ReactLocal = require('react');
+    return ReactLocal.createElement('div', null, 'Channel Settings');
+  },
+}));
+jest.mock('src/views/login', () => ({
+  __esModule: true,
+  default: function MockLogin() {
+    const ReactLocal = require('react');
+    return ReactLocal.createElement('h1', null, 'Log in to Spectrum');
+  },
+}));
 const ChannelSettings = require('src/views/channelSettings').default;
 const Login = require('src/views/login').default;
 
@@ -55,10 +55,13 @@ const { ThemeProvider } = require('styled-components');
 const { theme } = require('shared/theme');
 
 // Mock AuthViewHandler to simulate authed vs unauthenticated states used by signedOutFallback
-jest.mock('src/views/authViewHandler', () => {
-  const React = require('react');
-  return ({ children }) => children(false);
-});
+jest.mock(
+  'src/views/authViewHandler',
+  () =>
+    function MockAuthViewHandler({ children }) {
+      return children(false);
+    }
+);
 
 describe('ChannelSettingsFallback', () => {
   afterEach(() => {
