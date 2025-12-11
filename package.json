@@ -156,16 +156,12 @@
     "query-string": "5.1.1",
     "raf": "^3.4.0",
     "raven": "^2.6.4",
-    // Upgrade react from 16.8.6 -> 17.0.2 per guide; ensure exact 17.0.x
-    // Version delta: react 16.8.6 -> 17.0.2
     "react": "17.0.2",
     "react-apollo": "^2.5.1",
     "react-app-rewire-styled-components": "^3.0.0",
     "react-app-rewired": "1.6.2",
     "react-async-hook": "^1.0.0",
     "react-clipboard.js": "^2.0.1",
-    // Align react-dom to 17.0.x and remove hot-loader alias which overrides internals
-    // Version delta: react-dom 16.x alias -> 17.0.2
     "react-dom": "17.0.2",
     "react-dropzone": "^8.0.3",
     "react-flip-move": "^3.0.2",
