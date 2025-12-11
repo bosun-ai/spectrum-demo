@@ -14,6 +14,17 @@ try {
   global.window = dom.window;
   global.document = dom.window.document;
   global.navigator = dom.window.navigator;
+  // Provide MutationObserver for testing-library waitFor
+  global.MutationObserver =
+    dom.window.MutationObserver ||
+    class {
+      constructor() {}
+      disconnect() {}
+      observe() {}
+      takeRecords() {
+        return [];
+      }
+    };
 } catch (err) {
   // fallback: do nothing
 }

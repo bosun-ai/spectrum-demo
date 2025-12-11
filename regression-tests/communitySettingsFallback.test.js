@@ -84,26 +84,26 @@ describe('CommunitySettingsFallback (src/routes.js)', () => {
 
   test('renders CommunitySettings when authenticated', () => {
     // Rewire AuthViewHandler mock to return authed=true for this test
-    jest.isolateModules(() => {
-      jest.doMock('src/views/authViewHandler', () => {
-        const React = require('react');
-        const AuthViewHandler = ({ children }) => children(true);
-        return AuthViewHandler;
-      });
-      const { default: RoutesAuthed } = require('src/routes');
-      render(
-        React.createElement(
-          MemoryRouter,
-          { initialEntries: ['/another-community/settings'] },
-          React.createElement(
-            Route,
-            { path: '/' },
-            React.createElement(RoutesAuthed)
-          )
-        )
-      );
-      expect(screen.queryByTestId('community-settings')).toBeInTheDocument();
-      expect(screen.queryByTestId('login')).not.toBeInTheDocument();
+    jest.resetModules();
+    // Use doMock then require to simulate authed=true
+    jest.doMock('src/views/authViewHandler', () => {
+      const React = require('react');
+      const AuthViewHandler = ({ children }) => children(true);
+      return AuthViewHandler;
     });
+    const { default: RoutesAuthed } = require('src/routes');
+    render(
+      React.createElement(
+        MemoryRouter,
+        { initialEntries: ['/another-community/settings'] },
+        React.createElement(
+          Route,
+          { path: '/' },
+          React.createElement(RoutesAuthed)
+        )
+      )
+    );
+    expect(screen.queryByTestId('community-settings')).toBeInTheDocument();
+    expect(screen.queryByTestId('login')).not.toBeInTheDocument();
   });
 });

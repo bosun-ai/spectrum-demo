@@ -8,10 +8,15 @@ const signedOutFallback = require('src/helpers/signed-out-fallback').default;
 // Mock GraphQL HOCs to avoid Apollo client requirement
 jest.mock('shared/graphql/queries/user/getUser', () => ({
   __esModule: true,
-  getCurrentUser: Component => props => {
-    // provide minimal props shape expected by consumers
-    const data = { user: null, loading: false, networkStatus: 7 };
-    return React.createElement(Component, { ...props, data });
+  getCurrentUser: function mockGetCurrentUser(Component) {
+    return function Wrapped(props) {
+      const ReactLocal = require('react');
+      const data = { user: null, loading: false, networkStatus: 7 };
+      return ReactLocal.createElement(
+        Component,
+        Object.assign({}, props, { data })
+      );
+    };
   },
 }));
 jest.mock('shared/graphql/mutations/user/editUser', () => ({
