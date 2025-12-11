@@ -7,14 +7,20 @@ const signedOutFallback = require('src/helpers/signed-out-fallback').default;
 
 // Import the underlying views used by the fallback
 // Mock ChannelSettings and Login to avoid Apollo/Redux dependencies
-jest.mock('src/views/channelSettings', () => ({
-  __esModule: true,
-  default: () => React.createElement('div', null, 'Channel Settings'),
-}));
-jest.mock('src/views/login', () => ({
-  __esModule: true,
-  default: () => React.createElement('h1', null, 'Log in to Spectrum'),
-}));
+jest.mock('src/views/channelSettings', () => {
+  const React = require('react');
+  return {
+    __esModule: true,
+    default: () => React.createElement('div', null, 'Channel Settings'),
+  };
+});
+jest.mock('src/views/login', () => {
+  const React = require('react');
+  return {
+    __esModule: true,
+    default: () => React.createElement('h1', null, 'Log in to Spectrum'),
+  };
+});
 const ChannelSettings = require('src/views/channelSettings').default;
 const Login = require('src/views/login').default;
 

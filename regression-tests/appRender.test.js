@@ -44,6 +44,7 @@ jest.mock('styled-components', () => ({
     mockReact.createElement('div', null, children),
   createGlobalStyle: () => () => null,
   css: () => () => null,
+  keyframes: () => () => null,
 }));
 
 // Mock components used inside routes to simple elements to avoid heavy rendering

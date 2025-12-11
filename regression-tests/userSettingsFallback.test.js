@@ -27,22 +27,7 @@ jest.mock('src/views/authViewHandler', () => {
   return AuthViewHandler;
 });
 
-// Suppress styled-components ThemeProvider warnings in test output
-// Do not mock styled-components default export; only ThemeProvider wrapper
-jest.mock('styled-components', () => {
-  const ReactLocal = require('react');
-  const actual = jest.requireActual('styled-components');
-  const ThemeProvider = ({ children }) =>
-    ReactLocal.createElement(ReactLocal.Fragment, null, children);
-  // Preserve default export and named exports
-  return Object.assign(
-    function styled() {
-      return actual.default.apply(this, arguments);
-    },
-    actual,
-    { ThemeProvider }
-  );
-});
+// Use actual styled-components to avoid styled() issues
 
 // Helper to render the app at a specific route
 function renderAtPath(path, extraProps = {}) {
