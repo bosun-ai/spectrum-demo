@@ -1,7 +1,7 @@
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
 // Mock styled components and attachments used by renderer to avoid alias issues
-jest.mock('../src/components/message/style', () => {
+jest.mock('src/components/message/style', () => {
   const R = require('react');
   return {
     Line: props => R.createElement('div', props),
@@ -9,7 +9,7 @@ jest.mock('../src/components/message/style', () => {
     BlockQuote: props => R.createElement('blockquote', props),
   };
 });
-jest.mock('../src/components/rich-text-editor/style', () => {
+jest.mock('src/components/rich-text-editor/style', () => {
   const R = require('react');
   return {
     AspectRatio: ({ children, ...props }) =>
@@ -19,7 +19,7 @@ jest.mock('../src/components/rich-text-editor/style', () => {
     EmbedComponent: props => R.createElement('iframe', props),
   };
 });
-jest.mock('../src/components/message/threadAttachment', () => {
+jest.mock('src/components/message/threadAttachment', () => {
   const R = require('react');
   return props =>
     R.createElement(
