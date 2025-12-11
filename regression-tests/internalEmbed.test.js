@@ -6,8 +6,9 @@ const { createRenderer } = require('../shared/clients/draft-js/renderer');
 
 // Mock ThreadAttachment to avoid GraphQL/HOC wiring; assert it's rendered with id
 jest.mock('../src/components/message/threadAttachment', () => {
+  const ReactLocal = require('react');
   return function ThreadAttachmentMock(props) {
-    return React.createElement('div', {
+    return ReactLocal.createElement('div', {
       'data-testid': 'thread-attachment',
       'data-id': props.id,
     });
