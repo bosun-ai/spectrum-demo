@@ -1,0 +1,48 @@
+name: Regression Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node using nvm
+        shell: bash -l {0}
+        run: |
+          if [ -f .nvmrc ]; then
+            echo ".nvmrc found; installing Node version from .nvmrc"
+          else
+            echo ".nvmrc not found at repo root" && exit 1
+          fi
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] || curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+          . "$NVM_DIR/nvm.sh"
+          nvm install
+          nvm use
+          node -v
+          npm -v
+          yarn -v || npm i -g yarn@1
+          yarn -v
+
+      - name: Install dependencies (repo installer)
+        shell: bash -l {0}
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          . "$NVM_DIR/nvm.sh"
+          nvm use
+          node shared/install-dependencies.js || yarn install --network-timeout 600000
+
+      - name: Run regression tests
+        shell: bash -l {0}
+        env:
+          CI: true
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          . "$NVM_DIR/nvm.sh"
+          nvm use
+          yarn run test:regression
