@@ -6,32 +6,35 @@ const { default: Routes } = require('src/routes');
 const { MemoryRouter, Route } = require('react-router');
 
 // Mock UserSettings and Login to simplify assertions
-jest.mock('src/views/userSettings', () => () =>
-  React.createElement(
-    'div',
-    { 'data-testid': 'user-settings' },
-    'User Settings'
-  )
-);
-jest.mock('src/views/login', () => () =>
-  React.createElement('div', { 'data-testid': 'login' }, 'Login View')
-);
+jest.mock('src/views/userSettings', () => {
+  const ReactLocal = require('react');
+  return () =>
+    ReactLocal.createElement(
+      'div',
+      { 'data-testid': 'user-settings' },
+      'User Settings'
+    );
+});
+jest.mock('src/views/login', () => {
+  const ReactLocal = require('react');
+  return () =>
+    ReactLocal.createElement('div', { 'data-testid': 'login' }, 'Login View');
+});
 
 // Mock AuthViewHandler to control authentication state used by signedOutFallback
 jest.mock('src/views/authViewHandler', () => {
-  const React = require('react');
   const AuthViewHandler = ({ children, authed = false }) => children(authed);
   return AuthViewHandler;
 });
 
 // Suppress styled-components ThemeProvider warnings in test output
 jest.mock('styled-components', () => {
+  const ReactLocal = require('react');
   const actual = jest.requireActual('styled-components');
-  return {
-    ...actual,
+  return Object.assign({}, actual, {
     ThemeProvider: ({ children }) =>
-      React.createElement(React.Fragment, null, children),
-  };
+      ReactLocal.createElement(ReactLocal.Fragment, null, children),
+  });
 });
 
 // Helper to render the app at a specific route

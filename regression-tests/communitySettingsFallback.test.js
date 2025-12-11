@@ -6,16 +6,18 @@ const { default: Routes } = require('src/routes');
 const { MemoryRouter, Route } = require('react-router');
 
 // Mock CommunitySettings and Login to simplify assertions
-jest.mock('src/views/communitySettings', () => () =>
-  React.createElement(
+jest.mock('src/views/communitySettings', () => () => {
+  const React = require('react');
+  return React.createElement(
     'div',
     { 'data-testid': 'community-settings' },
     'Community Settings'
-  )
-);
-jest.mock('src/views/login', () => () =>
-  React.createElement('div', { 'data-testid': 'login' }, 'Login View')
-);
+  );
+});
+jest.mock('src/views/login', () => () => {
+  const React = require('react');
+  return React.createElement('div', { 'data-testid': 'login' }, 'Login View');
+});
 
 // Mock AuthViewHandler to control authentication state used by signedOutFallback
 jest.mock('src/views/authViewHandler', () => {
@@ -26,6 +28,7 @@ jest.mock('src/views/authViewHandler', () => {
 
 // Suppress styled-components ThemeProvider warnings in test output
 jest.mock('styled-components', () => {
+  const React = require('react');
   const actual = jest.requireActual('styled-components');
   return {
     ...actual,
