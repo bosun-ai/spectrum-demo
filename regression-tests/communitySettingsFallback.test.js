@@ -27,14 +27,22 @@ jest.mock('src/views/authViewHandler', () => {
 });
 
 // Suppress styled-components ThemeProvider warnings in test output
+// Lightweight mock to ensure styled-components default export exists
 jest.mock('styled-components', () => {
   const React = require('react');
-  const actual = jest.requireActual('styled-components');
-  return {
-    ...actual,
-    ThemeProvider: ({ children }) =>
-      React.createElement(React.Fragment, null, children),
-  };
+  const styledMock = new Proxy(function() {}, {
+    get: (target, prop) => {
+      if (prop === 'default') return styledMock;
+      if (prop === 'ThemeProvider') {
+        return ({ children }) =>
+          React.createElement(React.Fragment, null, children);
+      }
+      // return a curried tag function for styled.tag`` usage
+      return () => () => React.createElement('div');
+    },
+    apply: () => () => React.createElement('div'),
+  });
+  return styledMock;
 });
 
 // Helper to render the app at a specific route
