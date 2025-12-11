@@ -4,6 +4,15 @@ const { render, screen } = require('@testing-library/react');
 // Import the component tree from routes where CommunitySettingsFallback is wired
 const { default: Routes } = require('src/routes');
 const { MemoryRouter, Route } = require('react-router');
+// Mock withCurrentUser to avoid Apollo dependency
+jest.mock('src/components/withCurrentUser', () => ({
+  withCurrentUser: Comp => props =>
+    React.createElement(Comp, {
+      ...props,
+      currentUser: null,
+      isLoadingCurrentUser: false,
+    }),
+}));
 
 // Mock CommunitySettings and Login to simplify assertions
 jest.mock('src/views/communitySettings', () => () => {
