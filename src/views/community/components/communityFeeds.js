@@ -116,6 +116,9 @@ const Feeds = (props: Props) => {
   const { scrollToBottom, scrollToTop, scrollTo, ref } = useAppScroller();
   const lastTab = usePrevious(tab);
   const lastScroll = ref ? ref.scrollTop : null;
+  // React 17: capture values inside effects to avoid relying on
+  // mutable refs during async cleanup, and useLayoutEffect for sync timing
+  // when manipulating scroll before paint. Version delta: 16.8.6 -> 17.0.2
   useLayoutEffect(() => {
     if (lastTab && lastTab !== tab && lastScroll) {
       sessionStorage.setItem(`last-scroll-${lastTab}`, lastScroll.toString());
@@ -133,9 +136,14 @@ const Feeds = (props: Props) => {
   }, [tab]);
 
   // Store the last scroll position on unmount
+  // React 17: cleanup is async; ensure we capture element reference
+  // synchronously for cleanup to avoid reading a potentially changed ref.
+  // Also useLayoutEffect to guarantee cleanup runs before next paint on unmount.
+  // Version delta: 16.8.6 -> 17.0.2
   useLayoutEffect(() => {
+    const mainEl = document.getElementById('main');
     return () => {
-      const elem = document.getElementById('main');
+      const elem = mainEl || document.getElementById('main');
       if (!elem) return;
       sessionStorage.setItem(`last-scroll-${tab}`, elem.scrollTop.toString());
     };

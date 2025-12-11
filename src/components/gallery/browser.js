@@ -60,12 +60,16 @@ class Browser extends React.Component<Props, State> {
 
   componentDidMount() {
     // $FlowFixMe
-    document.addEventListener('keydown', this.handleKeyPress, false);
+    // React 17: use capture to ensure document-level listener sees events
+    // Version delta: React 16.8.6 -> 17.0.2
+    document.addEventListener('keydown', this.handleKeyPress, { capture: true });
   }
 
   componentWillUnmount() {
     // $FlowFixMe
-    document.removeEventListener('keydown', this.handleKeyPress, false);
+    // React 17: match capture phase on removal
+    // Version delta: React 16.8.6 -> 17.0.2
+    document.removeEventListener('keydown', this.handleKeyPress, { capture: true });
   }
 
   closeGallery = () => {
