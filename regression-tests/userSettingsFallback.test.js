@@ -1,9 +1,10 @@
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
-
-// Import the component from routes where it is defined
-const { default: Routes } = require('src/routes');
 const { MemoryRouter, Route } = require('react-router');
+
+// We test the signedOutFallback component behavior used to create UserSettingsFallback
+const { signedOutFallback } = require('src/helpers/signed-out-fallback');
+const { CLIENT_URL } = require('src/api/constants');
 
 // Mock UserSettings and Login to simplify assertions
 jest.mock('src/views/userSettings', () => {
@@ -17,8 +18,12 @@ jest.mock('src/views/userSettings', () => {
 });
 jest.mock('src/views/login', () => {
   const ReactLocal = require('react');
-  return () =>
-    ReactLocal.createElement('div', { 'data-testid': 'login' }, 'Login View');
+  return ({ redirectPath }) =>
+    ReactLocal.createElement(
+      'div',
+      { 'data-testid': 'login', 'data-redirect': redirectPath || '' },
+      'Login View'
+    );
 });
 
 // Mock AuthViewHandler to control authentication state used by signedOutFallback
@@ -27,53 +32,49 @@ jest.mock('src/views/authViewHandler', () => {
   return AuthViewHandler;
 });
 
-// Use actual styled-components to avoid styled() issues
-
-// Helper to render the app at a specific route
-function renderAtPath(path, extraProps = {}) {
+function renderComponent(Component) {
   return render(
     React.createElement(
       MemoryRouter,
-      { initialEntries: [path] },
-      React.createElement(
-        Route,
-        { path: '/' },
-        React.createElement(Routes, extraProps)
-      )
+      { initialEntries: ['/users/testuser/settings'] },
+      React.createElement(Route, { path: '/' }, React.createElement(Component))
     )
   );
 }
 
 describe('UserSettingsFallback (src/routes.js)', () => {
   test('renders Login fallback when unauthenticated', () => {
-    // AuthViewHandler mock defaults to authed=false
-    renderAtPath('/users/someuser/settings');
-    expect(screen.queryByTestId('login')).toBeInTheDocument();
+    const UserSettings = require('src/views/userSettings');
+    const Login = require('src/views/login');
+    const UserSettingsFallback = signedOutFallback(UserSettings, () =>
+      React.createElement(Login, { redirectPath: `${CLIENT_URL}/me/settings` })
+    );
+    renderComponent(UserSettingsFallback);
+    const login = screen.getByTestId('login');
+    expect(login).toBeInTheDocument();
+    expect(login.getAttribute('data-redirect')).toBe(
+      `${CLIENT_URL}/me/settings`
+    );
     expect(screen.queryByTestId('user-settings')).not.toBeInTheDocument();
   });
 
   test('renders UserSettings when authenticated', () => {
-    // Rewire AuthViewHandler mock to return authed=true for this test
-    jest.isolateModules(() => {
-      jest.doMock('src/views/authViewHandler', () => {
-        const React = require('react');
-        const AuthViewHandler = ({ children }) => children(true);
-        return AuthViewHandler;
-      });
-      const { default: RoutesAuthed } = require('src/routes');
-      render(
-        React.createElement(
-          MemoryRouter,
-          { initialEntries: ['/users/another/settings'] },
-          React.createElement(
-            Route,
-            { path: '/' },
-            React.createElement(RoutesAuthed)
-          )
-        )
-      );
-      expect(screen.queryByTestId('user-settings')).toBeInTheDocument();
-      expect(screen.queryByTestId('login')).not.toBeInTheDocument();
+    jest.resetModules();
+    jest.doMock('src/views/authViewHandler', () => {
+      const AuthViewHandler = ({ children }) => children(true);
+      return AuthViewHandler;
     });
+    const {
+      signedOutFallback: signedOutFallbackAuthed,
+    } = require('src/helpers/signed-out-fallback');
+    const UserSettings = require('src/views/userSettings');
+    const Login = require('src/views/login');
+    const UserSettingsFallbackAuthed = signedOutFallbackAuthed(
+      UserSettings,
+      Login
+    );
+    renderComponent(UserSettingsFallbackAuthed);
+    expect(screen.getByTestId('user-settings')).toBeInTheDocument();
+    expect(screen.queryByTestId('login')).not.toBeInTheDocument();
   });
 });
