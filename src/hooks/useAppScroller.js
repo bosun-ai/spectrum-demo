@@ -1,10 +1,13 @@
 // @flow
-import { useState, useEffect } from 'react';
+import { useState, useLayoutEffect } from 'react';
 
 export const useAppScroller = () => {
   const [ref, setRef] = useState(null);
 
-  useEffect(() => {
+  // React 17: effect cleanup is async; since we read DOM synchronously
+  // for scrolling, ensure ref is set before paint. Switch to useLayoutEffect.
+  // Version delta: React 16.8.6 -> 17.0.2
+  useLayoutEffect(() => {
     if (!ref) setRef(document.getElementById('main'));
   });
 
