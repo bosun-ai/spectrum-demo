@@ -4,6 +4,9 @@
   "license": "BSD-3-Clause",
   "devDependencies": {
     "@babel/preset-flow": "^7.0.0",
+    "@testing-library/dom": "8.20.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "12.1.5",
     "babel-cli": "^6.24.1",
     "babel-eslint": "^8.2.6",
     "babel-jest": "^22.4.4",
@@ -24,6 +27,7 @@
     "circular-dependency-plugin": "4.x",
     "cpy-cli": "^2.0.0",
     "cross-env": "^5.2.0",
+    "cross-fetch": "^4.1.0",
     "cypress-plugin-retries": "^1.2.0",
     "eslint": "^4.1.1",
     "eslint-config-react-app": "^2.1.0",
@@ -38,6 +42,7 @@
     "is-html": "^1.1.0",
     "lint-staged": "^3.3.0",
     "micromatch": "^3.0.4",
+    "msw": "^2.12.4",
     "prettier": "^1.14.3",
     "raw-loader": "^0.5.1",
     "react-app-rewire-hot-loader": "^1.0.3",
@@ -249,7 +254,8 @@
     "lint:staged": "lint-staged",
     "webpack-defaults": "webpack-defaults",
     "deploy": "node scripts/deploy",
-    "heroku": "node scripts/heroku-deploy"
+    "heroku": "node scripts/heroku-deploy",
+    "test:regression": "jest --config regression-tests/jest.config.js"
   },
   "lint-staged": {
     "*.js": [
