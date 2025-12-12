@@ -1,0 +1,52 @@
+name: Regression Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup NVM
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'yarn'
+
+      - name: Use Node.js 16 and Yarn 1.22.22
+        run: |
+          nvm use 16
+          corepack enable
+          corepack prepare yarn@1.22.22 --activate
+
+      - name: Install dependencies
+        run: |
+          nvm use
+          node shared/install-dependencies.js
+
+      - name: Start RethinkDB
+        run: |
+          nohup rethinkdb --bind all &
+          # Give RethinkDB time to start
+          for i in {1..30}; do
+            sleep 1
+            if nc -z localhost 28015; then echo "RethinkDB is up"; break; fi
+          done
+        shell: bash
+
+      - name: Migrate and seed testing database
+        run: |
+          nvm use
+          yarn run db:migrate
+          yarn run db:seed
+
+      - name: Run regression tests
+        run: |
+          nvm use 16
+          corepack enable
+          corepack prepare yarn@1.22.22 --activate
+          yarn run test:regression
