@@ -11,10 +11,11 @@ const ChannelList = require('../src/views/communitySettings/components/channelLi
 const { ApolloProvider } = require('react-apollo');
 const ApolloClient = require('apollo-client').ApolloClient;
 const { InMemoryCache } = require('apollo-cache-inmemory');
-const { HttpLink } = require('apollo-link-http');
+const { ApolloLink } = require('apollo-link');
 // Minimal Apollo client; queries won't fire because we pass static props, but provider must exist
+// Use a noop ApolloLink to avoid network/fetch requirements in jsdom
 const client = new ApolloClient({
-  link: new HttpLink({ uri: 'http://localhost/__noop__' }),
+  link: ApolloLink.empty(),
   cache: new InMemoryCache(),
 });
 
