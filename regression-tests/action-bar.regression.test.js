@@ -7,6 +7,10 @@ const ApolloClient = require('apollo-client').ApolloClient;
 const { InMemoryCache } = require('apollo-cache-inmemory');
 const { ApolloLink } = require('apollo-link');
 
+// Mock withCurrentUser HOC to avoid Apollo requirements and pass props through
+jest.mock('../src/components/withCurrentUser', () => ({
+  withCurrentUser: Comp => Comp,
+}));
 // Import the connected component
 const ActionBar = require('../src/views/thread/components/actionBar.js')
   .default;
