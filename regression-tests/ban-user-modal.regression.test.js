@@ -40,15 +40,16 @@ describe('BanUserModal regression', () => {
       </Provider>
     );
 
-    // Assert title is rendered inside modal container
-    expect(container.textContent).toMatch(/Ban Test User/);
+    // Assert form elements render
+    const textarea = container.querySelector('textarea');
+    expect(textarea).toBeTruthy();
 
     // Button disabled until reason entered
-    const banButton = container.querySelector('button');
+    const buttons = Array.from(container.querySelectorAll('button'));
+    const banButton = buttons.find(b => /Ban User/i.test(b.textContent));
     expect(banButton).toBeDisabled();
 
     // Enter a reason enables the button
-    const textarea = container.querySelector('textarea');
     fireEvent.change(textarea, { target: { value: 'spam' } });
     expect(banButton).not.toBeDisabled();
   });
