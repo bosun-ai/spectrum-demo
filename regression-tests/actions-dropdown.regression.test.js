@@ -78,7 +78,7 @@ jest.mock('react-popper', () => ({
 }));
 
 import ActionsDropdown from 'src/views/thread/components/actionsDropdown';
-import modalsModule from 'src/actions/modals';
+import * as modalsModule from 'src/actions/modals';
 
 const baseThread = {
   id: 'thread-1',
