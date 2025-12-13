@@ -1,7 +1,7 @@
 // Regression test for CommunityMeta component rendering
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { CommunityMeta } from '../src/components/entities/profileCards/components/communityMeta';
 
 describe('CommunityMeta', () => {
@@ -21,46 +21,52 @@ describe('CommunityMeta', () => {
       </MemoryRouter>
     );
 
-    const nameLink = screen.getByRole('link', { name: /Spectrum Community/i });
+    const { getByRole } = render(
+      <MemoryRouter>
+        <CommunityMeta community={baseCommunity} />
+      </MemoryRouter>
+    );
+
+    const nameLink = getByRole('link', { name: /Spectrum Community/i });
     expect(nameLink).toBeInTheDocument();
     expect(nameLink).toHaveAttribute('href', '/spectrum');
   });
 
   it('renders description with markdown links', () => {
-    render(
+    const { getByRole } = render(
       <MemoryRouter>
         <CommunityMeta community={baseCommunity} />
       </MemoryRouter>
     );
 
     // The renderTextWithLinks helper should convert markdown link text to anchor
-    const docsLink = screen.getByRole('link', { name: /docs/i });
+    const docsLink = getByRole('link', { name: /docs/i });
     expect(docsLink).toBeInTheDocument();
     expect(docsLink).toHaveAttribute('href', 'https://example.com/docs');
   });
 
   it('renders website link with protocol normalization', () => {
-    render(
+    const { getByRole } = render(
       <MemoryRouter>
         <CommunityMeta community={baseCommunity} />
       </MemoryRouter>
     );
 
-    const websiteLink = screen.getByRole('link', { name: /example.com/i });
+    const websiteLink = getByRole('link', { name: /example.com/i });
     expect(websiteLink).toBeInTheDocument();
     expect(websiteLink).toHaveAttribute('href', 'https://example.com');
   });
 
   it('omits description and website when not provided', () => {
     const minimal = { id: 'c2', name: 'Minimal', slug: 'minimal' };
-    render(
+    const { getAllByRole } = render(
       <MemoryRouter>
         <CommunityMeta community={minimal} />
       </MemoryRouter>
     );
 
     // No extra links besides the name link
-    const links = screen.getAllByRole('link');
+    const links = getAllByRole('link');
     expect(links).toHaveLength(1);
     expect(links[0]).toHaveAttribute('href', '/minimal');
   });
