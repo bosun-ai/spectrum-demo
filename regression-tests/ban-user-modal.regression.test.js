@@ -25,7 +25,7 @@ describe('BanUserModal regression', () => {
     // Stub banUser to avoid network/DB; return resolved promise
     const banUser = () => Promise.resolve();
 
-    const { container } = render(
+    render(
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           {/* Use the unwrapped component to bypass HOCs that may expect more context */}
@@ -40,12 +40,12 @@ describe('BanUserModal regression', () => {
       </Provider>
     );
 
-    // Assert form elements render
-    const textarea = container.querySelector('textarea');
+    // React-Modal renders into a portal; query from document
+    const textarea = document.querySelector('textarea');
     expect(textarea).toBeTruthy();
 
     // Button disabled until reason entered
-    const buttons = Array.from(container.querySelectorAll('button'));
+    const buttons = Array.from(document.querySelectorAll('button'));
     const banButton = buttons.find(b => /Ban User/i.test(b.textContent));
     expect(banButton).toBeDisabled();
 

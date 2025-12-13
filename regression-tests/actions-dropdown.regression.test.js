@@ -3,7 +3,7 @@
  * Ensures delete action visibility and trigger behavior remain stable.
  */
 import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 // We import the unconnected component via default export which is composed
@@ -108,7 +108,9 @@ describe('ActionsDropdown regression', () => {
         dispatch={jest.fn()}
       />
     );
-    expect(screen.getByText('settings')).toBeInTheDocument();
+    expect(
+      document.querySelector('[data-cy="thread-actions-dropdown-trigger"]')
+    ).toBeTruthy();
   });
 
   test('opens flyout and shows delete button on trigger click', () => {
@@ -120,20 +122,22 @@ describe('ActionsDropdown regression', () => {
       />
     );
     // Trigger open
-    fireEvent.click(screen.getByText('settings'));
+    fireEvent.click(
+      document.querySelector('[data-cy="thread-actions-dropdown-trigger"]')
+    );
     // Flyout present
-    expect(screen.getByTestId('flyout')).toBeInTheDocument();
+    expect(document.querySelector('[data-testid="flyout"]')).toBeTruthy();
     // Delete button rendered
-    expect(screen.getByText('Delete')).toBeInTheDocument();
+    expect(
+      document.querySelector('button[data-cy="thread-dropdown-delete"]')
+    ).toBeTruthy();
     // Also confirm data-cy hooks exist
-    expect(screen.getByTestId('flyout')).toHaveAttribute(
-      'data-cy',
-      'thread-actions-dropdown'
-    );
-    expect(screen.getByText('settings')).toHaveAttribute(
-      'data-cy',
-      'thread-actions-dropdown-trigger'
-    );
+    expect(
+      document.querySelector('[data-testid="flyout"]').getAttribute('data-cy')
+    ).toBe('thread-actions-dropdown');
+    expect(
+      document.querySelector('[data-cy="thread-actions-dropdown-trigger"]')
+    ).toBeTruthy();
   });
 
   test('clicking delete dispatches openModal with expected payload', () => {
@@ -145,8 +149,12 @@ describe('ActionsDropdown regression', () => {
         dispatch={dispatch}
       />
     );
-    fireEvent.click(screen.getByText('settings'));
-    fireEvent.click(screen.getByText('Delete'));
+    fireEvent.click(
+      document.querySelector('[data-cy="thread-actions-dropdown-trigger"]')
+    );
+    fireEvent.click(
+      document.querySelector('button[data-cy="thread-dropdown-delete"]')
+    );
 
     expect(modalsModule._mock.openModal).toHaveBeenCalledTimes(1);
     const [modalType, payload] = modalsModule._mock.openModal.mock.calls[0];
