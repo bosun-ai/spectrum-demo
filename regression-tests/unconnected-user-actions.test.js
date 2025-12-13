@@ -35,9 +35,8 @@ test('renders Settings link when viewing own profile', () => {
 
 test('renders Ban button when current user is admin and viewing other user', () => {
   const user = makeUser({ id: 'user-2', username: 'other' });
-  // The component uses isAdmin(currentUser.id). isAdmin is true for specific ids.
-  // In this codebase, admin ids include 'admin' used in tests elsewhere; use 'admin'.
-  const currentUser = { id: 'admin' };
+  // The component uses isAdmin(currentUser.id). Use a known admin id from helper.
+  const currentUser = { id: 'gVk5mYwccUOEKiN5vtOouqroGKo1' };
   const dispatched = [];
   const fakeDispatch = action => {
     dispatched.push(action);

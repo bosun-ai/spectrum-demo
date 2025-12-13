@@ -92,16 +92,17 @@ test('SetUsername renders and toggles button disabled state', async () => {
   expect(errorEl).toBeInTheDocument();
   expect(button).toHaveAttribute('disabled');
 
-  // Enter a valid username and verify success appears and button enabled
+  // Enter a valid username and verify button enabled
   fireEvent.change(input, { target: { value: 'valid-user' } });
 
   // Wait for async validation to complete
   await Promise.resolve();
   await Promise.resolve();
 
-  const successEl = container.querySelector(
-    '[data-cy="username-search-success"]'
+  // No error should be present and button enabled
+  const errorElAfter = container.querySelector(
+    '[data-cy="username-search-error"]'
   );
-  // Button should be enabled when there is a valid username and no error
+  expect(errorElAfter).toBeNull();
   expect(button).not.toHaveAttribute('disabled');
 });
