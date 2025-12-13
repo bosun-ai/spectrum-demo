@@ -77,8 +77,8 @@ test('SetUsername renders and toggles button disabled state', async () => {
   const button = container.querySelector('[data-cy="save-username-button"]');
   expect(button).toBeInTheDocument();
 
-  // With an initial suggested username from user.name, button should be enabled (no error)
-  expect(button).not.toHaveAttribute('disabled');
+  // With an initial suggested username, button starts enabled
+  expect(button.disabled).toBe(false);
 
   // Find the username input by data-cy set in UsernameSearch
   const input = container.querySelector('[data-cy="username-search"]');
@@ -90,7 +90,7 @@ test('SetUsername renders and toggles button disabled state', async () => {
   // Error should render; button should be disabled
   const errorEl = container.querySelector('[data-cy="username-search-error"]');
   expect(errorEl).toBeInTheDocument();
-  expect(button).toHaveAttribute('disabled');
+  expect(button.disabled).toBe(true);
 
   // Enter a valid username and verify button enabled
   fireEvent.change(input, { target: { value: 'valid-user' } });
@@ -104,5 +104,5 @@ test('SetUsername renders and toggles button disabled state', async () => {
     '[data-cy="username-search-error"]'
   );
   expect(errorElAfter).toBeNull();
-  expect(button).not.toHaveAttribute('disabled');
+  expect(button.disabled).toBe(false);
 });
