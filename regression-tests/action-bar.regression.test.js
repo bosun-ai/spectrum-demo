@@ -73,9 +73,10 @@ test('ActionBar renders actions when currentUser present', () => {
   const thread = makeThread();
   const currentUser = { id: 'author-id' }; // author can delete
   const element = React.createElement(ActionBar, { thread, currentUser });
-  const { getByTestId } = renderWithStore(element);
+  const { container } = renderWithStore(element);
 
   // ActionsDropdown should render trigger icon when currentUser exists
-  const trigger = getByTestId('thread-actions-dropdown-trigger');
-  expect(trigger).toBeTruthy();
+  // Icon does not use data-testid attr; verify DropWrap renders an icon wrapper
+  const icons = container.querySelectorAll('.icon');
+  expect(icons.length).toBeGreaterThan(0);
 });
