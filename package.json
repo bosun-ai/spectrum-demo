@@ -4,6 +4,8 @@
   "license": "BSD-3-Clause",
   "devDependencies": {
     "@babel/preset-flow": "^7.0.0",
+    "@testing-library/jest-dom": "5.11.10",
+    "@testing-library/react": "8.0.9",
     "babel-cli": "^6.24.1",
     "babel-eslint": "^8.2.6",
     "babel-jest": "^22.4.4",
@@ -24,6 +26,7 @@
     "circular-dependency-plugin": "4.x",
     "cpy-cli": "^2.0.0",
     "cross-env": "^5.2.0",
+    "cross-fetch": "3.1.5",
     "cypress-plugin-retries": "^1.2.0",
     "eslint": "^4.1.1",
     "eslint-config-react-app": "^2.1.0",
@@ -38,6 +41,7 @@
     "is-html": "^1.1.0",
     "lint-staged": "^3.3.0",
     "micromatch": "^3.0.4",
+    "msw": "0.24.3",
     "prettier": "^1.14.3",
     "raw-loader": "^0.5.1",
     "react-app-rewire-hot-loader": "^1.0.3",
@@ -152,13 +156,13 @@
     "query-string": "5.1.1",
     "raf": "^3.4.0",
     "raven": "^2.6.4",
-    "react": "^16.8.4",
+    "react": "17.0.2",
     "react-apollo": "^2.5.1",
     "react-app-rewire-styled-components": "^3.0.0",
     "react-app-rewired": "1.6.2",
     "react-async-hook": "^1.0.0",
     "react-clipboard.js": "^2.0.1",
-    "react-dom": "npm:@hot-loader/react-dom",
+    "react-dom": "17.0.2",
     "react-dropzone": "^8.0.3",
     "react-flip-move": "^3.0.2",
     "react-helmet-async": "^0.2.0",
@@ -213,6 +217,8 @@
     "draft-js": "npm:draft-js-fork-mxstbr",
     "jest-environment-node": "22.4.3",
     "jest": "22.4.3",
+    "expect": "24.9.0",
+    "pretty-format": "24.9.0",
     "fbjs": "0.8.16",
     "event-stream": "3.3.4"
   },
@@ -231,6 +237,7 @@
     "postbuild:hyperion": "cp -r build build-hyperion && cp now.json build-hyperion && cp yarn.lock build-hyperion && cp package.json build-hyperion && cp cacert build-hyperion",
     "build:web": "cross-env NODE_PATH=./ react-app-rewired build",
     "jest": "cross-env NODE_PATH=./ jest",
+    "test:regression": "jest --config regression-tests/jest.config.js --runInBand",
     "test": "npm run jest -- --runInBand --watch",
     "test:ci": "npm run jest -- --forceExit --outputFile test-results.json --json --maxWorkers=2",
     "test:e2e": "CYPRESS_RETRIES=2 cypress run",
@@ -259,4 +266,4 @@
     ]
   },
   "pre-commit": "lint:staged"
-}
+  }

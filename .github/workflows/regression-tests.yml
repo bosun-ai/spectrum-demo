@@ -1,0 +1,35 @@
+name: Regression Tests
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  jest-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup NVM
+        uses: actions/setup-node@v4
+        with:
+          # Use Node version from .nvmrc to match local dev env
+          node-version-file: .nvmrc
+          cache: 'yarn'
+
+      - name: Use Yarn classic (v1)
+        run: |
+          corepack disable || true
+          npm i -g yarn@1
+          yarn -v
+
+      - name: Install monorepo dependencies
+        run: |
+          node shared/install-dependencies.js
+
+      - name: Run regression tests (Jest in jsdom)
+        run: |
+          yarn run jest --config regression-tests/jest.config.js regression-tests/simple-component.test.js --runInBand
