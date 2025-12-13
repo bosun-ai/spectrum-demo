@@ -2,6 +2,7 @@ const React = require('react');
 const { render, fireEvent } = require('@testing-library/react');
 const { Provider } = require('react-redux');
 const { createStore } = require('redux');
+const { ApolloProvider } = require('react-apollo');
 
 // Import the component under test
 const SetUsername = require('../src/views/newUserOnboarding/components/setUsername')
@@ -44,12 +45,16 @@ function renderSetUsername(overrides = {}) {
     ...overrides,
   };
 
-  // The exported component is already wrapped by connect+withApollo+graphql
-  // It expects Redux Provider context. Apollo context is mocked via props.client
+  // The exported component is wrapped by connect+withApollo+graphql
+  // It expects Redux Provider and ApolloProvider context.
   const element = React.createElement(
     Provider,
     { store },
-    React.createElement(SetUsername, props)
+    React.createElement(
+      ApolloProvider,
+      { client },
+      React.createElement(SetUsername, props)
+    )
   );
   return render(element);
 }

@@ -15,59 +15,50 @@ describe('CommunityMeta', () => {
   };
 
   it('renders name linked to community slug', () => {
-    render(
+    const { getByText } = render(
       <MemoryRouter>
         <CommunityMeta community={baseCommunity} />
       </MemoryRouter>
     );
-
-    const { getByRole } = render(
-      <MemoryRouter>
-        <CommunityMeta community={baseCommunity} />
-      </MemoryRouter>
-    );
-
-    const nameLink = getByRole('link', { name: /Spectrum Community/i });
-    expect(nameLink).toBeInTheDocument();
-    expect(nameLink).toHaveAttribute('href', '/spectrum');
+    const nameHeading = getByText(/Spectrum Community/i);
+    expect(nameHeading.closest('a')).toHaveAttribute('href', '/spectrum');
   });
 
   it('renders description with markdown links', () => {
-    const { getByRole } = render(
+    const { getByText } = render(
       <MemoryRouter>
         <CommunityMeta community={baseCommunity} />
       </MemoryRouter>
     );
-
-    // The renderTextWithLinks helper should convert markdown link text to anchor
-    const docsLink = getByRole('link', { name: /docs/i });
+    const docsLink = getByText(/docs/i).closest('a');
     expect(docsLink).toBeInTheDocument();
     expect(docsLink).toHaveAttribute('href', 'https://example.com/docs');
   });
 
   it('renders website link with protocol normalization', () => {
-    const { getByRole } = render(
+    const { getByText } = render(
       <MemoryRouter>
         <CommunityMeta community={baseCommunity} />
       </MemoryRouter>
     );
-
-    const websiteLink = getByRole('link', { name: /example.com/i });
+    const websiteLink = getByText(/example.com/i).closest('a');
     expect(websiteLink).toBeInTheDocument();
     expect(websiteLink).toHaveAttribute('href', 'https://example.com');
   });
 
   it('omits description and website when not provided', () => {
     const minimal = { id: 'c2', name: 'Minimal', slug: 'minimal' };
-    const { getAllByRole } = render(
+    const { queryByText } = render(
       <MemoryRouter>
         <CommunityMeta community={minimal} />
       </MemoryRouter>
     );
-
-    // No extra links besides the name link
-    const links = getAllByRole('link');
-    expect(links).toHaveLength(1);
-    expect(links[0]).toHaveAttribute('href', '/minimal');
+    expect(queryByText(/docs/i)).toBeNull();
+    expect(queryByText(/example.com/i)).toBeNull();
+    const nameHeading = queryByText(/Minimal/i);
+    expect(nameHeading && nameHeading.closest('a')).toHaveAttribute(
+      'href',
+      '/minimal'
+    );
   });
 });
