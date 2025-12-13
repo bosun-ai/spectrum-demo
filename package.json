@@ -235,6 +235,7 @@
     "postbuild:hyperion": "cp -r build build-hyperion && cp now.json build-hyperion && cp yarn.lock build-hyperion && cp package.json build-hyperion && cp cacert build-hyperion",
     "build:web": "cross-env NODE_PATH=./ react-app-rewired build",
     "jest": "cross-env NODE_PATH=./ jest",
+    "test:regression": "jest --config regression-tests/jest.config.js --runInBand",
     "test": "npm run jest -- --runInBand --watch",
     "test:ci": "npm run jest -- --forceExit --outputFile test-results.json --json --maxWorkers=2",
     "test:e2e": "CYPRESS_RETRIES=2 cypress run",
@@ -263,4 +264,4 @@
     ]
   },
   "pre-commit": "lint:staged"
-}
+  }
