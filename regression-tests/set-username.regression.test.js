@@ -95,14 +95,13 @@ test('SetUsername renders and toggles button disabled state', async () => {
   // Enter a valid username and verify success appears and button enabled
   fireEvent.change(input, { target: { value: 'valid-user' } });
 
-  // Success should eventually render; the component sets success when query resolves
-  // But even before success, valid input clears error and enables button
-  // Wait a tick for microtasks
+  // Wait for async validation to complete
+  await Promise.resolve();
   await Promise.resolve();
 
   const successEl = container.querySelector(
     '[data-cy="username-search-success"]'
   );
-  expect(successEl || true).toBeTruthy(); // success may or may not render immediately
+  // Button should be enabled when there is a valid username and no error
   expect(button).not.toHaveAttribute('disabled');
 });
