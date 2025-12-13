@@ -2,6 +2,10 @@ const React = require('react');
 const { render } = require('@testing-library/react');
 const { Provider } = require('react-redux');
 const { createStore } = require('redux');
+const { ApolloProvider } = require('react-apollo');
+const ApolloClient = require('apollo-client').ApolloClient;
+const { InMemoryCache } = require('apollo-cache-inmemory');
+const { ApolloLink } = require('apollo-link');
 
 // Import the connected component
 const ActionBar = require('../src/views/thread/components/actionBar.js')
@@ -33,7 +37,19 @@ function makeThread(overrides = {}) {
 // Helper to render with redux
 function renderWithStore(ui, { initialState } = {}) {
   const store = createStore(noopReducer, initialState);
-  return render(React.createElement(Provider, { store }, ui));
+  // Create a minimal Apollo Client that won't perform network requests
+  const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: ApolloLink.empty(),
+    assumeImmutableResults: true,
+  });
+  return render(
+    React.createElement(
+      ApolloProvider,
+      { client },
+      React.createElement(Provider, { store }, ui)
+    )
+  );
 }
 
 test('ActionBar renders container and hides actions when no currentUser', () => {

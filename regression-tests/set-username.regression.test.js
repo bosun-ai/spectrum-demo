@@ -92,10 +92,13 @@ test('SetUsername renders and toggles button disabled state', async () => {
   expect(errorEl).toBeInTheDocument();
   expect(button.disabled).toBe(true);
 
-  // Enter a valid username and verify button enabled
-  fireEvent.change(input, { target: { value: 'valid-user' } });
+  // Enter a valid username and verify button enabled.
+  // Type with trailing space to exercise slugg; then blur to finalize value
+  fireEvent.change(input, { target: { value: 'valid-user ' } });
+  fireEvent.blur(input);
 
   // Wait for async validation to complete
+  await Promise.resolve();
   await Promise.resolve();
   await Promise.resolve();
 

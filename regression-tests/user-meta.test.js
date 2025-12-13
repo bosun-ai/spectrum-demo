@@ -1,6 +1,6 @@
 // Regression test for UserMeta component rendering
 import React from 'react';
-import { render, waitFor } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 
 // Component under test
@@ -75,19 +75,16 @@ describe('UserMeta', () => {
     expect(queryByText('Grace Hopper')).toBeInTheDocument();
   });
 
-  it('renders github profile link when GithubProfile provides data', async () => {
+  it('renders github profile link when GithubProfile provides data', () => {
     const userWithGithub = { ...baseUser, id: 'with-github' };
     const { getByText } = render(
       <MemoryRouter>
         <UserMeta user={userWithGithub} />
       </MemoryRouter>
     );
-
-    await waitFor(() => {
-      const ghLink = getByText('@octocat').closest('a');
-      expect(ghLink).toBeInTheDocument();
-      expect(ghLink).toHaveAttribute('href', 'https://github.com/octocat');
-    });
+    const ghLink = getByText('@octocat').closest('a');
+    expect(ghLink).toBeInTheDocument();
+    expect(ghLink).toHaveAttribute('href', 'https://github.com/octocat');
   });
 
   it('does not render github link when GithubProfile returns null', () => {
