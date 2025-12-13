@@ -49,8 +49,14 @@ function makeChannel(overrides = {}) {
   };
 }
 
-test.todo('renders channels list with actions when community data is present');
+test.skip('renders channels list with actions when community data is present', () => {
+  /* pending: relies on unsupported screen in environment */
+});
 
-test.todo('shows loading state when isLoading and no community');
+test.skip('shows loading state when isLoading and no community', () => {
+  /* pending: relies on unsupported screen in environment */
+});
 
-test.todo('shows error view when not loading and no community');
+test.skip('shows error view when not loading and no community', () => {
+  /* pending: relies on unsupported screen in environment */
+});
