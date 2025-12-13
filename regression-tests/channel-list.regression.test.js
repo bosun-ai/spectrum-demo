@@ -1,6 +1,8 @@
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
 const { MemoryRouter } = require('react-router');
+const { Provider } = require('react-redux');
+const { initStore } = require('../src/store');
 
 // Component under test (unconnected export is not available; render composed with minimal props)
 const ChannelList = require('../src/views/communitySettings/components/channelList')
@@ -40,14 +42,18 @@ test('renders channels list with actions when community data is present', () => 
 
   render(
     React.createElement(
-      MemoryRouter,
-      null,
-      React.createElement(ChannelList, {
-        data,
-        isLoading: false,
-        dispatch: () => {},
-        communitySlug: 'acme',
-      })
+      Provider,
+      { store: initStore() },
+      React.createElement(
+        MemoryRouter,
+        null,
+        React.createElement(ChannelList, {
+          data,
+          isLoading: false,
+          dispatch: () => {},
+          communitySlug: 'acme',
+        })
+      )
     )
   );
 
@@ -67,14 +73,18 @@ test('renders channels list with actions when community data is present', () => 
 test('shows loading state when isLoading and no community', () => {
   render(
     React.createElement(
-      MemoryRouter,
-      null,
-      React.createElement(ChannelList, {
-        data: { community: null },
-        isLoading: true,
-        dispatch: () => {},
-        communitySlug: 'acme',
-      })
+      Provider,
+      { store: initStore() },
+      React.createElement(
+        MemoryRouter,
+        null,
+        React.createElement(ChannelList, {
+          data: { community: null },
+          isLoading: true,
+          dispatch: () => {},
+          communitySlug: 'acme',
+        })
+      )
     )
   );
 
@@ -88,14 +98,18 @@ test('shows loading state when isLoading and no community', () => {
 test('shows error view when not loading and no community', () => {
   render(
     React.createElement(
-      MemoryRouter,
-      null,
-      React.createElement(ChannelList, {
-        data: { community: null },
-        isLoading: false,
-        dispatch: () => {},
-        communitySlug: 'acme',
-      })
+      Provider,
+      { store: initStore() },
+      React.createElement(
+        MemoryRouter,
+        null,
+        React.createElement(ChannelList, {
+          data: { community: null },
+          isLoading: false,
+          dispatch: () => {},
+          communitySlug: 'acme',
+        })
+      )
     )
   );
 
