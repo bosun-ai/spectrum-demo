@@ -37,7 +37,7 @@ function makeChannel(overrides = {}) {
 test('renders channel name, description, and link', () => {
   const channel = makeChannel();
   const element = React.createElement(
-    ChannelListItem,
+    Channel,
     {
       channel,
       id: channel.id,
@@ -68,7 +68,7 @@ test('renders channel name, description, and link', () => {
 
 test('shows private icon when channel is private and hides description when no description', () => {
   const channel = makeChannel({ isPrivate: true, description: null });
-  const element = React.createElement(ChannelListItem, {
+  const element = React.createElement(Channel, {
     channel,
     id: channel.id,
     name: channel.name,
@@ -87,7 +87,7 @@ test('shows private icon when channel is private and hides description when no d
 });
 
 test('returns null when channel prop is missing', () => {
-  const element = React.createElement(ChannelListItem, {
+  const element = React.createElement(Channel, {
     channel: null,
     id: 'missing',
     name: 'noop',
