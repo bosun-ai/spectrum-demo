@@ -18,7 +18,8 @@ test('CounterButton renders and increments', () => {
   const element = React.createElement(CounterButton, null, null);
   const { getByTestId } = render(element);
   const btn = getByTestId('counter');
-  expect(btn).toBeInTheDocument();
+  // Avoid jest-dom matcher for broad Jest compatibility
+  expect(btn).not.toBeNull();
   expect(btn.textContent).toBe('Count: 0');
   fireEvent.click(btn);
   expect(btn.textContent).toBe('Count: 1');
