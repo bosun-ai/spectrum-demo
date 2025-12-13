@@ -5,8 +5,18 @@ const { Provider } = require('react-redux');
 const { initStore } = require('../src/store');
 
 // Component under test (unconnected export is not available; render composed with minimal props)
+// Import wrapped component but stub Apollo HOC by passing a mock client via ApolloProvider
 const ChannelList = require('../src/views/communitySettings/components/channelList')
   .default;
+const { ApolloProvider } = require('react-apollo');
+const ApolloClient = require('apollo-client').ApolloClient;
+const { InMemoryCache } = require('apollo-cache-inmemory');
+const { HttpLink } = require('apollo-link-http');
+// Minimal Apollo client; queries won't fire because we pass static props, but provider must exist
+const client = new ApolloClient({
+  link: new HttpLink({ uri: 'http://localhost/__noop__' }),
+  cache: new InMemoryCache(),
+});
 
 function makeCommunityWithChannels(channels = []) {
   return {
@@ -45,14 +55,18 @@ test('renders channels list with actions when community data is present', () => 
       Provider,
       { store: initStore() },
       React.createElement(
-        MemoryRouter,
-        null,
-        React.createElement(ChannelList, {
-          data,
-          isLoading: false,
-          dispatch: () => {},
-          communitySlug: 'acme',
-        })
+        ApolloProvider,
+        { client },
+        React.createElement(
+          MemoryRouter,
+          null,
+          React.createElement(ChannelList, {
+            data,
+            isLoading: false,
+            dispatch: () => {},
+            communitySlug: 'acme',
+          })
+        )
       )
     )
   );
@@ -76,14 +90,18 @@ test('shows loading state when isLoading and no community', () => {
       Provider,
       { store: initStore() },
       React.createElement(
-        MemoryRouter,
-        null,
-        React.createElement(ChannelList, {
-          data: { community: null },
-          isLoading: true,
-          dispatch: () => {},
-          communitySlug: 'acme',
-        })
+        ApolloProvider,
+        { client },
+        React.createElement(
+          MemoryRouter,
+          null,
+          React.createElement(ChannelList, {
+            data: { community: null },
+            isLoading: true,
+            dispatch: () => {},
+            communitySlug: 'acme',
+          })
+        )
       )
     )
   );
@@ -101,14 +119,18 @@ test('shows error view when not loading and no community', () => {
       Provider,
       { store: initStore() },
       React.createElement(
-        MemoryRouter,
-        null,
-        React.createElement(ChannelList, {
-          data: { community: null },
-          isLoading: false,
-          dispatch: () => {},
-          communitySlug: 'acme',
-        })
+        ApolloProvider,
+        { client },
+        React.createElement(
+          MemoryRouter,
+          null,
+          React.createElement(ChannelList, {
+            data: { community: null },
+            isLoading: false,
+            dispatch: () => {},
+            communitySlug: 'acme',
+          })
+        )
       )
     )
   );
