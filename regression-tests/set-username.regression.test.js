@@ -3,6 +3,8 @@ const { render, fireEvent } = require('@testing-library/react');
 const { Provider } = require('react-redux');
 const { createStore } = require('redux');
 const { ApolloProvider } = require('react-apollo');
+const { ThemeProvider } = require('styled-components');
+const theme = require('../shared/theme').default || require('../shared/theme');
 
 // Import the component under test
 const SetUsername = require('../src/views/newUserOnboarding/components/setUsername')
@@ -53,7 +55,11 @@ function renderSetUsername(overrides = {}) {
     React.createElement(
       ApolloProvider,
       { client },
-      React.createElement(SetUsername, props)
+      React.createElement(
+        ThemeProvider,
+        { theme },
+        React.createElement(SetUsername, props)
+      )
     )
   );
   return render(element);

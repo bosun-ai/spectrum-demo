@@ -51,10 +51,10 @@ test('does not render Settings when member but not team', () => {
   const element = React.createElement(UnconnectedCommunityActions, {
     community,
   });
-  const { queryByText } = render(
+  const { queryAllByText } = render(
     React.createElement(MemoryRouter, null, element)
   );
-  expect(queryByText('Settings')).toBeNull();
+  expect(queryAllByText('Settings').length).toBe(0);
 });
 
 test('renders empty padded div when not a member', () => {
