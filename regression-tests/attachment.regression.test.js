@@ -1,6 +1,10 @@
 const React = require('react');
 const { render } = require('@testing-library/react');
 const { MemoryRouter } = require('react-router');
+const styled = require('styled-components');
+const ThemeProvider =
+  styled.ThemeProvider || require('styled-components').ThemeProvider;
+const theme = require('../shared/theme').default || require('../shared/theme');
 
 // Mock Apollo HOC to avoid ApolloProvider requirement
 jest.mock('../src/components/withCurrentUser', () => ({
@@ -24,7 +28,11 @@ const Attachment = require('../src/components/message/threadAttachment/attachmen
 
 function renderWithRouter(ui) {
   return render(
-    React.createElement(MemoryRouter, { initialEntries: ['/'] }, ui)
+    React.createElement(
+      MemoryRouter,
+      { initialEntries: ['/'] },
+      React.createElement(ThemeProvider, { theme }, ui)
+    )
   );
 }
 
