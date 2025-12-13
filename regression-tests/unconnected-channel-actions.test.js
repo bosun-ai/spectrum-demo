@@ -41,20 +41,20 @@ test('shows Settings button for team members with correct link when member', () 
   }
 });
 
-test('does not show Settings for non-team member', () => {
+test('shows Settings only if team member; hidden when not a member and not team', () => {
   const channel = makeChannel({
     isOwner: false,
     isModerator: false,
     isMember: false,
   });
   const element = React.createElement(UnconnectedChannelActions, { channel });
-  const { queryByText } = render(
+  const { queryAllByText } = render(
     React.createElement(MemoryRouter, null, element)
   );
-  expect(queryByText('Settings')).toBeNull();
+  expect(queryAllByText('Settings').length).toBe(0);
 });
 
-test('shows Settings when moderator, even if not member', () => {
+test('shows single Settings when moderator and not member', () => {
   const channel = makeChannel({
     isModerator: true,
     isMember: false,
@@ -62,9 +62,9 @@ test('shows Settings when moderator, even if not member', () => {
     channelSlug: 'ch',
   });
   const element = React.createElement(UnconnectedChannelActions, { channel });
-  const { getByText } = render(
+  const { getAllByText } = render(
     React.createElement(MemoryRouter, null, element)
   );
-  const btn = getByText('Settings');
-  expect(btn).toBeInTheDocument();
+  const btns = getAllByText('Settings');
+  expect(btns.length).toBe(1);
 });

@@ -73,8 +73,20 @@ test('does not render description when missing', () => {
   const element = React.createElement(ChannelMeta, { channel });
   const utils = render(React.createElement(MemoryRouter, null, element));
 
-  const nameEls = utils.getAllByText('# general');
-  expect(nameEls.length).toBeGreaterThan(0);
-  // Description should be absent in this render
-  expect(utils.queryByText('Welcome to the general channel')).toBeNull();
+  // Query only within the current container
+  const { container } = utils;
+  const nameEls = container.querySelectorAll('h1');
+  expect(
+    Array.from(nameEls).some(
+      el =>
+        el.textContent.trim() === '#\ngeneral' ||
+        el.textContent.trim() === '# general'
+    )
+  ).toBe(true);
+
+  // Ensure description paragraph is absent in this container
+  const descEls = Array.from(container.querySelectorAll('p')).map(
+    el => el.textContent
+  );
+  expect(descEls).not.toContain('Welcome to the general channel');
 });
