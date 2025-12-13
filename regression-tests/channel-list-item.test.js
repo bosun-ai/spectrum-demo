@@ -5,11 +5,12 @@ const { MemoryRouter } = require('react-router');
 // Component under test
 // Import the unwrapped component to avoid Apollo context from withCurrentUser
 const channelModule = require('../src/components/entities/listItems/channel');
-const Channel =
-  channelModule.default ||
-  channelModule.Channel ||
-  channelModule.ChannelListItem?.WrappedComponent ||
-  channelModule.ChannelListItem;
+let Channel = channelModule.default || channelModule.Channel;
+if (!Channel && channelModule.ChannelListItem) {
+  Channel = channelModule.ChannelListItem.WrappedComponent
+    ? channelModule.ChannelListItem.WrappedComponent
+    : channelModule.ChannelListItem;
+}
 
 // Build minimal ChannelInfoType-like object used by the component
 function makeChannel(overrides = {}) {
