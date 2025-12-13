@@ -1,7 +1,7 @@
 // Jest setup for regression tests
 require('@testing-library/jest-dom/extend-expect');
-const { server } = require('./server');
 const { cleanup } = require('@testing-library/react');
+const { server } = require('./server');
 
 // Set JSDOM URL to enable localStorage
 if (typeof window !== 'undefined') {
