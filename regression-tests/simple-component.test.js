@@ -1,5 +1,5 @@
 const React = require('react');
-const { render, screen, fireEvent } = require('@testing-library/react');
+const { render, fireEvent } = require('@testing-library/react');
 
 function CounterButton() {
   const ReactRef = React; // avoid JSX by using createElement
@@ -16,8 +16,8 @@ function CounterButton() {
 
 test('CounterButton renders and increments', () => {
   const element = React.createElement(CounterButton, null, null);
-  render(element);
-  const btn = screen.getByTestId('counter');
+  const { getByTestId } = render(element);
+  const btn = getByTestId('counter');
   expect(btn).toBeInTheDocument();
   expect(btn.textContent).toBe('Count: 0');
   fireEvent.click(btn);
