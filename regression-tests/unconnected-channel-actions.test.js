@@ -1,5 +1,6 @@
 const React = require('react');
 const { render } = require('@testing-library/react');
+const { MemoryRouter } = require('react-router');
 
 // Import the component under test
 const {
@@ -25,7 +26,9 @@ const makeChannel = ({
 test('shows Settings button for team members with correct link when member', () => {
   const channel = makeChannel({ isOwner: true, isMember: true });
   const element = React.createElement(UnconnectedChannelActions, { channel });
-  const { getByText } = render(element);
+  const { getByText } = render(
+    React.createElement(MemoryRouter, null, element)
+  );
   const btn = getByText('Settings');
   expect(btn).toBeInTheDocument();
   // OutlineButton with `to` should render inside a StyledLink; ensure link destination
@@ -45,7 +48,9 @@ test('does not show Settings for non-team member', () => {
     isMember: false,
   });
   const element = React.createElement(UnconnectedChannelActions, { channel });
-  const { queryByText } = render(element);
+  const { queryByText } = render(
+    React.createElement(MemoryRouter, null, element)
+  );
   expect(queryByText('Settings')).toBeNull();
 });
 
@@ -57,7 +62,9 @@ test('shows Settings when moderator, even if not member', () => {
     channelSlug: 'ch',
   });
   const element = React.createElement(UnconnectedChannelActions, { channel });
-  const { getByText } = render(element);
+  const { getByText } = render(
+    React.createElement(MemoryRouter, null, element)
+  );
   const btn = getByText('Settings');
   expect(btn).toBeInTheDocument();
 });
