@@ -6,6 +6,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { ThemeProvider } from 'styled-components';
+import theme from '../shared/theme';
 
 // Import the connected component
 import BanUserModal from '../src/components/modals/BanUserModal';
@@ -25,14 +27,16 @@ describe('BanUserModal regression', () => {
 
     render(
       <Provider store={store}>
-        {/* The connected component also expects withCurrentUser HOC, but it only uses currentUser prop indirectly; not required for rendering */}
-        <BanUserModal.WrappedComponent
-          dispatch={store.dispatch}
-          isOpen={true}
-          user={user}
-          currentUser={{ id: 'me' }}
-          banUser={banUser}
-        />
+        <ThemeProvider theme={theme}>
+          {/* Use the unwrapped component to bypass HOCs that may expect more context */}
+          <BanUserModal.WrappedComponent
+            dispatch={store.dispatch}
+            isOpen={true}
+            user={user}
+            currentUser={{ id: 'me' }}
+            banUser={banUser}
+          />
+        </ThemeProvider>
       </Provider>
     );
 

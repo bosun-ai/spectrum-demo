@@ -55,6 +55,21 @@ jest.mock('src/components/button', () => ({
   ),
 }));
 
+// Mock thread style exports used by ActionsDropdown to avoid styled-components tree
+jest.mock('src/views/thread/style', () => ({
+  FlyoutRow: ({ children, ...props }) => (
+    <div data-testid="flyout-row" {...props}>
+      {children}
+    </div>
+  ),
+  DropWrap: ({ children, ...props }) => (
+    <div data-testid="drop-wrap" {...props}>
+      {children}
+    </div>
+  ),
+  Label: ({ children, ...props }) => <span {...props}>{children}</span>,
+}));
+
 // Popper and Manager/Reference can be passthrough to avoid positioning complexity
 jest.mock('react-popper', () => ({
   Manager: ({ children }) => <div>{children}</div>,

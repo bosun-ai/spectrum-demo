@@ -2,6 +2,10 @@ const React = require('react');
 const { render } = require('@testing-library/react');
 const { MemoryRouter } = require('react-router');
 
+// Mock Apollo HOC to avoid ApolloProvider requirement
+jest.mock('../src/components/withCurrentUser', () => ({
+  withCurrentUser: Comp => Comp,
+}));
 // Import the component
 const Attachment = require('../src/components/message/threadAttachment/attachment')
   .default;
