@@ -6,6 +6,28 @@ const { ApolloProvider } = require('react-apollo');
 const { ThemeProvider } = require('styled-components');
 const theme = require('../shared/theme').default || require('../shared/theme');
 
+// Mock UsernameSearch to deterministically call onValidationResult
+jest.mock('../src/components/usernameSearch', () => {
+  const React = require('react');
+  return function UsernameSearchMock(props) {
+    return React.createElement('input', {
+      'data-cy': props.dataCy || 'username-search',
+      defaultValue: props.username || '',
+      onChange: e => {
+        const value = (e.target.value || '').trim();
+        const isValid = value.length > 0 && value.length <= 20;
+        props.onValidationResult({
+          error: isValid
+            ? ''
+            : 'Be sure to set a username so that people can find you!',
+          success: isValid ? 'That username is available!' : '',
+          username: value,
+        });
+      },
+    });
+  };
+});
+
 // Import the component under test
 const SetUsername = require('../src/views/newUserOnboarding/components/setUsername')
   .default;
