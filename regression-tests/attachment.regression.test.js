@@ -6,6 +6,14 @@ const { MemoryRouter } = require('react-router');
 jest.mock('../src/components/withCurrentUser', () => ({
   withCurrentUser: Comp => Comp,
 }));
+// Mock Loading to a simple stub to avoid theme deps
+jest.mock('../src/components/loading', () => ({
+  Loading: () => React.createElement('div', null, 'Loading'),
+}));
+// Mock UserAvatar to avoid ApolloConsumer inside hover profile
+jest.mock('../src/components/avatar', () => ({
+  UserAvatar: () => React.createElement('img', { alt: 'avatar' }),
+}));
 // Import the component
 const Attachment = require('../src/components/message/threadAttachment/attachment')
   .default;

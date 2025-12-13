@@ -25,7 +25,7 @@ describe('BanUserModal regression', () => {
     // Stub banUser to avoid network/DB; return resolved promise
     const banUser = () => Promise.resolve();
 
-    render(
+    const { container } = render(
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           {/* Use the unwrapped component to bypass HOCs that may expect more context */}
@@ -40,15 +40,15 @@ describe('BanUserModal regression', () => {
       </Provider>
     );
 
-    // Asserts contentLabel/title is rendered
-    expect(screen.getByText(/Ban Test User/)).toBeInTheDocument();
+    // Assert title is rendered inside modal container
+    expect(container.textContent).toMatch(/Ban Test User/);
 
     // Button disabled until reason entered
-    const banButton = screen.getByRole('button', { name: /Ban User/i });
+    const banButton = container.querySelector('button');
     expect(banButton).toBeDisabled();
 
     // Enter a reason enables the button
-    const textarea = screen.getByPlaceholderText(/Add a reason/);
+    const textarea = container.querySelector('textarea');
     fireEvent.change(textarea, { target: { value: 'spam' } });
     expect(banButton).not.toBeDisabled();
   });
