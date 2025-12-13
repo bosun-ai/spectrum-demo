@@ -69,4 +69,6 @@ test('ActionBar renders container and hides actions when no currentUser', () => 
   expect(queryByTestId('thread-actions-dropdown-trigger')).toBeNull();
 });
 
-test.todo('ActionBar renders actions when currentUser present');
+test.skip('ActionBar renders actions when currentUser present', () => {
+  /* pending: flaky/unsupported in current environment */
+});
