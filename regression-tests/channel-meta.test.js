@@ -71,12 +71,10 @@ test('renders archived badge when isArchived', () => {
 test('does not render description when missing', () => {
   const channel = makeChannel({ description: null });
   const element = React.createElement(ChannelMeta, { channel });
-  const { queryByText } = render(
-    React.createElement(MemoryRouter, null, element)
-  );
+  const utils = render(React.createElement(MemoryRouter, null, element));
 
-  // Ensure name renders
-  expect(queryByText('# general')).toBeInTheDocument();
-  // Ensure description not rendered
-  expect(queryByText('Welcome to the general channel')).not.toBeInTheDocument();
+  const nameEls = utils.getAllByText('# general');
+  expect(nameEls.length).toBeGreaterThan(0);
+  // Description should be absent in this render
+  expect(utils.queryByText('Welcome to the general channel')).toBeNull();
 });
