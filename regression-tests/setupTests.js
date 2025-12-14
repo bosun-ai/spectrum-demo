@@ -5,6 +5,12 @@ require('@testing-library/jest-dom/extend-expect');
 // Polyfill fetch for node via cross-fetch
 require('cross-fetch/polyfill');
 
+// MSW server lifecycle
+const { server } = require('./server');
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+
 // Stub localStorage to avoid jsdom opaque origin issues in Jest 22
 if (typeof window !== 'undefined' && !window.localStorage) {
   const storage = (() => {
