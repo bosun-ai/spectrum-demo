@@ -1,0 +1,54 @@
+name: Regression Tests
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    services:
+      rethinkdb:
+        image: rethinkdb:2.4
+        ports:
+          - 28015:28015
+        options: >-
+          --health-cmd "rethinkdb --bind all --server-tag ci & sleep 3 && exit 0"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up NVM and Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'yarn'
+
+      - name: Show Node and Yarn versions
+        run: |
+          node -v
+          npm -v
+          yarn -v || true
+
+      - name: Install dependencies (monorepo helper)
+        run: |
+          nvm use
+          node shared/install-dependencies.js
+
+      - name: Prepare test database (migrate and seed)
+        env:
+          TEST_DB: true
+        run: |
+          nvm use
+          yarn run db:migrate
+          yarn run db:seed
+
+      - name: Run regression tests
+        run: |
+          nvm use
+          yarn run test:regression
