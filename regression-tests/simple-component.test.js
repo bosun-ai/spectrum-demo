@@ -1,5 +1,6 @@
 const React = require('react');
 const { render, fireEvent, screen } = require('@testing-library/react');
+// Avoid touching localStorage or location in tests
 
 // Simple component without JSX to avoid Babel
 function Counter(props) {
