@@ -1,8 +1,7 @@
 module.exports = {
-  // In Jest 22, this path is resolved from CWD; use relative path
-  setupTestFrameworkScriptFile: '<rootDir>/setupTests.js',
-  rootDir: 'regression-tests',
+  // Provide absolute-like path from project root Jest invocation
+  setupTestFrameworkScriptFile: '<rootDir>/regression-tests/setupTests.js',
   testEnvironment: 'jsdom',
   testURL: 'http://localhost/',
-  testMatch: ['**/*.test.js'],
+  testMatch: ['**/regression-tests/**/*.test.js'],
 };
