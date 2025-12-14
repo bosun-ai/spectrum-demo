@@ -1,6 +1,10 @@
 // Setup for regression tests
-// Extend jest-dom matchers
-require('@testing-library/jest-dom/extend-expect');
+// Extend jest-dom matchers (v6 exports in main index)
+try {
+  require('@testing-library/jest-dom/extend-expect');
+} catch (e) {
+  require('@testing-library/jest-dom');
+}
 
 // Polyfill fetch for node via cross-fetch
 require('cross-fetch/polyfill');
