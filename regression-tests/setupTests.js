@@ -1,6 +1,26 @@
 // Setup for regression tests
 // Extend jest-dom matchers
-import '@testing-library/jest-dom/extend-expect';
+require('@testing-library/jest-dom/extend-expect');
 
 // Polyfill fetch for node via cross-fetch
-import 'cross-fetch/polyfill';
+require('cross-fetch/polyfill');
+
+// Stub localStorage to avoid jsdom opaque origin issues in Jest 22
+if (typeof window !== 'undefined' && !window.localStorage) {
+  const storage = (() => {
+    let store = {};
+    return {
+      getItem: key => store[key] || null,
+      setItem: (key, value) => {
+        store[key] = String(value);
+      },
+      removeItem: key => {
+        delete store[key];
+      },
+      clear: () => {
+        store = {};
+      },
+    };
+  })();
+  Object.defineProperty(window, 'localStorage', { value: storage });
+}
