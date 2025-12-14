@@ -1,6 +1,7 @@
+const path = require('path');
 module.exports = {
-  // Provide absolute-like path from project root Jest invocation
-  setupTestFrameworkScriptFile: '<rootDir>/regression-tests/setupTests.js',
+  // Use absolute path to avoid jest 22 resolution issues
+  setupTestFrameworkScriptFile: path.resolve(__dirname, 'setupTests.js'),
   testEnvironment: 'jsdom',
   testURL: 'http://localhost/',
   testMatch: ['**/regression-tests/**/*.test.js'],
