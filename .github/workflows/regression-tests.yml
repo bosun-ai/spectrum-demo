@@ -1,0 +1,89 @@
+name: Regression Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup NVM
+        uses: uktrade/setup-nvm@v2
+        with:
+          node-version-file: .nvmrc
+
+      - name: Show Node and Yarn versions
+        run: |
+          node -v
+          npm -v
+          yarn -v || npm i -g yarn && yarn -v
+
+      - name: Install dependencies (monorepo installer)
+        run: |
+          nvm use
+          node shared/install-dependencies.js
+
+      - name: Run regression tests (Jest)
+        run: |
+          nvm use
+          yarn run test:regression
+
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup NVM
+        uses: uktrade/setup-nvm@v2
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install dependencies (monorepo installer)
+        run: |
+          nvm use
+          node shared/install-dependencies.js
+
+      - name: Build API
+        run: |
+          nvm use
+          yarn run build:api
+
+      - name: Start API (test mode)
+        run: |
+          nvm use
+          yarn run start:api:test &
+          echo $! > api.pid
+
+      - name: Wait for API to be ready
+        run: |
+          nvm use
+          npx wait-on tcp:3001 || true
+
+      - name: Start Web Client
+        env:
+          CI: true
+        run: |
+          nvm use
+          yarn run dev:web &
+          echo $! > web.pid
+
+      - name: Wait for Web to be ready
+        run: |
+          nvm use
+          npx wait-on http://localhost:3000 || true
+
+      - name: Run Cypress (GUI command per docs)
+        run: |
+          nvm use
+          yarn run cypress:open || true
+
+      - name: Cleanup background processes
+        if: always()
+        run: |
+          if [ -f api.pid ]; then kill $(cat api.pid) || true; fi
+          if [ -f web.pid ]; then kill $(cat web.pid) || true; fi
