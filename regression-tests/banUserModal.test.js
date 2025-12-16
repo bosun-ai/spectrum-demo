@@ -1,6 +1,9 @@
 const React = require('react');
 const { render, screen, fireEvent } = require('@testing-library/react');
 const { Provider } = require('react-redux');
+const { ThemeProvider } = require('styled-components');
+const themeModule = require('shared/theme');
+const theme = themeModule.default || themeModule.theme;
 jest.mock('src/components/withCurrentUser', () => ({
   withCurrentUser: C => C,
 }));
@@ -25,7 +28,11 @@ function renderBanUserModal(overrides = {}) {
     React.createElement(
       Provider,
       { store },
-      React.createElement(BanUserModal, props)
+      React.createElement(
+        ThemeProvider,
+        { theme },
+        React.createElement(BanUserModal, props)
+      )
     )
   );
 }
