@@ -1,6 +1,9 @@
 const React = require('react');
 const { render, screen, fireEvent } = require('@testing-library/react');
 const { Provider } = require('react-redux');
+jest.mock('src/components/withCurrentUser', () => ({
+  withCurrentUser: C => C,
+}));
 const { initStore } = require('src/store');
 
 // Import the connected component; we will stub required props
