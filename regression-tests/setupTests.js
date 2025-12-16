@@ -70,9 +70,17 @@ jest.mock('react-router-dom', () => ({
 
 // Mock react-apollo graphql HOC used by shared/graphql to avoid real Apollo wiring
 jest.mock('react-apollo', () => {
-  const React = require('react');
   return {
     withApollo: comp => comp,
-    graphql: (...args) => comp => comp,
+    graphql: () => comp => comp,
   };
+});
+
+// Mock Mention component used by mentions-decorator
+jest.mock('../src/components/rich-text-editor/style.js', () => {
+  const React = require('react');
+  function Mention({ username, children }) {
+    return React.createElement('span', { 'data-mention': username }, children);
+  }
+  return { Mention };
 });

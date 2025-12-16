@@ -61,8 +61,8 @@ describe('ChannelMeta', () => {
     // Name prefixed with #
     expect(screen.getByText('# random')).toBeInTheDocument();
 
-    // Link points to /community/channel
-    const link = screen.getByRole('link');
+    // Link points to /community/channel; select by link text
+    const link = screen.getByText('# random').closest('a');
     expect(link).toHaveAttribute('href', '/acme/random');
   });
 

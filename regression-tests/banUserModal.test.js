@@ -1,5 +1,7 @@
 const React = require('react');
 const { render, screen, fireEvent } = require('@testing-library/react');
+const { Provider } = require('react-redux');
+const { initStore } = require('src/store');
 
 // Import the connected component; we will stub required props
 const BanUserModal =
@@ -15,7 +17,14 @@ function renderBanUserModal(overrides = {}) {
     banUser: jest.fn(() => Promise.resolve()),
   };
   const props = Object.assign({}, defaultProps, overrides);
-  return render(React.createElement(BanUserModal, props));
+  const store = initStore({ modals: { isOpen: true } });
+  return render(
+    React.createElement(
+      Provider,
+      { store },
+      React.createElement(BanUserModal, props)
+    )
+  );
 }
 
 test('renders with user data and validates reason', () => {
