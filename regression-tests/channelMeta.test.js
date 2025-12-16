@@ -1,6 +1,25 @@
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
 const { MemoryRouter } = require('react-router');
+// Mock style module to plain elements to avoid styled-components issues
+jest.mock('../src/components/entities/profileCards/style', () => ({
+  MetaContainer: ({ children, ...rest }) => {
+    const React = require('react');
+    return React.createElement('div', rest, children);
+  },
+  Name: ({ children, ...rest }) => {
+    const React = require('react');
+    return React.createElement('h1', rest, children);
+  },
+  Description: ({ children, ...rest }) => {
+    const React = require('react');
+    return React.createElement('p', rest, children);
+  },
+  Username: ({ children, ...rest }) => {
+    const React = require('react');
+    return React.createElement('div', rest, children);
+  },
+}));
 
 // Import the component under test (default/CommonJS interop)
 const channelMetaModule = require('../src/components/entities/profileCards/components/channelMeta.js');

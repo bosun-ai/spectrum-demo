@@ -75,6 +75,6 @@ describe('UnconnectedUserActions', () => {
         dispatch: jest.fn(),
       })
     );
-    expect(container).toBeEmptyDOMElement();
+    expect(container.firstChild).toBeNull();
   });
 });

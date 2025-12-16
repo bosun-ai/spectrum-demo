@@ -19,6 +19,20 @@ jest.mock('../shared/normalize-url', () => url => {
   if (!url) return url;
   return url.startsWith('http') ? url : `https://${url}`;
 });
+// Mock style components to basic tags to avoid styled-components dependency
+jest.mock('../src/components/entities/profileCards/style.js', () => {
+  const React = require('react');
+  const passthrough = Tag => props =>
+    React.createElement(Tag, props, props.children);
+  return {
+    MetaContainer: passthrough('div'),
+    Name: passthrough('h1'),
+    Description: passthrough('p'),
+    MetaLinksContainer: passthrough('div'),
+    MetaRow: passthrough('div'),
+    Username: passthrough('div'),
+  };
+});
 
 // Import the component from the project source (after mocks so they apply)
 const {
