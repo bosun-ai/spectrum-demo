@@ -28,6 +28,9 @@ class ScrollManager extends React.Component<Props> {
       attemptsRemaining: props.scrollSyncAttemptLimit,
     };
 
+    // React 17: constructors may re-execute during error stack building; keep
+    // constructor logic side-effect free and defer mutations to effects.
+    // Version delta: 16.8.6 -> 17.0.2
     const scrollCapture = () => {
       requestAnimationFrame(() => {
         const { pageXOffset, pageYOffset } = window;
