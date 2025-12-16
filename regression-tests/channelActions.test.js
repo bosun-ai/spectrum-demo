@@ -74,3 +74,5 @@ describe('UnconnectedChannelActions', () => {
     expect(screen.queryByText('Settings')).toBeNull();
   });
 });
+// Mock the aliased import path used inside the component file
+jest.mock('src/components/button', () => require('../src/components/button'));
