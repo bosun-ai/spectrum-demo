@@ -7,7 +7,10 @@ const {
 } = require('@testing-library/react');
 
 // Mock apollo and redux HOCs to render plain component behavior
-jest.mock('react-apollo', () => ({ withApollo: comp => comp }));
+jest.mock('react-apollo', () => ({
+  withApollo: comp => comp,
+  graphql: () => comp => comp,
+}));
 jest.mock('react-redux', () => ({ connect: () => comp => comp }));
 
 // Mock UsernameSearch to call validation quickly and render an input
