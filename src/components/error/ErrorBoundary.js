@@ -16,8 +16,16 @@ class ErrorBoundary extends React.Component<Props, State> {
 
   componentDidCatch = (error: any, errorInfo: any) => {
     this.setState({ error });
-    console.error({ error });
-    window.Raven && window.Raven.captureException(error, { extra: errorInfo });
+    // React 17 change: component stacks derive from native error frames and
+    // may re-execute parts of render/constructors when building stacks.
+    // Keep side-effects out of render/constructor; do client-side logging here.
+    // Version delta: 16.8.6 -> 17.0.2
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line no-console
+      console.error({ error });
+      window.Raven &&
+        window.Raven.captureException(error, { extra: errorInfo });
+    }
   };
 
   render() {
