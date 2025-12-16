@@ -74,5 +74,10 @@ describe('UnconnectedChannelActions', () => {
     expect(screen.queryByText('Settings')).toBeNull();
   });
 });
-// Mock the aliased import path used inside the component file
-jest.mock('src/components/button', () => require('../src/components/button'));
+// Map aliased import to a simple mock to avoid styled-components and router deps
+jest.mock('src/components/button', () => ({
+  OutlineButton: ({ to, children, ...rest }) => {
+    const React = require('react');
+    return React.createElement('a', { href: to, ...rest }, children);
+  },
+}));
