@@ -32,7 +32,7 @@ const ChannelMeta =
 const buildChannel = ({
   name = 'general',
   slug = 'general',
-  description = 'Discuss things at https://example.com',
+  description = 'Discuss things at [Example](https://example.com)',
   isArchived = false,
   communitySlug = 'acme',
 } = {}) => ({
@@ -81,7 +81,7 @@ describe('ChannelMeta', () => {
 
   test('renders description with markdown links processed', () => {
     const channel = buildChannel({
-      description: 'Check this: https://example.com/docs',
+      description: 'Check this: [Docs](https://example.com/docs)',
     });
     render(
       React.createElement(

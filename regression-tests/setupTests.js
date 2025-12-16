@@ -73,6 +73,6 @@ jest.mock('react-apollo', () => {
   const React = require('react');
   return {
     withApollo: comp => comp,
-    graphql: () => comp => comp,
+    graphql: (...args) => comp => comp,
   };
 });
