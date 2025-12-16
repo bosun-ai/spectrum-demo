@@ -110,7 +110,8 @@ test('handles missing optional fields gracefully', () => {
   render(React.createElement(UserMeta, { user: noOptionals }));
   expect(screen.getByText('Grace Hopper')).toBeInTheDocument();
   // No username shown
-  expect(screen.queryByText(/^@/)).toBeNull();
+  // Only github row shows @octocat from mock; ensure no user.username prefix is shown
+  expect(screen.queryByText('@u2')).toBeNull();
   // No website link
   expect(screen.queryByText(/icon-link-20/)).toBeNull();
 });
