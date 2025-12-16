@@ -5,7 +5,7 @@ import sys
 import re
 
 # Directories to skip (built/output folders)
-SKIP_DIRS = {"build", "dist", "lib", "umd", "es"}
+SKIP_DIRS = {"build", "dist", "lib", "umd", "es", "node_modules", ".git", "cypress", "flow-typed", "docs", "public"}
 
 # File extensions to consider
 EXTENSIONS = {".js", ".jsx", ".ts", ".tsx"}
@@ -99,7 +99,13 @@ def depth_of_path(p):
 
 def main():
     project_root = os.getcwd()
-    roots_to_scan = [project_root]
+    # Only scan source-like directories
+    roots_to_scan = [
+        os.path.join(project_root, "src"),
+        os.path.join(project_root, "shared"),
+        os.path.join(project_root, "hyperion"),
+        os.path.join(project_root, "api"),
+    ]
     components = []
     for root in roots_to_scan:
         components.extend(scan_components(root))
