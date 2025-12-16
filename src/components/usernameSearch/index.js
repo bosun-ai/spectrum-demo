@@ -39,6 +39,9 @@ class UsernameSearch extends React.Component<Props, State> {
       isSearching: false,
     };
 
+    // React 17: constructors may be re-executed when building component stacks.
+    // Avoid side effects here; only create pure, memoized functions.
+    // Version delta: 16.8.6 -> 17.0.2
     this.search = debounce(this.search, 500, false);
   }
 
