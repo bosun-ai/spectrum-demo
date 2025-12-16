@@ -59,13 +59,20 @@ class Browser extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+    // React 17: attach keydown listener on capture phase to ensure
+    // navigation keys are still received when React tree stops propagation.
+    // Version delta: 16.8.6 -> 17.0.2
     // $FlowFixMe
-    document.addEventListener('keydown', this.handleKeyPress, false);
+    document.addEventListener('keydown', this.handleKeyPress, {
+      capture: true,
+    });
   }
 
   componentWillUnmount() {
     // $FlowFixMe
-    document.removeEventListener('keydown', this.handleKeyPress, false);
+    document.removeEventListener('keydown', this.handleKeyPress, {
+      capture: true,
+    });
   }
 
   closeGallery = () => {

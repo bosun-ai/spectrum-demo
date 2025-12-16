@@ -20,6 +20,8 @@ const InfiniteScroller = (props: Props) => {
 
   return (
     <InfiniteScroll
+      // React 17: onScroll no longer bubbles to parents; listen on the real
+      // scrolling element via getScrollParent so pagination triggers reliably.
       useWindow={false}
       initialLoad={false}
       threshold={750}
