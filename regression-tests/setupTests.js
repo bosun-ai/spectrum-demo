@@ -67,3 +67,12 @@ jest.mock('react-router-dom', () => ({
     );
   },
 }));
+
+// Mock react-apollo graphql HOC used by shared/graphql to avoid real Apollo wiring
+jest.mock('react-apollo', () => {
+  const React = require('react');
+  return {
+    withApollo: comp => comp,
+    graphql: () => comp => comp,
+  };
+});
