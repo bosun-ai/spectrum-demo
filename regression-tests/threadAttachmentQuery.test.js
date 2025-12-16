@@ -24,7 +24,23 @@ function renderQuery(overrides) {
     },
   };
   const props = Object.assign({}, defaultProps, overrides || {});
-  return render(React.createElement(ThreadAttachment, props));
+  const { Provider } = require('react-redux');
+  const { createStore } = require('redux');
+  const { ThemeProvider } = require('styled-components');
+  const theme = require('../src/components/globals').default;
+  const rootReducer = (state = {}) => state;
+  const store = createStore(rootReducer);
+  return render(
+    React.createElement(
+      Provider,
+      { store },
+      React.createElement(
+        ThemeProvider,
+        { theme },
+        React.createElement(ThreadAttachment, props)
+      )
+    )
+  );
 }
 
 test('Query forwards loading to Attachment', () => {
