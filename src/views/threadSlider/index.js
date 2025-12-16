@@ -1,4 +1,7 @@
 // @flow
+// React 17: useEffect cleanup runs async post-paint. For cleanup that
+// reads mutable refs, capture the ref value inside the effect so cleanup
+// sees a stable value (16.8.6 -> 17.0.2 behavior change).
 import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import type { Location, History, Match } from 'react-router';
@@ -29,6 +32,8 @@ const ThreadSlider = (props: Props) => {
     history.push({ ...previousLocation, state: { modal: false } });
   };
 
+  // React 17 delta: capture the current titlebar props inside the effect
+  // so the cleanup uses the same snapshot even if the ref changes by cleanup time.
   useEffect(() => {
     const handleKeyPress = (e: any) => {
       if (e.keyCode === ESC) {
@@ -36,10 +41,10 @@ const ThreadSlider = (props: Props) => {
         closeSlider();
       }
     };
-
+    const prev = prevTitlebarProps.current; // capture snapshot for cleanup
     document.addEventListener('keydown', handleKeyPress, false);
     return () => {
-      const prev = prevTitlebarProps.current;
+      // React 17: cleanup is async; rely on captured snapshot
       dispatch(setTitlebarProps({ ...prev }));
       document.removeEventListener('keydown', handleKeyPress, false);
     };
