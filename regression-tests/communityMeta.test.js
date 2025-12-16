@@ -3,32 +3,51 @@ const { render, screen } = require('@testing-library/react');
 
 // Mock react-router-dom Link to render an anchor with to as href
 jest.mock('react-router-dom', () => ({
-  Link: ({ to, children, ...rest }) =>
-    React.createElement(
+  Link: function Link(props) {
+    const to = props.to;
+    const children = props.children;
+    const rest = Object.assign({}, props);
+    delete rest.to;
+    delete rest.children;
+    return require('react').createElement(
       'a',
       { href: typeof to === 'string' ? to : '#', ...rest },
       children
-    ),
+    );
+  },
 }));
 
 // Mock Icon to a simple span to avoid SVG complexity
 jest.mock('src/components/icon', () => ({
   __esModule: true,
-  default: ({ glyph, size }) =>
-    React.createElement('span', {
+  default: function Icon(props) {
+    const glyph = props.glyph;
+    const size = props.size;
+    return require('react').createElement('span', {
       'data-testid': 'icon',
       'data-glyph': glyph,
       'data-size': String(size),
-    }),
+    });
+  },
 }));
 
 // Mock styled components used in CommunityMeta to plain elements
 jest.mock('src/components/entities/profileCards/style', () => ({
-  MetaContainer: props => React.createElement('div', { ...props }),
-  Name: props => React.createElement('h2', { ...props }),
-  Description: props => React.createElement('p', { ...props }),
-  MetaLinksContainer: props => React.createElement('div', { ...props }),
-  MetaRow: props => React.createElement('div', { ...props }),
+  MetaContainer: function MetaContainer(props) {
+    return require('react').createElement('div', props);
+  },
+  Name: function Name(props) {
+    return require('react').createElement('h2', props);
+  },
+  Description: function Description(props) {
+    return require('react').createElement('p', props);
+  },
+  MetaLinksContainer: function MetaLinksContainer(props) {
+    return require('react').createElement('div', props);
+  },
+  MetaRow: function MetaRow(props) {
+    return require('react').createElement('div', props);
+  },
 }));
 
 // Import component under test
