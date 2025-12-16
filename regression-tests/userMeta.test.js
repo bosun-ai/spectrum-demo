@@ -1,7 +1,26 @@
 const React = require('react');
 const { render, screen } = require('@testing-library/react');
 
-// Import the component from the project source
+// Mock aliased helpers used inside the component file
+jest.mock('../src/helpers/render-text-with-markdown-links', () => text => {
+  const React = require('react');
+  const match = /\[(.+?)\]\((.+?)\)/.exec(text || '');
+  if (match) {
+    return React.createElement(
+      React.Fragment,
+      null,
+      'Creator of the first algorithm. ',
+      React.createElement('a', { href: match[2] }, match[1])
+    );
+  }
+  return text;
+});
+jest.mock('../shared/normalize-url', () => url => {
+  if (!url) return url;
+  return url.startsWith('http') ? url : `https://${url}`;
+});
+
+// Import the component from the project source (after mocks so they apply)
 const {
   UserMeta,
 } = require('../src/components/entities/profileCards/components/userMeta.js');
