@@ -61,9 +61,12 @@ describe('UnconnectedCommunityActions', () => {
     expect(screen.queryByText('Settings')).toBeNull();
     const divs = screen.getAllByRole('generic');
     // One of the generic divs should have inline style padding: 8px
-    expect(divs.some((d) => d.getAttribute('style')?.includes('padding'))).toBe(
-      true
-    );
+    expect(
+      divs.some(d => {
+        const style = d.getAttribute('style');
+        return style && style.indexOf('padding') !== -1;
+      })
+    ).toBe(true);
   });
 
   test('renders empty padded div when community has redirect', () => {
@@ -72,8 +75,11 @@ describe('UnconnectedCommunityActions', () => {
 
     expect(screen.queryByText('Settings')).toBeNull();
     const divs = screen.getAllByRole('generic');
-    expect(divs.some((d) => d.getAttribute('style')?.includes('padding'))).toBe(
-      true
-    );
+    expect(
+      divs.some(d => {
+        const style = d.getAttribute('style');
+        return style && style.indexOf('padding') !== -1;
+      })
+    ).toBe(true);
   });
 });
