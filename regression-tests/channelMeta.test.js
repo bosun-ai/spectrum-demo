@@ -2,10 +2,12 @@ const React = require('react');
 const { render, screen } = require('@testing-library/react');
 const { MemoryRouter } = require('react-router');
 
-// Import the component under test
-const {
-  ChannelMeta,
-} = require('../src/components/entities/profileCards/components/channelMeta.js');
+// Import the component under test (default/CommonJS interop)
+const channelMetaModule = require('../src/components/entities/profileCards/components/channelMeta.js');
+const ChannelMeta =
+  channelMetaModule.ChannelMeta ||
+  channelMetaModule.default ||
+  channelMetaModule;
 
 // Helper to build a minimal channel shape
 const buildChannel = ({
