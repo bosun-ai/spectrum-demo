@@ -42,11 +42,15 @@ const ThreadSlider = (props: Props) => {
       }
     };
     const prev = prevTitlebarProps.current; // capture snapshot for cleanup
-    document.addEventListener('keydown', handleKeyPress, false);
+    // React 17 delegation: attach keydown on capture to avoid missed events
+    // when React tree stops propagation. Version delta: 16.8.6 -> 17.0.2
+    document.addEventListener('keydown', handleKeyPress, { capture: true });
     return () => {
       // React 17: cleanup is async; rely on captured snapshot
       dispatch(setTitlebarProps({ ...prev }));
-      document.removeEventListener('keydown', handleKeyPress, false);
+      document.removeEventListener('keydown', handleKeyPress, {
+        capture: true,
+      });
     };
   }, []);
 

@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 export const useAppScroller = () => {
   const [ref, setRef] = useState(null);
 
+  // React 17: avoid running on every render; set once after mount
   useEffect(() => {
     if (!ref) setRef(document.getElementById('main'));
-  });
+  }, [ref]);
 
   const scrollToTop = () => {
     const elem = ref || document.getElementById('main');
