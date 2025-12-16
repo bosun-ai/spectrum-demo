@@ -2,6 +2,20 @@ const React = require('react');
 const { render, screen } = require('@testing-library/react');
 
 // Import the unconnected component directly to avoid Redux deps
+// Mock aliased imports used by the component under test
+jest.mock('../src/components/entities/profileCards/style', () => ({
+  ActionsRowContainer: ({ children, ...rest }) => {
+    const React = require('react');
+    return React.createElement('div', rest, children);
+  },
+}));
+jest.mock('src/components/button', () => ({
+  OutlineButton: ({ to, children, ...rest }) => {
+    const React = require('react');
+    return React.createElement('a', { href: to, ...rest }, children);
+  },
+}));
+
 const {
   UnconnectedChannelActions,
 } = require('../src/components/entities/profileCards/components/channelActions.js');
