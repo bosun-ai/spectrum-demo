@@ -27,7 +27,7 @@ function renderQuery(overrides) {
   const { Provider } = require('react-redux');
   const { createStore } = require('redux');
   const { ThemeProvider } = require('styled-components');
-  const theme = require('../src/components/globals').default;
+  const theme = require('../shared/theme').default;
   const rootReducer = (state = {}) => state;
   const store = createStore(rootReducer);
   return render(
