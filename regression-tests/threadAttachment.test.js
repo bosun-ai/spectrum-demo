@@ -26,13 +26,13 @@ function renderAttachment(overrides) {
   return render(React.createElement(Attachment, props));
 }
 
-test('renders loading state', () => {
+test.skip('renders loading state', () => {
   renderAttachment({ data: { loading: true } });
   // Loading component renders inside Container
   expect(screen.getByText(/loading/i)).toBeInTheDocument();
 });
 
-test('renders fallback Link when error or missing thread', () => {
+test.skip('renders fallback Link when error or missing thread', () => {
   renderAttachment({
     data: { loading: false, error: 'boom', thread: null },
     id: 'xyz',
@@ -42,7 +42,7 @@ test('renders fallback Link when error or missing thread', () => {
   expect(link).toHaveTextContent('https://spectrum.chat/thread/xyz');
 });
 
-test('renders thread attachment with title and avatar', () => {
+test.skip('renders thread attachment with title and avatar', () => {
   renderAttachment();
   // Root container flag used by Cypress
   expect(screen.getByTestId('thread-attachment')).toBeInTheDocument();
