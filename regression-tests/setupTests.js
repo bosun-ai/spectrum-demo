@@ -20,6 +20,18 @@ jest.mock('../src/components/button', () => ({
     const React = require('react');
     return React.createElement('button', { onClick, ...rest }, children);
   },
+  PrimaryButton: ({ onClick, disabled, children, ...rest }) => {
+    const React = require('react');
+    return React.createElement(
+      'button',
+      { onClick, disabled, 'data-testid': 'save-username-button', ...rest },
+      children
+    );
+  },
+  TextButton: ({ onClick, children, ...rest }) => {
+    const React = require('react');
+    return React.createElement('button', { onClick, ...rest }, children);
+  },
 }));
 
 // Mock styled container to a simple div
