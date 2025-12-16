@@ -88,6 +88,13 @@ jest.mock('react-apollo', () => {
   };
 });
 
+// Mock withCurrentUser HOC to pass-through without expecting Apollo data shape
+jest.mock('src/components/withCurrentUser', () => {
+  return {
+    withCurrentUser: comp => comp,
+  };
+});
+
 // Mock Mention component used by mentions-decorator
 jest.mock('../src/components/rich-text-editor/style.js', () => {
   const React = require('react');
