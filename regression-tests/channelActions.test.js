@@ -9,7 +9,7 @@ jest.mock('../src/components/entities/profileCards/style', () => ({
     return React.createElement('div', rest, children);
   },
 }));
-jest.mock('src/components/button', () => ({
+jest.mock('../src/components/button', () => ({
   OutlineButton: ({ to, children, ...rest }) => {
     const React = require('react');
     return React.createElement('a', { href: to, ...rest }, children);
