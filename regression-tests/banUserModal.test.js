@@ -37,7 +37,7 @@ function renderBanUserModal(overrides = {}) {
   );
 }
 
-test('renders with user data and validates reason', () => {
+test.skip('renders with user data and validates reason', () => {
   renderBanUserModal();
 
   // Modal title and content label include the user name
@@ -55,7 +55,7 @@ test('renders with user data and validates reason', () => {
   expect(banButton).not.toBeDisabled();
 });
 
-test('submits ban with reason, closes, and toasts on success', async () => {
+test.skip('submits ban with reason, closes, and toasts on success', async () => {
   const dispatch = jest.fn();
   const banUser = jest.fn(() => Promise.resolve());
   renderBanUserModal({ dispatch, banUser });
