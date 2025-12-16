@@ -92,11 +92,14 @@ describe('ChannelMeta', () => {
     );
 
     // Description text should render and include an anchor for the URL
-    const description = screen.getByText(/Check this:/i);
-    expect(description).toBeInTheDocument();
+    const descriptionText = screen.getByText(/Check this:/i);
+    expect(descriptionText).toBeInTheDocument();
 
-    // Find the link produced by renderTextWithLinks
-    const anchors = description.querySelectorAll('a');
+    // Find the link produced by renderTextWithLinks within the Description container
+    const descriptionContainer = descriptionText.closest('p');
+    const anchors = descriptionContainer
+      ? descriptionContainer.querySelectorAll('a')
+      : [];
     expect(anchors.length).toBeGreaterThan(0);
     // One of the anchors should point to example.com/docs
     const match = Array.from(anchors).find(
