@@ -16,6 +16,10 @@ jest.mock('../src/components/button', () => ({
       children
     );
   },
+  HoverWarnOutlineButton: ({ onClick, children, ...rest }) => {
+    const React = require('react');
+    return React.createElement('button', { onClick, ...rest }, children);
+  },
 }));
 
 // Mock styled container to a simple div
