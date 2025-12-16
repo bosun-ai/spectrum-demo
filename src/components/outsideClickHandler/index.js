@@ -13,16 +13,23 @@ class OutsideAlerter extends React.Component<Props> {
   // iOS bug, see: https://stackoverflow.com/questions/10165141/jquery-on-and-delegate-doesnt-work-on-ipad
   componentDidMount() {
     // $FlowFixMe
+    // React 17: listeners attach to the root container, not document.
+    // Use capture so outside clicks are detected even if React stops propagation.
+    // Version delta: 16.8.6 -> 17.0.2
     document
       .getElementById('root')
-      .addEventListener('mousedown', this.handleClickOutside);
+      .addEventListener('mousedown', this.handleClickOutside, {
+        capture: true,
+      });
   }
 
   componentWillUnmount() {
     // $FlowFixMe
     document
       .getElementById('root')
-      .removeEventListener('mousedown', this.handleClickOutside);
+      .removeEventListener('mousedown', this.handleClickOutside, {
+        capture: true,
+      });
   }
 
   setWrapperRef = (node: React$Node) => {
