@@ -32,10 +32,10 @@ global.requestAnimationFrame = callback => setTimeout(callback, 0);
 global.cancelAnimationFrame = id => clearTimeout(id);
 copyProps(window, global);
 
-require('@testing-library/jest-dom/extend-expect');
-require('@testing-library/jest-dom/extend-expect');
 const { server } = require('./server');
 
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
+
+require('@testing-library/jest-dom/extend-expect');
