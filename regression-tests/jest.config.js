@@ -1,16 +1,10 @@
-const path = require('path');
-
 module.exports = {
-  rootDir: '.', // paths in this config are relative to the regression-tests directory
+  rootDir: '.',
   testEnvironment: 'jsdom',
-  setupTestFrameworkScriptFile: '<rootDir>/setupTests.js',
+  setupFilesAfterEnv: ['<rootDir>/setupTests.js'],
   testMatch: ['**/*.test.js'],
   testURL: 'http://localhost/',
-  moduleNameMapper: {
-    '^src/(.*)$': '<rootDir>/../src/$1',
-    '^shared/(.*)$': '<rootDir>/../shared/$1',
-  },
   transform: {
-    '^.+\\.js$': path.resolve(__dirname, '../node_modules/babel-jest'),
+    '^.+\\.(js|jsx)$': '<rootDir>/transform.js',
   },
 };
