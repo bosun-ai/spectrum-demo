@@ -41,4 +41,16 @@ describe('ChannelCommunityMeta', () => {
     const avatar = getByAltText(communityName);
     expect(avatar.tagName).toBe('IMG');
   });
+
+  it('uses the community slug inside the outer link', () => {
+    const { getByRole } = renderChannelCommunityMeta({
+      community: {
+        name: 'Design Systems',
+        slug: 'design-systems',
+      },
+    });
+
+    const communityLink = getByRole('link', { name: /design systems/i });
+    expect(communityLink).toHaveAttribute('href', '/design-systems');
+  });
 });
