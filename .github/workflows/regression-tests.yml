@@ -1,0 +1,32 @@
+name: Regression Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    env:
+      NVM_DIR: ~/.nvm
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install NVM and Node.js
+        run: |
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+          source "$NVM_DIR/nvm.sh"
+          nvm install
+
+      - name: Install dependencies
+        run: |
+          source "$NVM_DIR/nvm.sh"
+          nvm use
+          node shared/install-dependencies.js
+
+      - name: Run regression tests
+        run: |
+          source "$NVM_DIR/nvm.sh"
+          nvm use
+          yarn test:regression
