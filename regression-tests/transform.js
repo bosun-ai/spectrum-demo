@@ -1,5 +1,3 @@
-const babelJest = require('babel-jest');
+const path = require('path');
 
-module.exports = babelJest.createTransformer({
-  rootMode: 'upward',
-});
+module.exports = require(path.join(__dirname, '../babel.config.js'));
