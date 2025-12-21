@@ -1,4 +1,5 @@
 const React = require('react');
+const { MemoryRouter } = require('react-router-dom');
 const { render } = require('@testing-library/react');
 const {
   UnconnectedChannelActions,
@@ -18,50 +19,54 @@ const baseChannel = {
   },
 };
 
-const renderActions = (overrides = {}) =>
+const buildChannel = (overrides = {}) => ({
+  ...baseChannel,
+  ...overrides,
+  community: {
+    ...baseChannel.community,
+    ...(overrides.community || {}),
+    communityPermissions: {
+      ...baseChannel.community.communityPermissions,
+      ...((overrides.community && overrides.community.communityPermissions) || {}),
+    },
+  },
+  channelPermissions: {
+    ...baseChannel.channelPermissions,
+    ...(overrides.channelPermissions || {}),
+  },
+});
+
+const renderActions = overrides =>
   render(
-    React.createElement(UnconnectedChannelActions, {
-      channel: {
-        ...baseChannel,
-        ...overrides,
-        community: {
-          ...baseChannel.community,
-          ...(overrides.community || {}),
-          communityPermissions: {
-            ...baseChannel.community.communityPermissions,
-            ...((overrides.community && overrides.community.communityPermissions) || {}),
-          },
-        },
-        channelPermissions: {
-          ...baseChannel.channelPermissions,
-          ...(overrides.channelPermissions || {}),
-        },
-      },
-    })
+    React.createElement(
+      MemoryRouter,
+      null,
+      React.createElement(UnconnectedChannelActions, {
+        channel: buildChannel(overrides),
+      })
+    )
   );
 
-const getSettingsButton = getByTestId =>
-  getByTestId('channel-settings-button', {}, { exact: false });
-
-const findButtonByText = (getByTextFunc, text) => getByTextFunc(text, { exact: false });
-
 describe('UnconnectedChannelActions', () => {
-  it('shows settings button with data attribute when team member and already joined', () => {
+  it('renders settings button with data attribute when member and on team', () => {
     const { getByTestId } = renderActions({
       channelPermissions: { isMember: true },
       community: { communityPermissions: { isOwner: true } },
     });
 
-    expect(getByTestId('channel-settings-button')).toBeInTheDocument();
+    const button = getByTestId('channel-settings-button');
+    expect(button).toBeInTheDocument();
+    expect(button.closest('a')).toHaveAttribute('href', '/acme/general/settings');
   });
 
-  it('shows settings button without data attribute for team member non-member state', () => {
-    const { getByText } = renderActions({
+  it('renders settings button without data attribute for team non-members', () => {
+    const { getByText, queryByTestId } = renderActions({
       channelPermissions: { isMember: false },
       community: { communityPermissions: { isModerator: true } },
     });
 
-    const button = findButtonByText(getByText, 'Settings');
+    expect(queryByTestId('channel-settings-button')).toBeNull();
+    const button = getByText('Settings');
     expect(button.closest('a')).toHaveAttribute('href', '/acme/general/settings');
   });
 
