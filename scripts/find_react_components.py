@@ -86,8 +86,7 @@ def find_files(base_path: Path) -> Iterable[Path]:
 
 
 def path_depth(path: Path) -> int:
-    rel_parts = path.relative_to(Path.cwd()).parts
-    return len(rel_parts)
+    return len(path.parts)
 
 
 def extract_components(file_path: Path) -> List[Tuple[str, int]]:
