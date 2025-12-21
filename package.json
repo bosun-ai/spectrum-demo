@@ -4,6 +4,8 @@
   "license": "BSD-3-Clause",
   "devDependencies": {
     "@babel/preset-flow": "^7.0.0",
+    "@testing-library/jest-dom": "5.17.0",
+    "@testing-library/react": "12.1.0",
     "babel-cli": "^6.24.1",
     "babel-eslint": "^8.2.6",
     "babel-jest": "^22.4.4",
@@ -24,6 +26,7 @@
     "circular-dependency-plugin": "4.x",
     "cpy-cli": "^2.0.0",
     "cross-env": "^5.2.0",
+    "cross-fetch": "^4.1.0",
     "cypress-plugin-retries": "^1.2.0",
     "eslint": "^4.1.1",
     "eslint-config-react-app": "^2.1.0",
@@ -38,6 +41,7 @@
     "is-html": "^1.1.0",
     "lint-staged": "^3.3.0",
     "micromatch": "^3.0.4",
+    "msw": "^2.12.4",
     "prettier": "^1.14.3",
     "raw-loader": "^0.5.1",
     "react-app-rewire-hot-loader": "^1.0.3",
@@ -129,7 +133,7 @@
     "imgix-core-js": "^1.0.6",
     "ioredis": "3.2.2",
     "isomorphic-fetch": "^2.2.1",
-    "jest": "22.4.3",
+    "jest": "^30.2.0",
     "json-stringify-pretty-compact": "^1.2.0",
     "jsonwebtoken": "^8.3.0",
     "keygrip": "^1.0.3",
@@ -232,6 +236,7 @@
     "build:web": "cross-env NODE_PATH=./ react-app-rewired build",
     "jest": "cross-env NODE_PATH=./ jest",
     "test": "npm run jest -- --runInBand --watch",
+    "test:regression": "jest --config regression-tests/jest.config.js",
     "test:ci": "npm run jest -- --forceExit --outputFile test-results.json --json --maxWorkers=2",
     "test:e2e": "CYPRESS_RETRIES=2 cypress run",
     "prestart:api:test": "node -e \"require('./shared/testing/setup.js')().then(() => process.exit())\"",
@@ -258,5 +263,6 @@
       "git add"
     ]
   },
-  "pre-commit": "lint:staged"
+  "pre-commit": "lint:staged",
+  "packageManager": "yarn@4.12.0+sha512.f45ab632439a67f8bc759bf32ead036a1f413287b9042726b7cc4818b7b49e14e9423ba49b18f9e06ea4941c1ad062385b1d8760a8d5091a1a31e5f6219afca8"
 }
