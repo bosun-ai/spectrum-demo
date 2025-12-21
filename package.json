@@ -258,5 +258,6 @@
       "git add"
     ]
   },
-  "pre-commit": "lint:staged"
+  "pre-commit": "lint:staged",
+  "packageManager": "yarn@4.12.0"
 }
