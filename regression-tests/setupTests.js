@@ -1,5 +1,17 @@
 const { JSDOM } = require('jsdom');
-const dom = new JSDOM('', { url: 'http://localhost/' });
+
+let dom;
+
+try {
+  dom = new JSDOM('', { url: 'http://localhost/' });
+} catch (error) {
+  // Retry with legacy URL API fallback for older jsdom versions
+  const { URL } = require('url');
+  const originalURL = global.URL;
+  global.URL = URL;
+  dom = new JSDOM('', { url: 'http://localhost/' });
+  global.URL = originalURL;
+}
 
 global.window = dom.window;
 global.document = dom.window.document;
