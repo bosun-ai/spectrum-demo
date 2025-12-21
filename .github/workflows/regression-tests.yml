@@ -2,11 +2,7 @@ name: Regression Tests
 
 on:
   push:
-    branches:
-      - '**'
   pull_request:
-    branches:
-      - '**'
 
 permissions:
   contents: read
@@ -15,21 +11,37 @@ jobs:
   regression:
     runs-on: ubuntu-latest
 
+    env:
+      NVM_VERSION: v0.39.7
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: 'yarn'
+      - name: Install NVM and Node.js 12
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          mkdir -p "$NVM_DIR"
+          curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh | bash
+          source "$NVM_DIR/nvm.sh"
+          nvm install
+          nvm use
+          echo "NVM_DIR=$NVM_DIR" >> "$GITHUB_ENV"
+
+      - name: Install Yarn 1.22.22
+        run: |
+          source "$NVM_DIR/nvm.sh"
+          nvm use
+          npm install -g yarn@1.22.22
 
       - name: Install dependencies
         run: |
-          yarn set version 1.22.22
+          source "$NVM_DIR/nvm.sh"
+          nvm use
           yarn install --frozen-lockfile
 
       - name: Run regression tests
         run: |
+          source "$NVM_DIR/nvm.sh"
+          nvm use
           yarn test:regression
