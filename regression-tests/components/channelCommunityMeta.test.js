@@ -1,3 +1,20 @@
+const avatarProps = { current: null };
+
+jest.mock('src/components/avatar', () => {
+  const React = require('react');
+
+  const CommunityAvatar = props => {
+    avatarProps.current = props;
+    return React.createElement(
+      'div',
+      { 'data-testid': 'community-avatar' },
+      props.community && props.community.name
+    );
+  };
+
+  return { CommunityAvatar };
+});
+
 const React = require('react');
 const { MemoryRouter } = require('react-router-dom');
 const { render } = require('@testing-library/react');
@@ -18,6 +35,10 @@ const renderChannelCommunityMeta = (overrides = {}) =>
   );
 
 describe('ChannelCommunityMeta', () => {
+  beforeEach(() => {
+    avatarProps.current = null;
+  });
+
   it('links to the parent community and shows its name', () => {
     const { getByRole, getByText } = renderChannelCommunityMeta();
 
@@ -28,18 +49,19 @@ describe('ChannelCommunityMeta', () => {
     expect(getByText('Spectrum')).toBeInTheDocument();
   });
 
-  it('renders a community avatar with the community name as alt text', () => {
-    const communityName = 'Design Systems';
-    const { getByAltText } = renderChannelCommunityMeta({
+  it('passes expected props to CommunityAvatar', () => {
+    renderChannelCommunityMeta({
       community: {
-        name: communityName,
+        name: 'Design Systems',
         slug: 'design-systems',
         profilePhoto: 'https://images.example/ds.png',
       },
     });
 
-    const avatar = getByAltText(communityName);
-    expect(avatar.tagName).toBe('IMG');
+    expect(avatarProps.current).not.toBeNull();
+    expect(avatarProps.current.isClickable).toBe(false);
+    expect(avatarProps.current.size).toBe(24);
+    expect(avatarProps.current.community.slug).toBe('design-systems');
   });
 
   it('uses the community slug inside the outer link', () => {
