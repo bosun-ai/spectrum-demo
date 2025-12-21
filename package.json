@@ -236,6 +236,7 @@
     "build:web": "cross-env NODE_PATH=./ react-app-rewired build",
     "jest": "cross-env NODE_PATH=./ jest",
     "test": "npm run jest -- --runInBand --watch",
+    "test:regression": "jest --config regression-tests/jest.config.js",
     "test:ci": "npm run jest -- --forceExit --outputFile test-results.json --json --maxWorkers=2",
     "test:e2e": "CYPRESS_RETRIES=2 cypress run",
     "prestart:api:test": "node -e \"require('./shared/testing/setup.js')().then(() => process.exit())\"",
