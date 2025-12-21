@@ -4,6 +4,7 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/setupTests.js'],
   testMatch: ['**/*.test.js'],
   moduleNameMapper: {
-    '^src/(.*)$': '<rootDir>/../src/$1'
+    '^src/(.*)$': '<rootDir>/../src/$1',
+    '^shared/(.*)$': '<rootDir>/../shared/$1'
   }
 };
