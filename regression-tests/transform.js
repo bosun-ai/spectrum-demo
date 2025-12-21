@@ -1,3 +1,1 @@
-const path = require('path');
-
-module.exports = require(path.join(__dirname, '../babel.config.js'));
+module.exports = require('babel-jest').createTransformer({ babelrc: true });
