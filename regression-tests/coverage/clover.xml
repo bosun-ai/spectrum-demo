@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1766346622547" clover="3.2.0">
+  <project timestamp="1766346622547" name="All files">
+    <metrics statements="29" coveredstatements="28" conditionals="3" coveredconditionals="2" methods="9" coveredmethods="6" elements="41" coveredelements="36" complexity="0" loc="29" ncloc="29" packages="2" files="4" classes="4">
+      <package name="regression-tests">
+        <metrics statements="26" coveredstatements="25" conditionals="0" coveredconditionals="0" methods="8" coveredmethods="5"/>
+        <file name="handlers.js" path="/app/spectrum-demo/regression-tests/handlers.js">
+          <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+          <line num="1" count="1" type="stmt"/>
+          <line num="3" count="1" type="stmt"/>
+          <line num="7" count="1" type="stmt"/>
+        </file>
+        <file name="server.js" path="/app/spectrum-demo/regression-tests/server.js">
+          <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+          <line num="1" count="1" type="stmt"/>
+          <line num="2" count="1" type="stmt"/>
+          <line num="4" count="1" type="stmt"/>
+          <line num="6" count="1" type="stmt"/>
+        </file>
+        <file name="setupTests.js" path="/app/spectrum-demo/regression-tests/setupTests.js">
+          <metrics statements="19" coveredstatements="18" conditionals="0" coveredconditionals="0" methods="8" coveredmethods="5"/>
+          <line num="1" count="1" type="stmt"/>
+          <line num="7" count="1" type="stmt"/>
+          <line num="9" count="1" type="stmt"/>
+          <line num="14" count="1" type="stmt"/>
+          <line num="17" count="1" type="stmt"/>
+          <line num="18" count="336" type="stmt"/>
+          <line num="19" count="0" type="stmt"/>
+          <line num="23" count="1" type="stmt"/>
+          <line num="26" count="1" type="stmt"/>
+          <line num="27" count="1" type="stmt"/>
+          <line num="28" count="1" type="stmt"/>
+          <line num="31" count="1" type="stmt"/>
+          <line num="32" count="1" type="stmt"/>
+          <line num="33" count="1" type="stmt"/>
+          <line num="35" count="1" type="stmt"/>
+          <line num="37" count="1" type="stmt"/>
+          <line num="38" count="3" type="stmt"/>
+          <line num="39" count="1" type="stmt"/>
+          <line num="41" count="1" type="stmt"/>
+        </file>
+      </package>
+      <package name="regression-tests.components.__fixtures__">
+        <metrics statements="3" coveredstatements="3" conditionals="3" coveredconditionals="2" methods="1" coveredmethods="1"/>
+        <file name="channel.js" path="/app/spectrum-demo/regression-tests/components/__fixtures__/channel.js">
+          <metrics statements="3" coveredstatements="3" conditionals="3" coveredconditionals="2" methods="1" coveredmethods="1"/>
+          <line num="2" count="1" type="stmt"/>
+          <line num="15" count="3" type="cond" truecount="0" falsecount="1"/>
+          <line num="24" count="1" type="stmt"/>
+        </file>
+      </package>
+    </metrics>
+  </project>
+</coverage>
