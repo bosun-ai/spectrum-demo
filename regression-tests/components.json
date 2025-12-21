@@ -1,0 +1,42 @@
+[
+  {
+    "name": "AbstractLogo",
+    "path": "src/views/pages/components/logos.js"
+  },
+  {
+    "name": "ExpoLogo",
+    "path": "src/views/pages/components/logos.js"
+  },
+  {
+    "name": "FigmaLogo",
+    "path": "src/views/pages/components/logos.js"
+  },
+  {
+    "name": "InvisionLogo",
+    "path": "src/views/pages/components/logos.js"
+  },
+  {
+    "name": "NodeLogo",
+    "path": "src/views/pages/components/logos.js"
+  },
+  {
+    "name": "RealmLogo",
+    "path": "src/views/pages/components/logos.js"
+  },
+  {
+    "name": "SketchLogo",
+    "path": "src/views/pages/components/logos.js"
+  },
+  {
+    "name": "Discover",
+    "path": "src/components/illustrations/index.js"
+  },
+  {
+    "name": "Empty",
+    "path": "src/components/illustrations/index.js"
+  },
+  {
+    "name": "Skip",
+    "path": "src/views/navigation/accessibility.js"
+  }
+]
