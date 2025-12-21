@@ -4,4 +4,5 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/setupTests.js'],
   setupTestFrameworkScriptFile: '<rootDir>/setupTests.js',
   testMatch: ['**/*.test.js'],
+  testURL: 'http://localhost/',
 };
