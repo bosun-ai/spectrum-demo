@@ -1,3 +1,9 @@
+require('@babel/register')({
+  extensions: ['.js', '.jsx'],
+  ignore: [/node_modules\/[^/]+/],
+  rootMode: 'upward-optional',
+});
+
 const { JSDOM } = require('jsdom');
 
 const dom = new JSDOM('<!doctype html><html><body></body></html>', {
@@ -26,6 +32,7 @@ global.requestAnimationFrame = callback => setTimeout(callback, 0);
 global.cancelAnimationFrame = id => clearTimeout(id);
 copyProps(window, global);
 
+require('@testing-library/jest-dom/extend-expect');
 require('@testing-library/jest-dom/extend-expect');
 const { server } = require('./server');
 
