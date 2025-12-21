@@ -1,5 +1,5 @@
 const React = require('react');
-const { MemoryRouter } = require('react-router');
+const { MemoryRouter } = require('react-router-dom');
 const { render } = require('@testing-library/react');
 const {
   CommunityMeta,
