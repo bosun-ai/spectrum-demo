@@ -104,7 +104,7 @@ def walk_source():
 
 def main():
     components = walk_source()
-    components.sort(key=lambda c: (c['path'].count(os.sep), c['path']))
+    components.sort(key=lambda c: (-c['path'].count(os.sep), c['path']))
     print(json.dumps(components, indent=2))
 
 
