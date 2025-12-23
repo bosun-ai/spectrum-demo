@@ -413,7 +413,7 @@ def gather_source_files():
 def run_analyzer(file_paths):
     if not file_paths:
         return []
-    with tempfile.NamedTemporaryFile('w', delete=False, suffix='.js') as helper:
+    with tempfile.NamedTemporaryFile('w', delete=False, suffix='.js', dir=PROJECT_ROOT) as helper:
         helper.write(NODE_ANALYZER_SOURCE)
         helper_path = helper.name
     try:
@@ -423,6 +423,7 @@ def run_analyzer(file_paths):
             text=True,
             capture_output=True,
             check=True,
+            cwd=PROJECT_ROOT,
         )
     finally:
         os.unlink(helper_path)
