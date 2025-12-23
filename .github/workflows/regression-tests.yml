@@ -1,0 +1,57 @@
+name: Regression Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    env:
+      NVM_DIR: ${{ runner.temp }}/nvm
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js via NVM
+        shell: bash
+        run: |
+          export NVM_DIR="${NVM_DIR%/}"
+          mkdir -p "$NVM_DIR"
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+          source "$NVM_DIR/nvm.sh"
+          NODE_VERSION=$(cat .nvmrc)
+          nvm install "$NODE_VERSION"
+          nvm use "$NODE_VERSION"
+          echo "NVM_DIR=$NVM_DIR" >> "$GITHUB_ENV"
+          echo "NODE_VERSION=$NODE_VERSION" >> "$GITHUB_ENV"
+          node -v
+
+      - name: Install Yarn 1.x
+        shell: bash
+        run: |
+          source "$NVM_DIR/nvm.sh"
+          nvm use "$NODE_VERSION"
+          npm install -g yarn@1
+          yarn -v
+
+      - name: Install root dependencies
+        shell: bash
+        run: |
+          source "$NVM_DIR/nvm.sh"
+          nvm use "$NODE_VERSION"
+          yarn install --frozen-lockfile
+
+      - name: Install worker dependencies
+        shell: bash
+        run: |
+          source "$NVM_DIR/nvm.sh"
+          nvm use "$NODE_VERSION"
+          node shared/install-dependencies.js
+
+      - name: Run regression tests
+        shell: bash
+        run: |
+          source "$NVM_DIR/nvm.sh"
+          nvm use "$NODE_VERSION"
+          yarn test:regression regression-tests/components/HelloMessage.test.js
