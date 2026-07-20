@@ -12,7 +12,7 @@ COPY . .
 #
 FROM builder AS builder-api
 WORKDIR /usr/src/spectrum
-RUN yarn --cwd ./api
+RUN yarn --cwd ./api install --frozen-lockfile --ignore-scripts
 RUN yarn run build:api
 RUN cp -r ./api/node_modules ./build-api
 
