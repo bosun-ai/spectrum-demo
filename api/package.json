@@ -134,5 +134,8 @@
   },
   "scripts": {
     "start": "NODE_ENV=production node main.js"
+  },
+  "resolutions": {
+    "offline-plugin/deep-extend": "0.6.0"
   }
 }
