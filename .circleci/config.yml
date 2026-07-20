@@ -16,7 +16,7 @@ aliases:
     key: v1-yarn-{{ arch }}-{{ checksum "package.json" }}
 
   - &yarn |
-    yarn
+    yarn --frozen-lockfile --ignore-scripts
 
   - &install-rethinkdb
     name: Install RethinkDB 2.3.5
@@ -57,7 +57,7 @@ defaults: &defaults
 js_defaults: &js_defaults
   <<: *defaults
   docker:
-    - image: circleci/node:8
+    - image: circleci/node:12
 
 jobs:
   # Set up environment and install required dependencies
@@ -90,7 +90,7 @@ jobs:
   test_unit:
     <<: *defaults
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:12
       - image: redis:3.2.7
       - image: rethinkdb:2.3.5
     environment:
@@ -108,7 +108,7 @@ jobs:
   test_integration:
     <<: *defaults
     docker:
-      - image: circleci/node:8-browsers
+      - image: circleci/node:12-browsers
       - image: redis:3.2.7
       - image: cypress/base:6
       - image: rethinkdb:2.3.5
