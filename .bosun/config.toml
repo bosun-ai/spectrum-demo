@@ -1,0 +1,14 @@
+setup_script = """
+#!/usr/bin/env bash
+set -euo pipefail
+corepack yarn@1.22.22 install --frozen-lockfile --non-interactive
+"""
+
+[env]
+NODE_ENV = "test"
+
+[services.rethinkdb]
+image = "rethinkdb:2.3.5"
+
+[services.redis]
+image = "redis:3.2.7"
