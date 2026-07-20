@@ -132,6 +132,9 @@
     "validator": "^9.4.1",
     "web-push": "^3.3.5"
   },
+  "resolutions": {
+    "offline-plugin/deep-extend": "0.6.0"
+  },
   "scripts": {
     "start": "NODE_ENV=production node main.js"
   }
