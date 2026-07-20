@@ -214,7 +214,8 @@
     "jest-environment-node": "22.4.3",
     "jest": "22.4.3",
     "fbjs": "0.8.16",
-    "event-stream": "3.3.4"
+    "event-stream": "3.3.4",
+    "shell-quote": "1.10.0"
   },
   "scripts": {
     "start": "NODE_ENV=production node main.js",
