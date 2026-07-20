@@ -4,7 +4,7 @@
 FROM node:12 AS builder
 WORKDIR /usr/src/spectrum
 COPY package.json yarn.lock ./
-RUN yarn
+RUN yarn --frozen-lockfile --ignore-scripts
 COPY . .
 
 # API builder
