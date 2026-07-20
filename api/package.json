@@ -1,4 +1,7 @@
 {
+  "resolutions": {
+    "**/protobufjs": "8.7.1"
+  },
   "dependencies": {
     "apollo-local-query": "^0.3.1",
     "apollo-server-cache-redis": "^0.3.1",
